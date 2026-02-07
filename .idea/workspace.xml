@@ -4,35 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Background">
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/upnext/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/upnext/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/upnext/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/upnext/SceneTransitionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/app-add-11175.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/app-add-11175-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/black-folders-11454.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/black-folders-11454-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/black-hospital-cross-10726.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/black-hospital-cross-10726-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/book-13427.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/book-13427-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/calendar-11015.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/calendar-11015-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/backg.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/backg.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/backgLIGHT.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/hello-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/root-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/upnext/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/cooling-symbol-3341.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/cooling-symbol-3341-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/homepage-6104.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/homepage-6104-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/information-6255.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/information-6255-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/photos-10614.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/photos-10614-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/play-button-4213.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/play-button-4213-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/search-2907.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/search-interface-symbol-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/search-interface-symbol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/search.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/settings-5666.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/settings-5666-light.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/time-2624.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/time-2624-light.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770491931173</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="UI update 1.0">
+      <option name="closed" value="true" />
+      <created>1770493324947</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770493324947</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,6 +144,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Background" />
-    <option name="LAST_COMMIT_MESSAGE" value="Background" />
+    <MESSAGE value="UI update 1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI update 1.0" />
   </component>
 </project>

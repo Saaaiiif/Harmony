@@ -9,8 +9,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
@@ -40,9 +44,19 @@ public class RootLayoutController {
     @FXML
     private StackPane contentArea;
 
+    @FXML private VBox sidebar;
+
+    @FXML private Button sidebarToggleButton;
+
     private Stage stage;
     private double xOffset = 0;
     private double yOffset = 0;
+
+    private boolean sidebarCollapsed = false;
+    private static final double SIDEBAR_EXPANDED = 320.0;
+    private static final double SIDEBAR_COLLAPSED = 80.0;
+
+    private Timeline sidebarAnim;
 
     @FXML
     public void initialize() {
@@ -85,6 +99,9 @@ public class RootLayoutController {
         themeToggleButton.setOnAction(event -> {
             toggleTheme();
         });
+
+        installSidebarHoverBehavior();
+
     }
 
     /**
@@ -217,6 +234,50 @@ public class RootLayoutController {
             iv.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
         }
     }
+
+    private void installSidebarHoverBehavior() {
+        javafx.application.Platform.runLater(() -> {
+            setSidebarCollapsed(true);
+            sidebar.setPrefWidth(SIDEBAR_COLLAPSED);
+            sidebar.setMinWidth(SIDEBAR_COLLAPSED);
+            sidebar.setMaxWidth(SIDEBAR_COLLAPSED);
+        });
+
+        sidebar.setOnMouseEntered(e -> {
+            setSidebarCollapsed(false);
+            animateSidebarTo(SIDEBAR_EXPANDED);
+        });
+
+        sidebar.setOnMouseExited(e -> {
+            setSidebarCollapsed(true);
+            animateSidebarTo(SIDEBAR_COLLAPSED);
+        });
+    }
+
+    private void animateSidebarTo(double w) {
+        if (sidebarAnim != null) sidebarAnim.stop();
+
+        sidebarAnim = new Timeline(
+                new KeyFrame(Duration.millis(180),
+                        new KeyValue(sidebar.prefWidthProperty(), w),
+                        new KeyValue(sidebar.minWidthProperty(), w),
+                        new KeyValue(sidebar.maxWidthProperty(), w)
+                )
+        );
+        sidebarAnim.play();
+    }
+    private void setSidebarCollapsed(boolean collapsed) {
+        sidebarCollapsed = collapsed;
+
+        if (collapsed) {
+            if (!sidebar.getStyleClass().contains("sidebar-collapsed")) {
+                sidebar.getStyleClass().add("sidebar-collapsed");
+            }
+        } else {
+            sidebar.getStyleClass().remove("sidebar-collapsed");
+        }
+    }
+
 
 
 }

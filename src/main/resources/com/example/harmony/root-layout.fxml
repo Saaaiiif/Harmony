@@ -27,6 +27,7 @@
                 </ImageView>
                 <Label text="Harmony" styleClass="title-label" />
             </HBox>
+
             <Button fx:id="themeToggleButton" text="☀" styleClass="window-control-button" />
             <Button fx:id="minimizeButton" text="—" styleClass="window-control-button" />
             <Button fx:id="closeButton" text="✕" styleClass="window-control-button" />
@@ -35,7 +36,7 @@
 
     <left>
         <!-- Sidebar (fixed width 320) -->
-        <VBox prefWidth="320.0" minWidth="320.0" maxWidth="320.0"
+        <VBox fx:id="sidebar" prefWidth="320.0" minWidth="320.0" maxWidth="320.0"
               styleClass="sidebar">
 
             <!-- Home header (same style as other section titles) -->

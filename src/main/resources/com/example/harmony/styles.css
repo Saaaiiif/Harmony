@@ -161,3 +161,17 @@
 .sidebar-item:hover .text {
     -fx-fill: black;
 }
+
+/* Default: show text */
+.sidebar .sidebar-section-title,
+.sidebar .sidebar-item .text {
+    -fx-opacity: 1;
+    -fx-managed: true;
+}
+
+/* Collapsed: hide text (icon-only) */
+.sidebar.sidebar-collapsed .sidebar-section-title,
+.sidebar.sidebar-collapsed .sidebar-item .text {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
