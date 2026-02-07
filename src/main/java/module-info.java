@@ -1,4 +1,4 @@
-module com.example.upnext {
+module com.example.harmony {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -16,6 +16,6 @@ module com.example.upnext {
     requires org.json;
     requires java.net.http;
 
-    opens com.example.upnext to javafx.fxml;
-    exports com.example.upnext;
+    opens com.example.harmony to javafx.fxml;
+    exports com.example.harmony;
 }

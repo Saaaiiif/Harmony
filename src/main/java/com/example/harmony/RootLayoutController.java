@@ -1,4 +1,4 @@
-package com.example.upnext;
+package com.example.harmony;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Controller for the root layout that contains the title bar and content area.
@@ -195,6 +196,27 @@ public class RootLayoutController {
                 }
             }
         }
+        updateSidebarIcons();
+
     }
+    private void updateSidebarIcons() {
+        if (stage == null || stage.getScene() == null) return;
+
+        Parent root = stage.getScene().getRoot();
+        Set<Node> icons = root.lookupAll(".sidebar-icon"); // ImageViews in your sidebar [web:72]
+
+        for (Node n : icons) {
+            if (!(n instanceof ImageView iv)) continue;
+
+            String base = iv.getId(); // from FXML: id="calendar-11015" etc. [web:78]
+            if (base == null || base.isBlank()) continue;
+
+            String suffix = isDarkMode ? "-dark.png" : "-light.png";
+            String path = "/" + base + suffix; // resource path
+
+            iv.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
+        }
+    }
+
 
 }

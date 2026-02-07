@@ -1,13 +1,11 @@
-package com.example.upnext;
+package com.example.harmony;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.Objects;
 
 public class MainController {
 
@@ -34,7 +32,7 @@ public class MainController {
     private void handleUpNextButtonClick() {
         try {
             SceneTransitionUtil.changeContent(
-                    "/com/example/upnext/hello-view.fxml",
+                    "/com/example/harmony/hello-view.fxml",
                 SceneTransitionUtil.TransitionType.FADE, 
                 MainController.class
             );

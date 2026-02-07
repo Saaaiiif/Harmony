@@ -1,4 +1,4 @@
-package com.example.upnext;
+package com.example.harmony;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -56,7 +56,7 @@ public class MainPage extends Application {
 
         // Load the initial content (hello-view.fxml)
         MainController mainController = SceneTransitionUtil.changeContent(
-                "/com/example/upnext/hello-view.fxml",
+                "/com/example/harmony/hello-view.fxml",
             SceneTransitionUtil.TransitionType.FADE, 
             MainController.class
         );
