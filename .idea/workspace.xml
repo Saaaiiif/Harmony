@@ -5,23 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/app-add-11175.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/black-folders-11454.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/black-hospital-cross-10726.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/book-13427.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/calendar-11015.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/close.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/cooling-symbol-3341.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/homepage-6104.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/information-6255.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/noun-full-screen-mode-4893451.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/photos-10614.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/play-button-4213.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/search-2907.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/search-interface-symbol.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/settings-5666.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/time-2624.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,25 +45,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.MainPage.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;communities&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/upnext&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainPage.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/upnext",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
@@ -129,6 +113,7 @@
       <workItem from="1769018038326" duration="2254000" />
       <workItem from="1769887237863" duration="8772000" />
       <workItem from="1770064861873" duration="934000" />
+      <workItem from="1770490651844" duration="297000" />
     </task>
     <servers />
   </component>
