@@ -5,12 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -55,7 +67,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/upnext",
+    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/harmony",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -71,11 +83,13 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
     </key>
@@ -119,7 +133,8 @@
       <workItem from="1769887237863" duration="8772000" />
       <workItem from="1770064861873" duration="934000" />
       <workItem from="1770490651844" duration="297000" />
-      <workItem from="1770627233519" duration="822000" />
+      <workItem from="1770627233519" duration="3921000" />
+      <workItem from="1770639277418" duration="9303000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -153,7 +168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770627906335</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="UI update 1.2 (Sidebar animation)">
+      <option name="closed" value="true" />
+      <created>1770628090692</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770628090692</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
