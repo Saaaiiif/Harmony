@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="650" prefWidth="1000" style="-fx-background-color: #E6E0F0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InscriptionController">
+
+    <VBox alignment="CENTER" layoutX="190" layoutY="50" prefHeight="550" prefWidth="620" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 0);">
+
+        <padding>
+            <Insets bottom="40" left="80" right="80" top="60" />
+        </padding>
+
+        <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #6A5ACD;" text="Créer un compte" />
+
+        <TextField fx:id="nomInsc" prefWidth="420" promptText="Nom" style="-fx-font-size: 15;" />
+        <TextField fx:id="prenomInsc" prefWidth="420" promptText="Prénom" style="-fx-font-size: 15;" />
+        <TextField fx:id="emailInsc" prefWidth="420" promptText="Email" style="-fx-font-size: 15;" />
+        <PasswordField fx:id="passwordInsc" prefWidth="420" promptText="Mot de passe" style="-fx-font-size: 15;" />
+        <DatePicker fx:id="dateNaissanceInsc" prefHeight="31.0" prefWidth="460.0" promptText="Date de naissance" />
+
+        <Button fx:id="btnRegister" onAction="#handleRegister" prefWidth="420" style="-fx-background-color: #6A5ACD; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 10;" text="S'inscrire" />
+
+        <Hyperlink fx:id="linkToLogin" style="-fx-font-size: 14; -fx-text-fill: #6A5ACD;" text="Déjà un compte ? Se connecter" />
+    </VBox>
+
+    <!-- Titre en haut -->
+    <Label layoutX="50" layoutY="30" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #6A5ACD; -fx-font-style: italic;" text="Harmony" />
+
+</AnchorPane>

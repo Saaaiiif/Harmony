@@ -183,6 +183,30 @@ public class serviceUser implements services<user> {
             }
 
         }
+        public user getByEmailAndPassword (String email, String password){
+        String req ="SELECT * FROM `user` WHERE `user_email`= ? AND `user_password` = ?";
+        try(PreparedStatement pstm =cnx.prepareStatement(req)){
+            pstm.setString(1,email);
+            pstm.setString(2,password);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()){
+                user u = new user();
+                u.setUser_id(rs.getInt("user_id"));
+                u.setUser_nom(rs.getString("user_nom"));
+                u.setUser_prenom(rs.getString("user_prenom"));
+                u.setUser_email(rs.getString("user_email"));
+                u.setUser_password(rs.getString("user_password"));
+                u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
+                u.setDate_inscription(rs.getString("date_inscription"));
+                String roleStr =rs.getString("type_utilisateur");
+                u.setType_utilisateur(Role.valueOf(roleStr));
+                return u;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null; // c est le cas ou le login echoue
+        }
 
 
 
