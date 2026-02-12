@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="650" prefWidth="1000" style="-fx-background-color: #E6E0F0;"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.GestionUsersController">
+
+    <!-- Sidebar -->
+    <VBox layoutX="0" prefHeight="650" prefWidth="240" style="-fx-background-color: #F0E6FF;">
+        <Label text="Harmony" style="-fx-font-size: 26; -fx-padding: 25; -fx-text-fill: #6A5ACD; -fx-font-weight: bold;"/>
+        <Button text="Gestion Utilisateurs" prefWidth="240" style="-fx-background-color: #6A5ACD; -fx-text-fill: white; -fx-padding: 12;"/>
+    </VBox>
+
+    <!-- Zone principale -->
+    <VBox layoutX="260" layoutY="40" prefWidth="720" spacing="15">
+        <Label text="Gestion des Utilisateurs" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #6A5ACD;"/>
+
+        <TableView fx:id="tableUsers" prefHeight="420">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
+                <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                <TableColumn fx:id="colRole" text="Rôle" prefWidth="90"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="140"/>
+            </columns>
+        </TableView>
+
+        <Button fx:id="btnRefresh" text="Actualiser la liste" onAction="#refreshTable"/>
+    </VBox>
+</AnchorPane>
