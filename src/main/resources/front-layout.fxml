@@ -11,7 +11,7 @@
 
 <BorderPane fx:id="root"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.harmony.FrontLayoutController"
+            fx:controller="controllers.FrontLayoutController"
             prefWidth="1200" prefHeight="700"
             styleClass="front-root">
 

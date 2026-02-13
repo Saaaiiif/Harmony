@@ -12,7 +12,7 @@
 
 <?import javafx.scene.image.Image?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.harmony.RootLayoutController"
+            fx:controller="controllers.RootLayoutController"
             prefWidth="1200" prefHeight="700"
             styleClass="root">
 

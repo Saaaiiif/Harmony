@@ -1,4 +1,4 @@
-package com.example.harmony;
+package controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -113,7 +113,7 @@ public class SceneTransitionUtil {
         Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
         // Set the scene fill to dark color to prevent white flash during transition
         newScene.setFill(javafx.scene.paint.Color.rgb(18, 18, 18));
-        newScene.getStylesheets().add(Objects.requireNonNull(SceneTransitionUtil.class.getResource("/com/example/harmony/styles.css")).toExternalForm());
+        newScene.getStylesheets().add(Objects.requireNonNull(SceneTransitionUtil.class.getResource("/styles.css")).toExternalForm());
 
         // Apply animation to the current scene before switching
         Parent currentRoot = currentScene.getRoot();

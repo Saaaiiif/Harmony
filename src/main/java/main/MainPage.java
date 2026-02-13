@@ -1,5 +1,6 @@
-package com.example.harmony;
+package main;
 
+import controllers.FrontLayoutController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,29 +17,24 @@ public class MainPage extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
+        // Chargement des polices à la racine de resources/
         Font.loadFont(getClass().getResourceAsStream("/Feather.ttf"), 18);
         Font.loadFont(getClass().getResourceAsStream("/SF-Pro-Text-Bold.otf"), 16);
         Font.loadFont(getClass().getResourceAsStream("/SF-Pro-Text-Light.otf"), 24);
 
         Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo.png")));
         stage.getIcons().add(appIcon);
-
         stage.initStyle(StageStyle.UNDECORATED);
 
-        // IMPORTANT: absolute path
-        FXMLLoader loader = new FXMLLoader(MainPage.class.getResource("/com/example/harmony/front-layout.fxml"));
+        // Chargement de l'interface principale (chemin direct)
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/front-layout.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root, 1280, 720);
         scene.setFill(javafx.scene.paint.Color.WHITE);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
 
-        scene.getStylesheets().add(Objects.requireNonNull(
-                MainPage.class.getResource("/com/example/harmony/styles.css")
-        ).toExternalForm());
-
-        // Default light
-        root.getStyleClass().add("light-mode");
+        root.getStyleClass().add("light-mode"); // Mode clair par défaut
 
         stage.setTitle("Harmony");
         stage.setScene(scene);
@@ -52,15 +48,5 @@ public class MainPage extends Application {
 
     public static void main(String[] args) {
         launch();
-    }
-
-    @Override
-    public void stop() {
-        SceneTransitionUtil.shutdown();
-        try {
-            super.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -1,4 +1,4 @@
-module com.example.harmony {
+module harmony { // J'ai simplifié le nom du module
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -16,6 +16,16 @@ module com.example.harmony {
     requires org.json;
     requires java.net.http;
 
-    opens com.example.harmony to javafx.fxml;
-    exports com.example.harmony;
+    // 1. On autorise JavaFX à démarrer l'application depuis le package 'main'
+    exports main;
+
+    // 2. On autorise JavaFX à injecter les @FXML dans tes contrôleurs
+    opens controllers to javafx.fxml;
+    exports controllers;
+
+    // 3. On exporte le reste de tes packages au cas où d'autres bibliothèques en ont besoin
+    exports entities;
+    exports services;
+    exports utils;
+    exports interfaces;
 }

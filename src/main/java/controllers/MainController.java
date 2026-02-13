@@ -1,4 +1,5 @@
-package com.example.harmony;
+package controllers;
+
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -31,8 +32,8 @@ public class MainController {
     private void handleUpNextButtonClick() {
         try {
             SceneTransitionUtil.changeContent(
-                    "/com/example/harmony/hello-view.fxml",
-                SceneTransitionUtil.TransitionType.FADE, 
+                    "/hello-view.fxml",
+                SceneTransitionUtil.TransitionType.FADE,
                 MainController.class
             );
         } catch (IOException e) {

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.harmony.MainController"
+            fx:controller="controllers.MainController"
             prefWidth="1280" prefHeight="720">
 
     <top>
