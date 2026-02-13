@@ -5,9 +5,17 @@ import models.Categorie;
 import utils.MyDataBase;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 public class ServiceCategorie implements Services<Categorie> {
+
+    private Connection cnx ;
+
+    public ServiceCategorie(){
+        this.cnx  = MyDataBase.getInstance().getCnx();
+    }
+
 
     @Override
     public void add(Categorie categorie) {
@@ -17,15 +25,29 @@ public class ServiceCategorie implements Services<Categorie> {
 
         try {
 
-            PreparedStatement ps = cnx.prepareStatement(req);
+            //PreparedStatement ps = cnx.prepareStatement(req);
+            PreparedStatement ps = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, categorie.getNomCategorie());
             ps.setString(2, categorie.getDescription());
 
-            // conversion LocalDateTime → Timestamp
-            ps.setTimestamp(3, Timestamp.valueOf(categorie.getDateCreation()));
+            LocalDateTime date = categorie.getDateCreation();
+            if(date == null){
+                date = LocalDateTime.now();
+            }
+
+            ps.setTimestamp(3, Timestamp.valueOf(date));
 
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                categorie.setIdCategorie(rs.getInt(1));
+            }
+
+
+
+
 
             System.out.println("Categorie ajoutée avec succès");
 
@@ -33,6 +55,32 @@ public class ServiceCategorie implements Services<Categorie> {
             System.out.println(e.getMessage());
         }
     }
+
+//    @Override
+//    public void update(Categorie categorie) {
+//
+//        String req = "UPDATE categorie SET nom_categorie = ?, description = ? WHERE id_categorie = ?";
+//
+//        Connection cnx = MyDataBase.getInstance().getCnx();
+//
+//        try {
+//
+//            PreparedStatement ps = cnx.prepareStatement(req);
+//
+//            ps.setString(1, categorie.getNomCategorie());
+//            ps.setString(2, categorie.getDescription());
+//            ps.setInt(3, categorie.getIdCategorie());
+//
+//            ps.executeUpdate();
+//
+//            System.out.println("Categorie modifiée avec succès");
+//
+//
+//
+//        } catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
     @Override
     public void update(Categorie categorie) {
@@ -49,14 +97,19 @@ public class ServiceCategorie implements Services<Categorie> {
             ps.setString(2, categorie.getDescription());
             ps.setInt(3, categorie.getIdCategorie());
 
-            ps.executeUpdate();
+            int rows = ps.executeUpdate();   // ✔ une seule exécution
 
-            System.out.println("Categorie modifiée avec succès");
+            if(rows > 0){
+                System.out.println("Categorie modifiée avec succès");
+            } else {
+                System.out.println("Aucune catégorie modifiée !");
+            }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
 
 
     @Override
@@ -78,6 +131,12 @@ public class ServiceCategorie implements Services<Categorie> {
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+    public void deleteAll() throws SQLException {
+        String sql = "DELETE FROM categorie  ";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.executeUpdate();
         }
     }
 
