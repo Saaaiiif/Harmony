@@ -20,9 +20,11 @@
         <TableView fx:id="tableUsers" prefHeight="420">
             <columns>
                 <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
-                <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
+                <TableColumn fx:id="colNom" text="Nom" prefWidth="120"/>
+                <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="120"/>
                 <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                <TableColumn fx:id="colDateNaissance" text="Date Naissance" prefWidth="130"/>
+                <TableColumn fx:id="colDateInscription" text="Date Inscription" prefWidth="130"/>
                 <TableColumn fx:id="colRole" text="Rôle" prefWidth="90"/>
                 <TableColumn fx:id="colActions" text="Actions" prefWidth="140"/>
             </columns>

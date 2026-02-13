@@ -23,22 +23,27 @@ public class GestionUsersController {
     @FXML private TableColumn<user, String> colNom;
     @FXML private TableColumn<user, String> colPrenom;
     @FXML private TableColumn<user, String> colEmail;
+    @FXML private TableColumn<user, String> colDateNaissance;
+    @FXML private TableColumn<user, String> colDateInscription;
     @FXML private TableColumn<user, String> colRole;
-    @FXML private TableColumn<user, Void> colActions;   // Nouvelle colonne Actions
+    @FXML private TableColumn<user, Void> colActions;
 
     private final serviceUser service = new serviceUser();
     private ObservableList<user> observableList;
 
     @FXML
     public void initialize() {
+        // Configuration des colonnes
         colId.setCellValueFactory(new PropertyValueFactory<>("user_id"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("user_nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("user_prenom"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("user_email"));
+        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("user_date_de_naissance"));
+        colDateInscription.setCellValueFactory(new PropertyValueFactory<>("date_inscription"));
         colRole.setCellValueFactory(cell ->
                 new javafx.beans.property.SimpleStringProperty(cell.getValue().getType_utilisateur().name()));
 
-        // Colonne Actions avec boutons
+        // Colonne Actions (boutons par ligne)
         colActions.setCellFactory(param -> new TableCell<>() {
             private final Button btnEdit = new Button("\uD83D\uDD27");
             private final Button btnDelete = new Button("❌");
@@ -57,7 +62,7 @@ public class GestionUsersController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox hbox = new HBox(8, btnEdit, btnDelete);
+                    HBox hbox = new HBox(10, btnEdit, btnDelete);
                     setGraphic(hbox);
                 }
             }
@@ -93,7 +98,6 @@ public class GestionUsersController {
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.showAndWait();
 
-            // Rafraîchir après fermeture de la popup
             observableList.setAll(service.getAll());
         } catch (IOException e) {
             e.printStackTrace();

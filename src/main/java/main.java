@@ -1,8 +1,7 @@
 import models.Role;
 import models.user;
 import services.serviceUser;
-
-
+import utils.PasswordUtils;
 
 
 public class main {
@@ -26,6 +25,9 @@ public class main {
         //System.out.println(service.getOneById(10));
         //----------------------------------------//
         //System.out.println(service.getByEmailAndPassword("skander.jomni@gmail.com","jojo"));
+        //----------------------------------------//
+        // String hashedPassword = PasswordUtils.hashPassword("admin");
+        //System.out.println(hashedPassword);
 
 
     }

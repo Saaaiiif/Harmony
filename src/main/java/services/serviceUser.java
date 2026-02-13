@@ -4,6 +4,7 @@ import models.Role;
 import models.user;
 import interfaces.services;
 import utils.MyDataBase;
+import utils.PasswordUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,18 +20,26 @@ public class serviceUser implements services<user> {
 
     @Override
     public void add(user user) {
-        String req = "INSERT INTO `user`(`user_nom`, `user_prenom`, `user_email`, `user_password`, `user_date_de_naissance`, `date_inscription`, `type_utilisateur`) VALUES ('"+user.getUser_nom()+"','"+user.getUser_prenom()+"','"+user.getUser_email()+"','"+user.getUser_password()+"','"+user.getUser_date_de_naissance()+"','"+user.getDate_inscription()+"','"+user.getType_utilisateur()+"')";
-        try{
-            Statement stm = cnx.createStatement();
-            stm.executeUpdate(req);//ay haja va modifier la structure ou les valeurs de la base donnee add / update / delete
-            System.out.println("USER ADDED SUCCESSFULLY !!!");
-        }catch(SQLException e ){
+        // Hachage du mot de passe AVANT insertion
+        String hashedPassword = PasswordUtils.hashPassword(user.getUser_password());
+
+        String req = "INSERT INTO `user`(`user_nom`, `user_prenom`, `user_email`, `user_password`, `user_date_de_naissance`, `date_inscription`, `type_utilisateur`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setString(1, user.getUser_nom());
+            pstm.setString(2, user.getUser_prenom());
+            pstm.setString(3, user.getUser_email());
+            pstm.setString(4, hashedPassword);                    // ← Hashé
+            pstm.setString(5, user.getUser_date_de_naissance());
+            pstm.setString(6, user.getDate_inscription());
+            pstm.setString(7, user.getType_utilisateur().name());
+
+            pstm.executeUpdate();
+            System.out.println("USER ADDED SUCCESSFULLY (password hashed) !!!");
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-
-
-
     }
 
     @Override
@@ -183,30 +192,36 @@ public class serviceUser implements services<user> {
             }
 
         }
-        public user getByEmailAndPassword (String email, String password){
-        String req ="SELECT * FROM `user` WHERE `user_email`= ? AND `user_password` = ?";
-        try(PreparedStatement pstm =cnx.prepareStatement(req)){
-            pstm.setString(1,email);
-            pstm.setString(2,password);
+
+    public user getByEmailAndPassword(String email, String plainPassword) {
+        String req = "SELECT * FROM `user` WHERE `user_email` = ?";
+
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setString(1, email);
             ResultSet rs = pstm.executeQuery();
-            if (rs.next()){
-                user u = new user();
-                u.setUser_id(rs.getInt("user_id"));
-                u.setUser_nom(rs.getString("user_nom"));
-                u.setUser_prenom(rs.getString("user_prenom"));
-                u.setUser_email(rs.getString("user_email"));
-                u.setUser_password(rs.getString("user_password"));
-                u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
-                u.setDate_inscription(rs.getString("date_inscription"));
-                String roleStr =rs.getString("type_utilisateur");
-                u.setType_utilisateur(Role.valueOf(roleStr));
-                return u;
+
+            if (rs.next()) {
+                String storedHashedPassword = rs.getString("user_password");
+
+                // Vérification du mot de passe avec le hash
+                if (PasswordUtils.checkPassword(plainPassword, storedHashedPassword)) {
+                    user u = new user();
+                    u.setUser_id(rs.getInt("user_id"));
+                    u.setUser_nom(rs.getString("user_nom"));
+                    u.setUser_prenom(rs.getString("user_prenom"));
+                    u.setUser_email(rs.getString("user_email"));
+                    u.setUser_password(storedHashedPassword); // On garde le hash
+                    u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
+                    u.setDate_inscription(rs.getString("date_inscription"));
+                    u.setType_utilisateur(Role.valueOf(rs.getString("type_utilisateur")));
+                    return u;
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // c est le cas ou le login echoue
-        }
+        return null;
+    }
 
 
 

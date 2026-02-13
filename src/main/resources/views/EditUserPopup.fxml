@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="420" prefWidth="460" style="-fx-background-color: white;"
+<AnchorPane prefHeight="480" prefWidth="460" style="-fx-background-color: white;"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.EditUserPopupController">
 
@@ -14,13 +14,14 @@
         <TextField fx:id="nomField" promptText="Nom"/>
         <TextField fx:id="prenomField" promptText="Prénom"/>
         <TextField fx:id="emailField" promptText="Email"/>
-        <PasswordField fx:id="passwordField" promptText="Nouveau mot de passe (optionnel)"/>
         <DatePicker fx:id="dateNaissanceField" promptText="Date de naissance"/>
 
+        <!-- Champs statiques -->
         <Label fx:id="roleLabel" style="-fx-font-weight: bold;"/>
+        <Label fx:id="dateInscriptionLabel" style="-fx-font-weight: bold;"/>
 
         <HBox spacing="15" alignment="CENTER">
-            <Button fx:id="btnSave" text="Enregistrer" style="-fx-background-color:#701fc7; -fx-text-fill: white;" onAction="#saveChanges"/>
+            <Button fx:id="btnSave" text="Enregistrer" style="-fx-background-color: #701fc7; -fx-text-fill: white;" onAction="#saveChanges"/>
             <Button fx:id="btnCancel" text="Annuler" onAction="#closeWindow"/>
         </HBox>
     </VBox>
