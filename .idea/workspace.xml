@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/main/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Feather.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/SF-Pro-Text-Bold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/SF-Pro-Text-Light.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/app-add-11175-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/app-add-11175-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/black-folders-11454-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/black-folders-11454-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/black-hospital-cross-10726-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/black-hospital-cross-10726-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/book-13427-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/book-13427-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/calendar-11015-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/calendar-11015-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/close.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/hello-view.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/cooling-symbol-3341-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/cooling-symbol-3341-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/homepage-6104-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/homepage-6104-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/information-6255-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/information-6255-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/minus.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/noun-full-screen-mode-4893451.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/photos-10614-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/photos-10614-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/play-button-4213-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/play-button-4213-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Black.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-BlackItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Bold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-BoldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Heavy.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-HeavyItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Light.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-LightItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Medium.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-MediumItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Regular.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-RegularItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Semibold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-SemiboldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Thin.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-ThinItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-Ultralight.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Display-UltralightItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Bold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-BoldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Heavy.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-HeavyItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Light.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-LightItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Medium.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-MediumItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Regular.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-RegularItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-Semibold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SF-Pro-Text-SemiboldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/pro/SFUIText-Regular.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/search-interface-symbol-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/search-interface-symbol-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/settings-5666-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/settings-5666-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/time-2624-dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/time-2624-light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServiceAliment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServiceAliment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tests/Main.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="FxmlFile" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="activite" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Saaaiiif&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Saaaiiif/Harmony.git&quot;,
+    &quot;accountId&quot;: &quot;03f08ba6-a1f3-4413-8aa3-1f1dfe01e5bf&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2yHHwto3B1xpInEqr6CwoiGhtCd" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.MainPage.executor": "Run",
+    "JUnit.ServiceActiviteTest.executor": "Run",
+    "JUnit.ServiceAlimentTest.executor": "Run",
+    "JUnit.ServiceConsommationTest.executor": "Run",
+    "JUnit.ServiceExerciceTest.executor": "Run",
+    "JUnit.ServiceSommeilTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "activite",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/user/Desktop/pi",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.JavaFX",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\Desktop\pi\src\main\java\com\example\harmony" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.ServiceConsommationTest">
+    <configuration name="ServiceActiviteTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.ServiceActiviteTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServiceAlimentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.ServiceAlimentTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServiceConsommationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.ServiceConsommationTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServiceExerciceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.ServiceExerciceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServiceSommeilTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="pi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.ServiceSommeilTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Template01" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Template01" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ServiceConsommationTest" />
+        <item itemvalue="JUnit.ServiceAlimentTest" />
+        <item itemvalue="JUnit.ServiceExerciceTest" />
+        <item itemvalue="JUnit.ServiceSommeilTest" />
+        <item itemvalue="JUnit.ServiceActiviteTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="" />
+      <created>1749484820719</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749484820719</updated>
+      <workItem from="1749484821926" duration="262000" />
+      <workItem from="1749656781903" duration="218000" />
+      <workItem from="1750012609412" duration="9000" />
+      <workItem from="1761163945280" duration="223000" />
+      <workItem from="1762251978822" duration="704000" />
+      <workItem from="1762252776440" duration="17000" />
+      <workItem from="1768932909211" duration="179000" />
+      <workItem from="1769018038326" duration="2254000" />
+      <workItem from="1769887237863" duration="8772000" />
+      <workItem from="1770064861873" duration="934000" />
+      <workItem from="1770490651844" duration="297000" />
+      <workItem from="1770627233519" duration="3921000" />
+      <workItem from="1770639277418" duration="9303000" />
+      <workItem from="1770903057329" duration="2098000" />
+      <workItem from="1770950302256" duration="9080000" />
+    </task>
+    <task id="LOCAL-00001" summary="Background">
+      <option name="closed" value="true" />
+      <created>1770491931172</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770491931173</updated>
+    </task>
+    <task id="LOCAL-00002" summary="UI update 1.0">
+      <option name="closed" value="true" />
+      <created>1770493324947</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770493324947</updated>
+    </task>
+    <task id="LOCAL-00003" summary="UI update 1.1 (Sidebar animation)">
+      <option name="closed" value="true" />
+      <created>1770494682600</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770494682600</updated>
+    </task>
+    <task id="LOCAL-00004" summary="UI update 1.2 (Sidebar animation)">
+      <option name="closed" value="true" />
+      <created>1770627906335</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1770627906335</updated>
+    </task>
+    <task id="LOCAL-00005" summary="UI update 1.2 (Sidebar animation)">
+      <option name="closed" value="true" />
+      <created>1770628090692</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770628090692</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Background" />
+    <MESSAGE value="UI update 1.0" />
+    <MESSAGE value="UI update 1.1 (Sidebar animation)" />
+    <MESSAGE value="UI update 1.2 (Sidebar animation)" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI update 1.2 (Sidebar animation)" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

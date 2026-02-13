@@ -14,7 +14,7 @@ public class ServiceAliment implements services<Aliment> {
         this.cnx = MyDataBase.getInstance().getCnx();
     }
 
-    // CREATE
+    @Override
     public void ajouter(Aliment a) {
         String qry = "INSERT INTO `aliment` (`nom_aliment`, `calories_pour_100g`) VALUES (?, ?)";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
@@ -25,7 +25,6 @@ public class ServiceAliment implements services<Aliment> {
         } catch (SQLException e) { System.err.println(e.getMessage()); }
     }
 
-    // READ
     @Override
     public List<Aliment> afficherTout() {
         List<Aliment> liste = new ArrayList<>();
@@ -38,7 +37,6 @@ public class ServiceAliment implements services<Aliment> {
         return liste;
     }
 
-    // UPDATE
     @Override
     public void modifier(Aliment a) {
         String qry = "UPDATE `aliment` SET `nom_aliment` = ?, `calories_pour_100g` = ? WHERE `id_aliment` = ?";
@@ -51,17 +49,17 @@ public class ServiceAliment implements services<Aliment> {
         } catch (SQLException e) { System.err.println(e.getMessage()); }
     }
 
-    // DELETE
     @Override
     public void supprimer(Aliment a) {
-        String qry = "DELETE FROM `aliment` WHERE `id_aliment` = ?";
-        /*
-        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
-            pstm.setInt(, a);
-            pstm.executeUpdate();
-            System.out.println("✅ Aliment supprimé !");
-        } catch (SQLException e) { System.err.println(e.getMessage()); }
+        supprimerParId(a.getId_aliment());
+    }
 
-         */
+    // Ajout de cette méthode pour le Workshop Test
+    public void supprimerParId(int id) {
+        String qry = "DELETE FROM `aliment` WHERE `id_aliment` = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, id);
+            pstm.executeUpdate();
+        } catch (SQLException e) { System.err.println(e.getMessage()); }
     }
 }
