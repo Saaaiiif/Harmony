@@ -78,6 +78,38 @@
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
 }
+.posts-root{
+    -fx-background-color: #f4f6f9;
+}
+
+.posts-topbar{
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+}
+
+.posts-title{
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.add-post-btn{
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.post-card{
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 10;
+}
+
+.post-title{
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
 /*-------------------------------------------------*/
 
 .root {

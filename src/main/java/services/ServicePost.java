@@ -12,6 +12,11 @@ public class ServicePost implements Services<Post> {
 
     Connection cnx = MyDataBase.getInstance().getCnx();
 
+
+
+
+
+
     @Override
     public void add(Post post) {
 
@@ -124,5 +129,45 @@ public class ServicePost implements Services<Post> {
 
         return posts;
     }
+
+    public List<Post> getPostsByCategorie(int idCategorie) {
+
+        List<Post> posts = new ArrayList<>();
+
+        String req = "SELECT * FROM post WHERE id_categorie = ? ORDER BY date_creation DESC";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, idCategorie);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Post p = new Post();
+
+                p.setIdPost(rs.getInt("id_post"));
+                p.setTitre(rs.getString("titre"));
+                p.setContenu(rs.getString("contenu"));
+                p.setIdCategorie(rs.getInt("id_categorie"));
+
+                Timestamp ts = rs.getTimestamp("date_creation");
+                if (ts != null) {
+                    p.setDateCreation(ts.toLocalDateTime());
+                }
+
+                posts.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return posts;
+    }
+
+
+
 }
+
+
 

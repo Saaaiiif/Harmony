@@ -19,6 +19,9 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Duration;
 
+
+import controllers.Forum.ForumHomeController;
+
 import java.util.*;
 
 import javafx.scene.control.Label;
@@ -96,6 +99,38 @@ public class FrontLayoutController {
                 getClass().getResourceAsStream("/" + base + (dark ? "-dark.png" : "-light.png"))
         )));
     }
+
+
+    public void setContent(Parent page){
+        contentArea.getChildren().clear();
+        contentArea.getChildren().add(page);
+    }
+
+
+    // 🔥 Méthode pour ouvrir les catégories
+    public void openForumHome(){
+
+        try{
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Forum/ForumHome.fxml")
+            );
+
+            Parent page = loader.load();
+
+            ForumHomeController controller = loader.getController();
+
+            // 🔥 ON PASSE LE CONTROLLER PRINCIPAL
+            controller.setFrontLayoutController(this);
+
+            setContent(page);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
     @FXML
@@ -407,6 +442,13 @@ public class FrontLayoutController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent page = loader.load();
 
+            // récupérer controller chargé
+            Object controller = loader.getController();
+
+            if(controller instanceof controllers.Forum.ForumHomeController forumController){
+                forumController.setFrontLayoutController(this);
+            }
+
             contentArea.getChildren().clear();
             contentArea.getChildren().add(page);
 
@@ -414,6 +456,9 @@ public class FrontLayoutController {
             e.printStackTrace();
         }
     }
+
+
+
 
 
 }
