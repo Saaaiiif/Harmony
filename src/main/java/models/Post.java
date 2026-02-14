@@ -31,7 +31,7 @@ public class Post {
     public String getContenu() { return contenu; }
     public void setContenu(String contenu) { this.contenu = contenu; }
 
-    public LocalDateTime getDateCreation() { return LocalDateTime.now(); }
+    public LocalDateTime getDateCreation() { return dateCreation; }
     public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
 
     public int getIdEtudiant() { return idEtudiant; }

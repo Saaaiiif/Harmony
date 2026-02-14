@@ -26,7 +26,7 @@ public class Commentaire {
     public String getContenu() { return contenu; }
     public void setContenu(String contenu) { this.contenu = contenu; }
 
-    public LocalDateTime getDateCommentaire() { return LocalDateTime.now(); }
+    public LocalDateTime getDateCommentaire() { return dateCommentaire; }
     public void setDateCommentaire(LocalDateTime dateCommentaire) { this.dateCommentaire = dateCommentaire; }
 
     public int getIdPost() { return idPost; }

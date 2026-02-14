@@ -1,3 +1,71 @@
+/* FORUM PAGE */
+/* ===== PAGE FORUM ===== */
+
+.forum-topbar{
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.forum-title{
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.topbar-btn{
+    -fx-background-radius: 8;
+}
+
+/* Cards */
+
+.forum-card{
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 30;
+    -fx-min-width: 200;
+    -fx-min-height: 120;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+.forum-card:hover {
+    -fx-background-color: #f0f2f5;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.forum-card-title{
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.forum-add-card{
+    -fx-background-color: #2C2C2C; /* sombre */
+    -fx-background-radius: 12;
+    -fx-min-width: 200;
+    -fx-min-height: 120;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
+
+.forum-add-plus{
+    -fx-text-fill: #453683;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+.forum-add-card:hover {
+    -fx-background-color: #1F1F1F;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+.forum-card, .forum-add-card {
+    -fx-transition: all 0.2s ease-in-out;
+}
+.forum-root {
+    -fx-background-color: #851c1c; /* gris clair moderne */
+}
+
 
 .root {
     -fx-background-image: url("backg.png");

@@ -3,6 +3,7 @@ package com.example.harmony;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -53,6 +54,7 @@ public class FrontLayoutController {
     private Timeline rollAnim;
     private final List<NavItem> navItems = List.of(
             new NavItem("Home", "homepage-6104"),
+            new NavItem("Forum", "forum"),
             new NavItem("Quick Search", "search-interface-symbol"),
             new NavItem("Settings", "settings-5666"),
             new NavItem("About Us", "information-6255"),
@@ -62,6 +64,7 @@ public class FrontLayoutController {
             new NavItem("Breathe", "cooling-symbol-3341"),
             new NavItem("Pomodoro", "time-2624"),
             new NavItem("Scenes", "photos-10614")
+
     );
 
     private AnimationTimer rollTimer;
@@ -368,6 +371,19 @@ public class FrontLayoutController {
     }
 
     private void onSlotClicked(WheelSlot s) {
+
+
+        //---------------------------------------------forum-----------------------------------------------------
+        NavItem clickedItem = navItems.get(s.itemIndex);
+
+        if(clickedItem.label.equals("Forum")){
+            System.out.println("Forum clicked !");
+            // ici navigation vers page forum
+            loadPage("/Forum/ForumHome.fxml");
+        }
+        //---------------------------------------------------------------------------------------------------------
+
+
         int step = s.offsetFromCenter;   // rightmost = +4, leftmost = -4 (for VISIBLE_COUNT=9)
         if (step == 0) return;
 
@@ -381,6 +397,22 @@ public class FrontLayoutController {
         double to = base + step;
 
         startRoll(from, to);
+
+
+
+    }
+
+    private void loadPage(String fxmlPath){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent page = loader.load();
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(page);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 

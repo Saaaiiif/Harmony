@@ -1,4 +1,4 @@
-module com.example.harmony {
+open module com.example.harmony {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -17,6 +17,6 @@ module com.example.harmony {
     requires java.net.http;
 
 
-    opens com.example.harmony to javafx.fxml;
+
     exports com.example.harmony;
 }
