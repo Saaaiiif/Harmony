@@ -11,6 +11,13 @@ public class Post {
     private int idCategorie;
 
     public Post() {}
+    public Post(String titre, String contenu, int idEtudiant, int idCategorie) {
+        this.titre = titre;
+        this.contenu = contenu;
+        this.dateCreation = LocalDateTime.now();
+        this.idEtudiant = idEtudiant;
+        this.idCategorie = idCategorie;
+    }
 
     public Post(int idPost, String titre, String contenu,
                 LocalDateTime dateCreation, int idEtudiant, int idCategorie) {
