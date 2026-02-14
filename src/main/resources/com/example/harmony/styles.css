@@ -65,7 +65,20 @@
 .forum-root {
     -fx-background-color: #851c1c; /* gris clair moderne */
 }
+.add-categorie-root{
+    -fx-background-color: white;
+}
 
+.form-title{
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.save-btn{
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+/*-------------------------------------------------*/
 
 .root {
     -fx-background-image: url("backg.png");

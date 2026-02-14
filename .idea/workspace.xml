@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="crud + test catégorie , post et comment fonctionnelles">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Home Forum Controller + Forom home fonctionnelles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -159,7 +154,7 @@
       <workItem from="1770490651844" duration="297000" />
       <workItem from="1770627233519" duration="3921000" />
       <workItem from="1770639277418" duration="9303000" />
-      <workItem from="1770988683984" duration="19175000" />
+      <workItem from="1770988683984" duration="19905000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -225,7 +220,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770977616430</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Home Forum Controller + Forom home fonctionnelles">
+      <option name="closed" value="true" />
+      <created>1771074172253</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1771074172253</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -248,7 +251,8 @@
     <MESSAGE value="UI update 1.1 (Sidebar animation)" />
     <MESSAGE value="UI update 1.2 (Sidebar animation)" />
     <MESSAGE value="crud + test catégorie , post et comment fonctionnelles" />
-    <option name="LAST_COMMIT_MESSAGE" value="crud + test catégorie , post et comment fonctionnelles" />
+    <MESSAGE value="Home Forum Controller + Forom home fonctionnelles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Home Forum Controller + Forom home fonctionnelles" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
