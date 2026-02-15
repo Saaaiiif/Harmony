@@ -55,7 +55,16 @@
     -fx-background-color: #6b7280;
 }
 
+.table-view {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
 
+.button {
+    -fx-background-color: #3A7AFE;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
 /*---------------------------------------------------------*/
 /* FORUM PAGE */
 /* ===== PAGE FORUM ===== */

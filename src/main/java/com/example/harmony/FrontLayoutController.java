@@ -1,5 +1,6 @@
 package com.example.harmony;
 
+import controllers.Forum.BackOffice.ForumBackDashboardController;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.util.Duration;
 
 
 import controllers.Forum.ForumHomeController;
@@ -58,6 +58,7 @@ public class FrontLayoutController {
     private final List<NavItem> navItems = List.of(
             new NavItem("Home", "homepage-6104"),
             new NavItem("Forum", "forum"),
+            new NavItem("Back Office", "settings-5666"),
             new NavItem("Quick Search", "search-interface-symbol"),
             new NavItem("Settings", "settings-5666"),
             new NavItem("About Us", "information-6255"),
@@ -416,6 +417,10 @@ public class FrontLayoutController {
             // ici navigation vers page forum
             loadPage("/Forum/ForumHome.fxml");
         }
+
+        if(clickedItem.label.equals("Back Office")){
+            loadPage("/Forum/ForumBackOffice/ForumBackDashboard.fxml");
+        }
         //---------------------------------------------------------------------------------------------------------
 
 
@@ -439,14 +444,27 @@ public class FrontLayoutController {
 
     private void loadPage(String fxmlPath){
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+            System.out.println("Loading FXML: " + fxmlPath);
+
+            var resource = getClass().getResource(fxmlPath);
+
+            if(resource == null){
+                System.out.println("❌ FXML NOT FOUND: " + fxmlPath);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent page = loader.load();
 
-            // récupérer controller chargé
             Object controller = loader.getController();
 
             if(controller instanceof controllers.Forum.ForumHomeController forumController){
                 forumController.setFrontLayoutController(this);
+            }
+
+            if(controller instanceof ForumBackDashboardController backController){
+                backController.setFrontLayoutController(this);
             }
 
             contentArea.getChildren().clear();
