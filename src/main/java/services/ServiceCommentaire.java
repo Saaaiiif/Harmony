@@ -15,10 +15,6 @@ public class ServiceCommentaire implements Services<Commentaire> {
     Connection cnx = MyDataBase.getInstance().getCnx();
 
 
-
-
-
-
 //    public boolean postExiste(int idPost){
 //
 //        String req = "SELECT id_post FROM post WHERE id_post = ?";
@@ -64,6 +60,40 @@ public class ServiceCommentaire implements Services<Commentaire> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Commentaire> getCommentairesByPost(int idPost){
+
+        List<Commentaire> commentaires = new ArrayList<>();
+
+        String req = "SELECT * FROM commentaire WHERE id_post = ?";
+
+        try{
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, idPost);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Commentaire c = new Commentaire();
+                c.setIdCommentaire(rs.getInt("id_commentaire"));
+                c.setContenu(rs.getString("contenu"));
+                c.setIdPost(rs.getInt("id_post"));
+                c.setIdEtudiant(rs.getInt("id_etudiant"));
+
+                Timestamp ts = rs.getTimestamp("date_creation");
+                if(ts != null){
+                    c.setDateCommentaire(ts.toLocalDateTime());
+                }
+
+                commentaires.add(c);
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return commentaires;
     }
 
     @Override

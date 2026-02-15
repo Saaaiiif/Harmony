@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="L'affichage de post est fonctionnel">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="L'ajout  du post est fonctionnel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +17,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="FxmlFile" />
         <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
@@ -156,7 +157,7 @@
       <workItem from="1770627233519" duration="3921000" />
       <workItem from="1770639277418" duration="9303000" />
       <workItem from="1770988683984" duration="22715000" />
-      <workItem from="1771093461873" duration="5216000" />
+      <workItem from="1771093461873" duration="10621000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -246,7 +247,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771096764163</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="L'ajout  du post est fonctionnel">
+      <option name="closed" value="true" />
+      <created>1771101617378</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1771101617378</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,7 +281,8 @@
     <MESSAGE value="Home Forum Controller + Forom home fonctionnelles" />
     <MESSAGE value="Add Catégorie est fonctionnelle" />
     <MESSAGE value="L'affichage de post est fonctionnel" />
-    <option name="LAST_COMMIT_MESSAGE" value="L'affichage de post est fonctionnel" />
+    <MESSAGE value="L'ajout  du post est fonctionnel" />
+    <option name="LAST_COMMIT_MESSAGE" value="L'ajout  du post est fonctionnel" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

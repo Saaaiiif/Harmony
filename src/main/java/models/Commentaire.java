@@ -9,6 +9,11 @@ public class Commentaire {
     private int idEtudiant;
 
     public Commentaire() {}
+    public Commentaire(String contenu, int idPost){
+        this.contenu = contenu;
+        this.idPost = idPost;
+        this.dateCommentaire = LocalDateTime.now();
+    }
 
     public Commentaire(int idCommentaire, String contenu,
                        LocalDateTime dateCommentaire,
