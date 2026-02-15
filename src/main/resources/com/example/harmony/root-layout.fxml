@@ -3,15 +3,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.image.Image?>
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane
+        fx:id="root"
+        xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.harmony.RootLayoutController"
             prefWidth="1200" prefHeight="700"
             styleClass="root">
@@ -22,162 +21,21 @@
             <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                 <ImageView fx:id="logoImage" fitHeight="30" fitWidth="30" preserveRatio="true">
                     <HBox.margin>
-                        <Insets left="20" right="5" />
+                        <Insets left="20" right="5"/>
                     </HBox.margin>
                 </ImageView>
-                <Label text="Harmony" styleClass="title-label" />
+                <Label text="Harmony" styleClass="title-label"/>
             </HBox>
 
-            <Button fx:id="themeToggleButton" text="☀" styleClass="window-control-button" />
-            <Button fx:id="minimizeButton" text="—" styleClass="window-control-button" />
-            <Button fx:id="closeButton" text="✕" styleClass="window-control-button" />
+            <Button fx:id="themeToggleButton" text="☀" styleClass="window-control-button"/>
+            <Button fx:id="minimizeButton" text="—" styleClass="window-control-button"/>
+            <Button fx:id="closeButton" text="✕" styleClass="window-control-button"/>
         </HBox>
     </top>
 
-    <left>
-        <!-- Sidebar (fixed width 320) -->
-        <VBox fx:id="sidebar" prefWidth="320.0" minWidth="320.0" maxWidth="320.0"
-              styleClass="sidebar">
-
-            <!-- Home header (same style as other section titles) -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <ImageView id="homepage-6104"
-                           fitWidth="22" fitHeight="22" preserveRatio="true"
-                           styleClass="sidebar-icon">
-                    <image><Image url="@/homepage-6104-light.png"/></image>
-                </ImageView>
-                <Label text="Home" styleClass="sidebar-section-title"/>
-            </HBox>
-
-            <VBox spacing="6" styleClass="sidebar-section">
-                <Button text="Quick Search" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="search-interface-symbol"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/search-interface-symbol-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="Settings" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="settings-5666"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/settings-5666-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="About Us" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="information-6255"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/information-6255-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <!-- My Places header with icon -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <ImageView id="black-folders-11454"
-                           fitWidth="22" fitHeight="22" preserveRatio="true"
-                           styleClass="sidebar-icon">
-                    <image><Image url="@/black-folders-11454-light.png"/></image>
-                </ImageView>
-                <Label text="My Places" styleClass="sidebar-section-title"/>
-            </HBox>
-
-            <VBox spacing="6" styleClass="sidebar-section">
-                <Button text="Calendar" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="calendar-11015"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/calendar-11015-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="Courses" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="book-13427"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/book-13427-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="Health" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="black-hospital-cross-10726"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/black-hospital-cross-10726-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <!-- My Apps header with icon -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <ImageView id="app-add-11175"
-                           fitWidth="22" fitHeight="22" preserveRatio="true"
-                           styleClass="sidebar-icon">
-                    <image><Image url="@/app-add-11175-light.png"/></image>
-                </ImageView>
-                <Label text="My Apps" styleClass="sidebar-section-title"/>
-            </HBox>
-
-            <VBox spacing="6" styleClass="sidebar-section">
-                <Button text="Breathe" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="cooling-symbol-3341"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/cooling-symbol-3341-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="Pomodoro" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="time-2624"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/time-2624-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button text="Scenes" styleClass="sidebar-item">
-                    <graphic>
-                        <ImageView id="photos-10614"
-                                   fitWidth="22" fitHeight="22" preserveRatio="true"
-                                   styleClass="sidebar-icon">
-                            <image><Image url="@/photos-10614-light.png"/></image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </VBox>
-
-        </VBox>
-    </left>
-
-
-
-
     <center>
         <!-- Content area where other views will be loaded -->
-        <StackPane fx:id="contentArea" />
+        <StackPane fx:id="contentArea"/>
     </center>
 
 </BorderPane>

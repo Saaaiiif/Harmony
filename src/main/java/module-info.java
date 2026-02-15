@@ -15,6 +15,10 @@ module com.example.harmony {
     requires java.desktop;
     requires org.json;
     requires java.net.http;
+    requires org.apache.pdfbox;
+    requires org.fxmisc.richtext;
+    requires org.fxmisc.flowless;
+    requires reactfx;
 
     opens com.example.harmony to javafx.fxml;
     exports com.example.harmony;

@@ -1,67 +1,59 @@
 package com.example.harmony;
 
+import com.example.harmony.interfaces.ThemeAware;
+import com.example.harmony.interfaces.WheelCyclable;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Set;
-
 
 public class RootLayoutController {
 
-    @FXML
-    private ImageView logoImage;
+    @FXML private ImageView logoImage;
+    @FXML private HBox titleBar;
+    @FXML private BorderPane root;
 
-    @FXML
-    private HBox titleBar;
+    @FXML private Button themeToggleButton;
+    @FXML private Button minimizeButton;
+    @FXML private Button closeButton;
 
-    @FXML
-    private Button themeToggleButton;
-
-    @FXML
-    private Button minimizeButton;
-
-    @FXML
-    private Button closeButton;
-
-    private boolean isDarkMode = true; // Default is dark mode
-
-    @FXML
-    private StackPane contentArea;
-
-    @FXML private VBox sidebar;
-
-    @FXML private Button sidebarToggleButton;
+    @FXML private StackPane contentArea;
 
     private Stage stage;
     private double xOffset = 0;
     private double yOffset = 0;
+    private final KeyCodeCombination CTRL_RIGHT =
+            new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.CONTROL_DOWN);
+    private final KeyCodeCombination CTRL_LEFT =
+            new KeyCodeCombination(KeyCode.LEFT, KeyCombination.CONTROL_DOWN);
+    // true = dark, false = light
+    private final BooleanProperty darkMode = new SimpleBooleanProperty(false);
 
-    private boolean sidebarCollapsed = false;
-    private static final double SIDEBAR_EXPANDED = 320.0;
-    private static final double SIDEBAR_COLLAPSED = 80.0;
-
-    private Timeline sidebarAnim;
+    // Keep reference to currently loaded content controller, so we can notify it
+    private Object currentContentController;
 
     @FXML
     public void initialize() {
-
         Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo.png")));
         logoImage.setImage(logo);
-
 
         titleBar.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -75,197 +67,147 @@ public class RootLayoutController {
             }
         });
 
-
         minimizeButton.setOnAction(event -> {
-            if (stage != null) {
-                stage.setIconified(true);
-            }
+            if (stage != null) stage.setIconified(true);
         });
-
 
         closeButton.setOnAction(event -> {
-            if (stage != null) {
-
-                SceneTransitionUtil.shutdown();
-
-
-                javafx.application.Platform.exit();
-            }
+            SceneTransitionUtil.shutdown();
+            Platform.exit();
         });
 
-        // Set up theme toggle button functionality
-        themeToggleButton.setOnAction(event -> {
-            toggleTheme();
+        themeToggleButton.setOnAction(event -> toggleTheme());
+
+        // Keep UI in sync when darkMode changes
+        darkMode.addListener((obs, oldV, newV) -> {
+            updateThemeButtonText();
+            applyThemeToScene();
+            notifyThemeChanged(currentContentController);
         });
 
-        installSidebarHoverBehavior();
+        updateThemeButtonText();
+        Platform.runLater(this::applyThemeToScene);
 
+        Platform.runLater(this::installGlobalWheelHotkeys);
     }
 
-    /**
-     * Sets the stage for window operations.
-     * @param stage The primary stage of the application
-     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    /**
-     * Loads content into the content area.
-     * @param fxmlPath The path to the FXML file to load
-     * @return The controller of the loaded FXML
-     * @throws IOException If the FXML file cannot be loaded
-     */
-    public <T> T loadContent(String fxmlPath, Class<T> controllerType) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent content = loader.load();
-
-
-        contentArea.getChildren().clear();
-        contentArea.getChildren().add(content);
-
-        return loader.getController();
-    }
-
-    /**
-     * Gets the content area for direct manipulation.
-     * @return The content area StackPane
-     */
-    public StackPane getContentArea() {
-        return contentArea;
-    }
-
-    /**
-     * Gets the stage for window operations.
-     * @return The primary stage of the application
-     */
     public Stage getStage() {
         return stage;
     }
 
-    /**
-     * Gets the current theme mode.
-     * @return true if dark mode, false if light mode
-     */
+    public StackPane getContentArea() {
+        return contentArea;
+    }
+
     public boolean isDarkMode() {
-        return isDarkMode;
+        return darkMode.get();
     }
 
-    /**
-     * Sets the theme mode.
-     * @param isDarkMode true for dark mode, false for light mode
-     */
+    public BooleanProperty darkModeProperty() {
+        return darkMode;
+    }
+
     public void setThemeMode(boolean isDarkMode) {
-        this.isDarkMode = isDarkMode;
-        updateThemeButtonText();
+        darkMode.set(isDarkMode);
     }
 
+    public <T> T loadContent(String fxmlPath, Class<T> controllerType) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent content = loader.load();
+
+        T controller = loader.getController(); // controller available after load() [web:18]
+        currentContentController = controller;
+
+        contentArea.getChildren().setAll(content);
+
+        // Apply CSS mode class to the new content root too
+        applyThemeToNode(content);
+        if (controller instanceof FrontLayoutController c) {
+            c.bindTheme(darkModeProperty());
+        }
+
+        // Let controller update non-CSS stuff (e.g., ImageView icons)
+        notifyThemeChanged(controller);
+
+        return controller;
+    }
 
     private void updateThemeButtonText() {
-        if (themeToggleButton != null) {
-            if (isDarkMode) {
-                themeToggleButton.setText("☀");
-            } else {
-                themeToggleButton.setText("☾");
-            }
-        }
+        if (themeToggleButton == null) return;
+        themeToggleButton.setText(isDarkMode() ? "☀" : "☾");
     }
 
-    /**
-     * Toggles between light and dark mode.
-     */
     private void toggleTheme() {
-        isDarkMode = !isDarkMode;
-
-        updateThemeButtonText();
-
-        // Get the scene
-        if (stage != null && stage.getScene() != null) {
-            if (isDarkMode) {
-                stage.getScene().getRoot().getStyleClass().remove("light-mode");
-
-                if (!contentArea.getChildren().isEmpty()) {
-                    Node currentContent = contentArea.getChildren().get(0);
-                    if (currentContent instanceof Parent) {
-                        ((Parent) currentContent).getStyleClass().remove("light-mode");
-                    }
-                }
-            } else {
-                stage.getScene().getRoot().getStyleClass().add("light-mode");
-
-                if (!contentArea.getChildren().isEmpty()) {
-                    Node currentContent = contentArea.getChildren().get(0);
-                    if (currentContent instanceof Parent) {
-                        ((Parent) currentContent).getStyleClass().add("light-mode");
-                    }
-                }
-            }
-        }
-        updateSidebarIcons();
+        darkMode.set(!darkMode.get());
+        System.out.println("Root darkMode=" + isDarkMode() + ", controller=" + currentContentController);
 
     }
-    private void updateSidebarIcons() {
+
+    private void applyThemeToScene() {
         if (stage == null || stage.getScene() == null) return;
 
-        Parent root = stage.getScene().getRoot();
-        Set<Node> icons = root.lookupAll(".sidebar-icon");
+        Parent sceneRoot = stage.getScene().getRoot();
+        applyThemeToNode(sceneRoot);
 
-        for (Node n : icons) {
-            if (!(n instanceof ImageView iv)) continue;
-
-            String base = iv.getId();
-            if (base == null || base.isBlank()) continue;
-
-            String suffix = isDarkMode ? "-dark.png" : "-light.png";
-            String path = "/" + base + suffix;
-
-            iv.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
-        }
-    }
-
-    private void installSidebarHoverBehavior() {
-        javafx.application.Platform.runLater(() -> {
-            setSidebarCollapsed(true);
-            sidebar.setPrefWidth(SIDEBAR_COLLAPSED);
-            sidebar.setMinWidth(SIDEBAR_COLLAPSED);
-            sidebar.setMaxWidth(SIDEBAR_COLLAPSED);
-        });
-
-        sidebar.setOnMouseEntered(e -> {
-            setSidebarCollapsed(false);
-            animateSidebarTo(SIDEBAR_EXPANDED);
-        });
-
-        sidebar.setOnMouseExited(e -> {
-            setSidebarCollapsed(true);
-            animateSidebarTo(SIDEBAR_COLLAPSED);
-        });
-    }
-
-    private void animateSidebarTo(double w) {
-        if (sidebarAnim != null) sidebarAnim.stop();
-
-        sidebarAnim = new Timeline(
-                new KeyFrame(Duration.millis(180),
-                        new KeyValue(sidebar.prefWidthProperty(), w),
-                        new KeyValue(sidebar.minWidthProperty(), w),
-                        new KeyValue(sidebar.maxWidthProperty(), w)
-                )
-        );
-        sidebarAnim.play();
-    }
-    private void setSidebarCollapsed(boolean collapsed) {
-        sidebarCollapsed = collapsed;
-
-        if (collapsed) {
-            if (!sidebar.getStyleClass().contains("sidebar-collapsed")) {
-                sidebar.getStyleClass().add("sidebar-collapsed");
+        // Optional: also apply class to currently loaded content root
+        if (!contentArea.getChildren().isEmpty()) {
+            Node currentContent = contentArea.getChildren().getFirst();
+            if (currentContent instanceof Parent p) {
+                applyThemeToNode(p);
             }
-        } else {
-            sidebar.getStyleClass().remove("sidebar-collapsed");
         }
+    }
+
+    public void applyThemeToNode(Parent node) {
+        if (node == null) return;
+
+        if (isDarkMode()) {
+            node.getStyleClass().remove("light-mode");
+        } else {
+            if (!node.getStyleClass().contains("light-mode")) {
+                node.getStyleClass().add("light-mode");
+            }
+        }
+    }
+
+    private void notifyThemeChanged(Object controller) {
+        if (controller instanceof ThemeAware aware) {
+            aware.onThemeChanged();
+        }
+    }
+
+    public void setCurrentContentController(Object controller) {
+        this.currentContentController = controller;
+    }
+
+    private void installGlobalWheelHotkeys() {
+        Scene scene = root.getScene();
+        if (scene == null) return;
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> { /* ctrl+left/right */ });
+    }
+
+
+    private void installGlobalWheelHotkeys(Scene scene) {
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (CTRL_RIGHT.match(e)) {
+                e.consume();
+                cycleActiveWheel(+1);
+            } else if (CTRL_LEFT.match(e)) {
+                e.consume();
+                cycleActiveWheel(-1);
+            }
+        });
     }
 
 
 
+    private void cycleActiveWheel(int step) {
+        if (currentContentController instanceof WheelCyclable wc) {
+            wc.cycleWheel(step);
+        }
+    }
 }

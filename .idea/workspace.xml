@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.3 (Front Office)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -20,11 +25,18 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="FxmlFile" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="init" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
@@ -58,29 +70,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MainPage.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/harmony",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Harmony.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MainPage.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Library&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/harmony&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;profiler.jvm&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
@@ -95,6 +113,13 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration name="Harmony" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.example.harmony.MainPage" />
+      <module name="Harmony" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="Template01" />
       <method v="2">
@@ -134,7 +159,20 @@
       <workItem from="1770064861873" duration="934000" />
       <workItem from="1770490651844" duration="297000" />
       <workItem from="1770627233519" duration="3921000" />
-      <workItem from="1770639277418" duration="9303000" />
+      <workItem from="1770639277418" duration="9605000" />
+      <workItem from="1770677974606" duration="367000" />
+      <workItem from="1770795417265" duration="91000" />
+      <workItem from="1770797625444" duration="190000" />
+      <workItem from="1770894913860" duration="6054000" />
+      <workItem from="1770901345053" duration="62000" />
+      <workItem from="1770903506022" duration="2538000" />
+      <workItem from="1770907998430" duration="624000" />
+      <workItem from="1770927336641" duration="6736000" />
+      <workItem from="1770978718773" duration="15201000" />
+      <workItem from="1771087786438" duration="11288000" />
+      <workItem from="1771180404806" duration="73000" />
+      <workItem from="1771180493387" duration="530000" />
+      <workItem from="1771181331170" duration="14306000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -176,7 +214,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770628090692</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="UI update 1.3 (Front Office)">
+      <option name="closed" value="true" />
+      <created>1770648815925</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770648815925</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,6 +233,7 @@
     <MESSAGE value="UI update 1.0" />
     <MESSAGE value="UI update 1.1 (Sidebar animation)" />
     <MESSAGE value="UI update 1.2 (Sidebar animation)" />
-    <option name="LAST_COMMIT_MESSAGE" value="UI update 1.2 (Sidebar animation)" />
+    <MESSAGE value="UI update 1.3 (Front Office)" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI update 1.3 (Front Office)" />
   </component>
 </project>
