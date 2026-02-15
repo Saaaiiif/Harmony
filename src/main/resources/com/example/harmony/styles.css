@@ -1,3 +1,62 @@
+
+/*---------------------------------------------------------*/
+
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f9;
+}
+
+/* Carte Post */
+.post-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);
+}
+
+/* Titre post */
+.post-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Zone commentaires */
+.comments-box {
+    -fx-background-color: #f9fafc;
+    -fx-padding: 10;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+}
+
+/* Commentaire individuel */
+.comment-label {
+    -fx-background-color: white;
+    -fx-padding: 6 10 6 10;
+    -fx-background-radius: 6;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 6;
+}
+
+/* Boutons modernes */
+.button {
+    -fx-background-color: #706abd;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.button:hover {
+    -fx-background-color: #5651a1;
+}
+
+/* Bouton retour */
+.back-button {
+    -fx-background-color: #6b7280;
+}
+
+
+/*---------------------------------------------------------*/
 /* FORUM PAGE */
 /* ===== PAGE FORUM ===== */
 
@@ -93,7 +152,7 @@
 }
 
 .add-post-btn{
-    -fx-background-color: #2196F3;
+    -fx-background-color: #3d2995;
     -fx-text-fill: white;
     -fx-background-radius: 8;
 }
@@ -110,6 +169,8 @@
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
+
+
 /*-------------------------------------------------*/
 
 .root {

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="L'ajout  du post est fonctionnel">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="commentaire en prograis">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,7 +158,8 @@
       <workItem from="1770627233519" duration="3921000" />
       <workItem from="1770639277418" duration="9303000" />
       <workItem from="1770988683984" duration="22715000" />
-      <workItem from="1771093461873" duration="10621000" />
+      <workItem from="1771093461873" duration="10735000" />
+      <workItem from="1771183526235" duration="3894000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -255,7 +257,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771101617378</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="commentaire en prograis">
+      <option name="closed" value="true" />
+      <created>1771133968598</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1771133968598</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +292,8 @@
     <MESSAGE value="Add Catégorie est fonctionnelle" />
     <MESSAGE value="L'affichage de post est fonctionnel" />
     <MESSAGE value="L'ajout  du post est fonctionnel" />
-    <option name="LAST_COMMIT_MESSAGE" value="L'ajout  du post est fonctionnel" />
+    <MESSAGE value="commentaire en prograis" />
+    <option name="LAST_COMMIT_MESSAGE" value="commentaire en prograis" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

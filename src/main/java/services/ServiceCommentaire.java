@@ -81,7 +81,7 @@ public class ServiceCommentaire implements Services<Commentaire> {
                 c.setIdPost(rs.getInt("id_post"));
                 c.setIdEtudiant(rs.getInt("id_etudiant"));
 
-                Timestamp ts = rs.getTimestamp("date_creation");
+                Timestamp ts = rs.getTimestamp("date_commentaire");
                 if(ts != null){
                     c.setDateCommentaire(ts.toLocalDateTime());
                 }

@@ -458,7 +458,10 @@ public class FrontLayoutController {
     }
 
 
-
+//----------------------------------------back----------------------
+public void goHome(){
+    contentArea.getChildren().clear();
+}
 
 
 }
