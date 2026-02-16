@@ -61,7 +61,7 @@
 }
 
 .button {
-    -fx-background-color: #3A7AFE;
+    -fx-background-color: #4f4287;
     -fx-text-fill: white;
     -fx-background-radius: 8;
 }
@@ -308,7 +308,7 @@
     -fx-cursor: hand;
 
     -fx-font-family: "SF UI  Text";
-    -fx-font-weight: medium;
+    -fx-font-weight: bold;
     -fx-font-size: 16px;
     -fx-opacity: 0.7;
     -fx-text-fill: #cfcfcf;
