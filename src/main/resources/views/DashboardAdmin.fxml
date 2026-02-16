@@ -1,24 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="650" prefWidth="1000" style="-fx-background-color: #E6E0F0;"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.DashboardAdminController">
+<AnchorPane prefHeight="700" prefWidth="1200" style="-fx-background-color: linear-gradient(to bottom right, #F3E8FF, #E9D5FF);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardAdminController">
 
     <!-- Sidebar -->
-    <VBox layoutX="0" prefHeight="650" prefWidth="240" style="-fx-background-color: #F0E6FF;">
-        <Label text="Harmony" style="-fx-font-size: 26; -fx-padding: 25; -fx-text-fill: #6A5ACD; -fx-font-weight: bold;"/>
-
-        <Button text="Accueil" prefWidth="240" style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 15; -fx-padding: 12;"/>
-        <Button text="Gestion Utilisateurs" prefWidth="240" onAction="#openGestionUsers"
-                style="-fx-background-color: #6A5ACD; -fx-text-fill: white; -fx-font-size: 15; -fx-padding: 12;"/>
-        <Button text="Statistiques" prefWidth="240" style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 15; -fx-padding: 12;"/>
-        <Button text="Logs" prefWidth="240" style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 15; -fx-padding: 12;"/>
+    <VBox layoutX="0" prefHeight="700" prefWidth="260" style="-fx-background-color: linear-gradient(to bottom, #1F2937, #111827); -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+        <padding>
+            <Insets bottom="30" left="25" right="25" top="30" />
+        </padding>
+        
+        <!-- Logo -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label style="-fx-font-size: 48;" text="⚡" textFill="#cb96d3" />
+            <Label style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;" text="Harmony" />
+        </VBox>
+        
+        <!-- Menu Items -->
+        <VBox prefHeight="186.0" prefWidth="210.0" spacing="40.0">
+            
+            <Button onAction="#openGestionUsers" prefHeight="45" prefWidth="210" style="-fx-background-color: transparent; -fx-text-fill: #D1D5DB; -fx-font-size: 14; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="👥 Gestion Utilisateurs" />
+           
+           <!-- Bouton déconnexion -->
+           <Button prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />
+         <padding>
+            <Insets top="40.0" />
+         </padding>
+        </VBox>
     </VBox>
 
-    <!-- Contenu principal -->
-    <Label layoutX="320" layoutY="180" text="Dashboard Administrateur"
-           style="-fx-font-size: 34; -fx-font-weight: bold; -fx-text-fill: #6A5ACD;"/>
+    <!-- Zone principale -->
+    <VBox layoutX="300" layoutY="50" prefWidth="850" spacing="30">
+        
+        <!-- En-tête -->
+        <VBox spacing="10">
+            <Label style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #1F2937;" text="Tableau de Bord Administrateur" />
+            <Label style="-fx-font-size: 16; -fx-text-fill: #6B7280;" text="Bienvenue sur votre espace de gestion" />
+        </VBox>
+
+        <!-- Statistiques -->
+        <HBox spacing="25">
+            <!-- Card Utilisateurs -->
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+                <Label style="-fx-font-size: 40;" text="👥" />
+                <VBox alignment="CENTER" spacing="3">
+                    <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Utilisateurs" />
+                    <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text=" --" />
+                </VBox>
+            </VBox>
+
+            <!-- Card Nouveaux -->
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+                <Label style="-fx-font-size: 40;" text="📈" />
+                <VBox alignment="CENTER" spacing="3">
+                    <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Nouveaux (30j)" />
+                    <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text="  --" />
+                </VBox>
+            </VBox>
+
+            <!-- Card Actifs -->
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+                <Label style="-fx-font-size: 40;" text="⚡" />
+                <VBox alignment="CENTER" spacing="3">
+                    <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Actifs" />
+                    <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text=" -" />
+                </VBox>
+            </VBox>
+        </HBox>
+
+        <!-- Actions rapides -->
+        <VBox spacing="15">
+            <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1F2937;" text="Actions Rapides" />
+            
+            <HBox spacing="20">
+                <!-- Card Gestion Utilisateurs -->
+                <VBox alignment="TOP_LEFT" prefHeight="180" prefWidth="400" spacing="18" style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 3); -fx-padding: 25; -fx-cursor: hand;">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <Label style="-fx-font-size: 36;" text="👥" />
+                        <VBox spacing="3">
+                            <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;" text="Gestion des Utilisateurs" />
+                            <Label style="-fx-font-size: 13; -fx-text-fill: #6B7280;" text="Gérer tous les utilisateurs" />
+                        </VBox>
+                    </HBox>
+                    
+                    <Region VBox.vgrow="ALWAYS" />
+                    
+                    <Button onAction="#openGestionUsers" prefHeight="42" prefWidth="350" style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" text="Ouvrir →" />
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Footer info -->
+        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 20 0 0 0;">
+            <Label style="-fx-font-size: 16;" text="ℹ" />
+            <Label style="-fx-font-size: 13; -fx-text-fill: #6B7280;" text="Connecté en tant qu'administrateur" />
+        </HBox>
+    </VBox>
 </AnchorPane>

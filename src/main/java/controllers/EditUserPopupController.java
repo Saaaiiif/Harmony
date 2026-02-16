@@ -39,10 +39,10 @@ public class EditUserPopupController {
                 currentUser.getUser_nom(),
                 currentUser.getUser_prenom(),
                 currentUser.getUser_email(),
-                currentUser.getUser_password(),        // On ne change pas le mot de passe
+                currentUser.getUser_password(),
                 currentUser.getUser_date_de_naissance(),
-                currentUser.getDate_inscription(),     // On ne change pas la date d'inscription
-                currentUser.getType_utilisateur()      // Rôle non modifiable
+                currentUser.getDate_inscription(),
+                currentUser.getType_utilisateur()
         );
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

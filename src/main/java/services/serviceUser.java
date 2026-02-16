@@ -44,38 +44,38 @@ public class serviceUser implements services<user> {
 
     @Override
     public List<user> getAll() {
-       List<user>users=new ArrayList<>();
-       String req = "SELECT * FROM `user`";
-       try{
-           Statement stm = cnx.createStatement();
-           ResultSet rs = stm.executeQuery(req);
-           while(rs.next()){
-               user user=new user();
-               user.setUser_id(rs.getInt("user_id"));
-               user.setUser_nom(rs.getString("user_nom"));
-               user.setUser_prenom(rs.getString("user_prenom"));
-               user.setUser_email(rs.getString("user_email"));
-               user.setUser_password(rs.getString("user_password"));
-               user.setDate_inscription(rs.getString("date_inscription"));
-               user.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
-               String roleStr = rs.getString("type_utilisateur");
-               if (roleStr != null && !roleStr.isEmpty()) {
-                   try {
-                       user.setType_utilisateur(Role.valueOf(roleStr));  // Convertit "ETUDIANT" → Role.ETUDIANT
-                   } catch (IllegalArgumentException e) {
-                       System.err.println("Valeur ENUM invalide en BD: " + roleStr + ". Assigné ADMIN par défaut.");
-                       user.setType_utilisateur(Role.ETUDIANT);  // Fallback pour éviter crash
-                   }
-               } else {
-                   user.setType_utilisateur(Role.ETUDIANT);  // Défaut si null
-               }
+        List<user>users=new ArrayList<>();
+        String req = "SELECT * FROM `user`";
+        try{
+            Statement stm = cnx.createStatement();
+            ResultSet rs = stm.executeQuery(req);
+            while(rs.next()){
+                user user=new user();
+                user.setUser_id(rs.getInt("user_id"));
+                user.setUser_nom(rs.getString("user_nom"));
+                user.setUser_prenom(rs.getString("user_prenom"));
+                user.setUser_email(rs.getString("user_email"));
+                user.setUser_password(rs.getString("user_password"));
+                user.setDate_inscription(rs.getString("date_inscription"));
+                user.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
+                String roleStr = rs.getString("type_utilisateur");
+                if (roleStr != null && !roleStr.isEmpty()) {
+                    try {
+                        user.setType_utilisateur(Role.valueOf(roleStr));  // Convertit "ETUDIANT" → Role.ETUDIANT
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Valeur ENUM invalide en BD: " + roleStr + ". Assigné ADMIN par défaut.");
+                        user.setType_utilisateur(Role.ETUDIANT);  // Fallback pour éviter crash
+                    }
+                } else {
+                    user.setType_utilisateur(Role.ETUDIANT);  // Défaut si null
+                }
 
                 users.add(user);
-           }
-       }catch (SQLException e){
-           System.out.println(e.getMessage());
-       }
-       return users;
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return users;
     }
 
     @Override
@@ -138,60 +138,60 @@ public class serviceUser implements services<user> {
             e.printStackTrace();
         }
 
+    }
+
+
+    @Override
+    public user getOneById(int id ){
+        if (id <= 0) {
+            System.err.println("ID invalide pour la recherche !!");
+            return null;
         }
 
+        String req = "SELECT * FROM `user` WHERE `user_id` = ?";
 
-        @Override
-    public user getOneById(int id ){
-            if (id <= 0) {
-                System.err.println("ID invalide pour la recherche !!");
-                return null;
-            }
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
 
-            String req = "SELECT * FROM `user` WHERE `user_id` = ?";
+            pstm.setInt(1, id);
+            ResultSet rs = pstm.executeQuery();
 
-            try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            if (rs.next()) {                    // Si on trouve une ligne
+                user u = new user();
 
-                pstm.setInt(1, id);
-                ResultSet rs = pstm.executeQuery();
+                u.setUser_id(rs.getInt("user_id"));
+                u.setUser_nom(rs.getString("user_nom"));
+                u.setUser_prenom(rs.getString("user_prenom"));
+                u.setUser_email(rs.getString("user_email"));
+                u.setUser_password(rs.getString("user_password"));
+                u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
+                u.setDate_inscription(rs.getString("date_inscription"));
 
-                if (rs.next()) {                    // Si on trouve une ligne
-                    user u = new user();
-
-                    u.setUser_id(rs.getInt("user_id"));
-                    u.setUser_nom(rs.getString("user_nom"));
-                    u.setUser_prenom(rs.getString("user_prenom"));
-                    u.setUser_email(rs.getString("user_email"));
-                    u.setUser_password(rs.getString("user_password"));
-                    u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
-                    u.setDate_inscription(rs.getString("date_inscription"));
-
-                    // Gestion du Role (comme dans getAll)
-                    String roleStr = rs.getString("type_utilisateur");
-                    if (roleStr != null && !roleStr.isEmpty()) {
-                        try {
-                            u.setType_utilisateur(Role.valueOf(roleStr));
-                        } catch (IllegalArgumentException e) {
-                            System.err.println("Role invalide : " + roleStr);
-                            u.setType_utilisateur(Role.ETUDIANT); // fallback
-                        }
-                    } else {
-                        u.setType_utilisateur(Role.ETUDIANT);
+                // Gestion du Role (comme dans getAll)
+                String roleStr = rs.getString("type_utilisateur");
+                if (roleStr != null && !roleStr.isEmpty()) {
+                    try {
+                        u.setType_utilisateur(Role.valueOf(roleStr));
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Role invalide : " + roleStr);
+                        u.setType_utilisateur(Role.ETUDIANT); // fallback
                     }
-
-                    return u;
                 } else {
-                    System.out.println("Aucun utilisateur trouvé avec l'ID : " + id);
-                    return null;
+                    u.setType_utilisateur(Role.ETUDIANT);
                 }
 
-            } catch (SQLException e) {
-                System.err.println("Erreur lors de la récupération de l'utilisateur : " + e.getMessage());
-                e.printStackTrace();
+                return u;
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec l'ID : " + id);
                 return null;
             }
 
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de l'utilisateur : " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
+
+    }
 
     public user getByEmailAndPassword(String email, String plainPassword) {
         String req = "SELECT * FROM `user` WHERE `user_email` = ?";
@@ -229,5 +229,4 @@ public class serviceUser implements services<user> {
 
 
 
-    }
-
+}

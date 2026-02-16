@@ -28,7 +28,7 @@ public class LoginController {
         linkToRegister.setOnAction(e -> goToRegister());
     }
 
-    // ====================== CONNEXION ======================
+
     @FXML
     void handleLogin(ActionEvent event) {
         String email = emailLogin.getText().trim();
@@ -50,7 +50,7 @@ public class LoginController {
         }
     }
 
-    // ====================== REDIRECTION SELON RÔLE ======================
+
     private void redirectAccordingToRole(user user) {
         try {
             String fxmlPath = (user.getType_utilisateur() == Role.ETUDIANT)
@@ -68,7 +68,7 @@ public class LoginController {
         }
     }
 
-    // ====================== ALLER VERS INSCRIPTION ======================
+
     @FXML
     void goToRegister() {
         try {

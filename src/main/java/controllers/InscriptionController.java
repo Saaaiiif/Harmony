@@ -18,17 +18,17 @@ public class InscriptionController {
     @FXML private TextField nomInsc, prenomInsc, emailInsc;
     @FXML private PasswordField passwordInsc;
     @FXML private DatePicker dateNaissanceInsc;
-    @FXML private Hyperlink linkToLogin;     // ← Hyperlink "Déjà un compte ? Se connecter"
+    @FXML private Hyperlink linkToLogin;
 
     private final serviceUser service = new serviceUser();
 
     @FXML
     public void initialize() {
-        // Connexion du Hyperlink à la méthode de redirection
+
         linkToLogin.setOnAction(e -> goToLogin());
     }
 
-    // ====================== INSCRIPTION ======================
+
     @FXML
     void handleRegister(ActionEvent event) {
         if (nomInsc.getText().isEmpty() || prenomInsc.getText().isEmpty() ||
@@ -46,16 +46,16 @@ public class InscriptionController {
                 passwordInsc.getText(),
                 dateNaissanceInsc.getValue().toString(),
                 java.time.LocalDate.now().toString(),
-                Role.ETUDIANT   // Rôle forcé
+                Role.ETUDIANT
         );
 
         service.add(newUser);
         showAlert("Succès", "Inscription réussie ! Vous pouvez maintenant vous connecter.", Alert.AlertType.INFORMATION);
 
-        goToLogin();   // Redirection automatique après inscription
+        goToLogin();
     }
 
-    // ====================== RETOUR VERS LOGIN ======================
+
     @FXML
     void goToLogin() {
         try {

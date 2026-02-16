@@ -11,7 +11,7 @@ public class MainFX extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
         primaryStage.setTitle("Harmony - Connexion");
-        primaryStage.setScene(new Scene(root, 1000, 650)); // Taille adaptée au style
+        primaryStage.setScene(new Scene(root, 1000, 650));
         primaryStage.show();
     }
 
