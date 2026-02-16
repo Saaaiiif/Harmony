@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="com.example.harmony.EventFormController"
+         hgap="16" vgap="16"
+         styleClass="event-form"
+         prefWidth="480"
+         prefHeight="450">
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="120" prefWidth="120" hgrow="NEVER"/>
+        <ColumnConstraints minWidth="300" prefWidth="300" hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="80" prefHeight="80" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Label text="Titre *" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
+    <TextField fx:id="fieldTitre" promptText="Titre de l'événement" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP"/>
+    <TextArea fx:id="fieldDescription" promptText="Description" wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+
+    <Label text="Date début *" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="CENTER"/>
+    <DatePicker fx:id="fieldDateDebut" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
+
+    <Label text="Date fin *" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
+    <DatePicker fx:id="fieldDateFin" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200"/>
+
+    <Label text="Lieu" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
+    <TextField fx:id="fieldLieu" promptText="Lieu" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="Priorité (1-10)" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="CENTER"/>
+    <Spinner fx:id="fieldPriorite" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="120"/>
+
+    <Label text="Rappel actif" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.valignment="CENTER"/>
+    <CheckBox fx:id="fieldRappelActif" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+    <Label text="Type *" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.valignment="CENTER"/>
+    <ComboBox fx:id="fieldType" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+    <padding>
+        <Insets top="20" right="24" bottom="20" left="24"/>
+    </padding>
+</GridPane>

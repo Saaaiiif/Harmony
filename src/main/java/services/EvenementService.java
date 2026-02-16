@@ -16,12 +16,12 @@ public class EvenementService implements Services<Evenement> {
     // CREATE
     @Override
     public void add(Evenement e) {
-        String sql = "INSERT INTO evenement VALUES (NULL,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO evenement (titre, description, date_debut, date_fin, lieu, priorite, rappel_actif, type_evenement) VALUES (?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
             ps.setString(2, e.getDescription());
-            ps.setDate(3, new Date(e.getDateDebut().getTime()));
-            ps.setDate(4, new Date(e.getDateFin().getTime()));
+            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
+            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
             ps.setString(5, e.getLieu());
             ps.setInt(6, e.getPriorite());
             ps.setBoolean(7, e.isRappelActif());
@@ -63,10 +63,17 @@ public class EvenementService implements Services<Evenement> {
     // UPDATE
     @Override
     public void update(Evenement e) {
-        String sql = "UPDATE evenement SET titre=? WHERE id=?";
+        String sql = "UPDATE evenement SET titre=?, description=?, date_debut=?, date_fin=?, lieu=?, priorite=?, rappel_actif=?, type_evenement=? WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
-            ps.setInt(2, e.getId());
+            ps.setString(2, e.getDescription());
+            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
+            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
+            ps.setString(5, e.getLieu());
+            ps.setInt(6, e.getPriorite());
+            ps.setBoolean(7, e.isRappelActif());
+            ps.setString(8, e.getType().name());
+            ps.setInt(9, e.getId());
             ps.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -32,3 +32,4 @@ public class Main {
         service.delete(1);
     }
 }
+//scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());

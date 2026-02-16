@@ -22,6 +22,10 @@ import java.util.*;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+
+import java.io.IOException;
 
 
 public class FrontLayoutController {
@@ -369,7 +373,10 @@ public class FrontLayoutController {
 
     private void onSlotClicked(WheelSlot s) {
         int step = s.offsetFromCenter;   // rightmost = +4, leftmost = -4 (for VISIBLE_COUNT=9)
-        if (step == 0) return;
+        if (step == 0) {
+            loadContentForIndex(s.itemIndex);
+            return;
+        }
 
         double from = animatedCenter.get();
 
@@ -381,6 +388,29 @@ public class FrontLayoutController {
         double to = base + step;
 
         startRoll(from, to);
+    }
+
+    private void loadContentForIndex(int index) {
+        if (index < 0 || index >= navItems.size()) return;
+        NavItem item = navItems.get(index);
+        switch (item.label) {
+            case "Calendar" -> loadCalendarView();
+            default -> { /* autres items : garder la vue actuelle ou afficher un placeholder */ }
+        }
+    }
+
+    private void loadCalendarView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/calendar-view.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+            if (!isDarkMode) {
+                view.getStyleClass().add("light-mode");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
