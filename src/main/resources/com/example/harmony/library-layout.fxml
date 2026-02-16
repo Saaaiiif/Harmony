@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+
+<BorderPane fx:id="root"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.harmony.LibraryLayoutController"
+            prefWidth="1200" prefHeight="700"
+            styleClass="front-root">
+
+    <center>
+        <BorderPane fx:id="contentPane" style="-fx-background-color: transparent;">
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="library-header">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+
+                    <Label text="Library" styleClass="section-title"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="myCoursesBtn" text="My Courses" styleClass="action-button"/>
+                </HBox>
+            </top>
+
+            <center>
+                <ScrollPane fitToWidth="true"
+                            styleClass="library-content"
+                            style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+                    <TilePane fx:id="publishedCoursesContainer" hgap="18" vgap="18" prefColumns="3">
+                        <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </TilePane>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+
+    <bottom>
+        <StackPane pickOnBounds="false" styleClass="nav-wheel-bottom-wrap">
+            <StackPane fx:id="wheelZone"
+                       prefWidth="200"
+                       maxWidth="200"
+                       prefHeight="120"
+                       styleClass="nav-wheel-host">
+                <StackPane fx:id="navWheelContainer" prefHeight="160"/>
+            </StackPane>
+        </StackPane>
+    </bottom>
+
+</BorderPane>

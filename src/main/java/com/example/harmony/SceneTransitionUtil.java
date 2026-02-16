@@ -89,8 +89,7 @@ public class SceneTransitionUtil {
                 SceneTransitionUtil.class.getResource("/com/example/harmony/styles.css")
         ).toExternalForm());
 
-        // IMPORTANT: do NOT force an inline dark background here.
-        // Let your CSS backgrounds (.root/.front-root + light-mode) render consistently.
+
 
         Parent currentRoot = currentScene.getRoot();
 
@@ -243,11 +242,7 @@ public class SceneTransitionUtil {
                     FXMLLoader loader = loadTask.getValue();
                     Parent newContent = (Parent) loader.getRoot();
                     T controllerInstance = loader.getController();
-
-                    // FIX: apply theme to loaded content immediately
                     rootController.applyThemeToNode(newContent);
-
-                    // If you really preload data, do it here; for now your task returns null anyway
                     Task<Void> dataTask = new Task<>() {
                         @Override
                         protected Void call() {

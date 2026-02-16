@@ -44,10 +44,7 @@ public class RootLayoutController {
             new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.CONTROL_DOWN);
     private final KeyCodeCombination CTRL_LEFT =
             new KeyCodeCombination(KeyCode.LEFT, KeyCombination.CONTROL_DOWN);
-    // true = dark, false = light
     private final BooleanProperty darkMode = new SimpleBooleanProperty(false);
-
-    // Keep reference to currently loaded content controller, so we can notify it
     private Object currentContentController;
 
     @FXML
@@ -77,8 +74,6 @@ public class RootLayoutController {
         });
 
         themeToggleButton.setOnAction(event -> toggleTheme());
-
-        // Keep UI in sync when darkMode changes
         darkMode.addListener((obs, oldV, newV) -> {
             updateThemeButtonText();
             applyThemeToScene();
@@ -119,18 +114,14 @@ public class RootLayoutController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent content = loader.load();
 
-        T controller = loader.getController(); // controller available after load() [web:18]
+        T controller = loader.getController();
         currentContentController = controller;
 
         contentArea.getChildren().setAll(content);
-
-        // Apply CSS mode class to the new content root too
         applyThemeToNode(content);
         if (controller instanceof FrontLayoutController c) {
             c.bindTheme(darkModeProperty());
         }
-
-        // Let controller update non-CSS stuff (e.g., ImageView icons)
         notifyThemeChanged(controller);
 
         return controller;
@@ -152,8 +143,6 @@ public class RootLayoutController {
 
         Parent sceneRoot = stage.getScene().getRoot();
         applyThemeToNode(sceneRoot);
-
-        // Optional: also apply class to currently loaded content root
         if (!contentArea.getChildren().isEmpty()) {
             Node currentContent = contentArea.getChildren().getFirst();
             if (currentContent instanceof Parent p) {

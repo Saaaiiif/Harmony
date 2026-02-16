@@ -1,69 +1,40 @@
 package com.example.harmony;
 
 import com.example.harmony.interfaces.ThemeAware;
-import com.example.harmony.interfaces.WheelCyclable;
 import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
 import java.util.*;
+import java.util.function.IntConsumer;
 
-public class FrontLayoutController implements ThemeAware, WheelCyclable {
-
-
-    @FXML private BorderPane root;
-
-    @FXML private StackPane contentArea;
+public class NavWheelController implements ThemeAware {
 
     @FXML private StackPane wheelZone;
     @FXML private StackPane navWheelContainer;
-
-    private Stage stage;
 
     private static final double SLOT_W = 60;
     private static final double SLOT_H = 60;
     private static final double RADIUS = 300;
     private static final double ARC_START_DEG = -30;
     private static final double ARC_END_DEG = 30;
-
     private static final double CENTER_Y_PADDING = 20;
-
     private static final int VISIBLE_COUNT = 9;
-
-    private final DoubleProperty animatedCenter = new SimpleDoubleProperty(0);
-    private AnimationTimer rollTimer;
-    private double rollTarget = 0;
-    private long rollStartNs;
-    private double rollFrom, rollTo;
-    private final double rollDurationSec = 0.7;
-
-    private int currentIndex = 0;
-    private Pane wheelPane;
-
-    private Integer pendingNavIndex = null;
 
     private static class NavItem {
         final String label;
         final String baseIconName;
-
-        NavItem(String label, String baseIconName) {
-            this.label = label;
-            this.baseIconName = baseIconName;
-        }
+        NavItem(String label, String baseIconName) { this.label = label; this.baseIconName = baseIconName; }
     }
 
     private final List<NavItem> navItems = List.of(
@@ -85,20 +56,53 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
         final Label label;
         int itemIndex;
         int offsetFromCenter;
-
-        WheelSlot(VBox box, ImageView icon, Label label) {
-            this.box = box;
-            this.icon = icon;
-            this.label = label;
-        }
+        WheelSlot(VBox box, ImageView icon, Label label) { this.box = box; this.icon = icon; this.label = label; }
     }
 
     private final List<WheelSlot> slots = new ArrayList<>(VISIBLE_COUNT);
     private final Map<String, Image> iconCache = new HashMap<>();
 
+    private final DoubleProperty animatedCenter = new SimpleDoubleProperty(0);
+    private AnimationTimer rollTimer;
+    private long rollStartNs;
+    private double rollFrom, rollTo;
+    private final double rollDurationSec = 0.7;
+
+    private int currentIndex = 0;
+    private Integer pendingNavIndex = null;
+
+    private Pane wheelPane;
+
+    private IntConsumer onNavigate = idx -> {};
+
+    @FXML
+    public void initialize() {
+        buildNavWheel();
+
+        Platform.runLater(() -> {
+            animatedCenter.set(currentIndex);
+            layoutSlots(animatedCenter.get());
+            installWheelHoverBehavior();
+        });
+    }
+
+    public void setOnNavigate(IntConsumer handler) {
+        this.onNavigate = (handler == null) ? (i -> {}) : handler;
+    }
+
+    public void setActiveIndex(int index) {
+        this.currentIndex = mod(index, navItems.size());
+        animatedCenter.set(this.currentIndex);
+        layoutSlots(animatedCenter.get());
+    }
+
+    @Override
+    public void onThemeChanged() {
+        layoutSlots(animatedCenter.get());
+    }
+
     private boolean isDarkModeNow() {
         RootLayoutController rc = SceneTransitionUtil.getRootController();
-
         return rc != null && rc.isDarkMode();
     }
 
@@ -111,28 +115,11 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
         );
     }
 
-    @FXML
-    public void initialize() {
-        buildNavWheel();
-
-        Platform.runLater(() -> {
-            layoutSlots(currentIndex);
-            installWheelHoverBehavior();
-
-        });
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     private void buildNavWheel() {
         wheelPane = new Pane();
         wheelPane.setPickOnBounds(false);
 
-        navWheelContainer.getChildren().clear();
-        navWheelContainer.getChildren().add(wheelPane);
-
+        navWheelContainer.getChildren().setAll(wheelPane);
         wheelPane.getChildren().clear();
         slots.clear();
 
@@ -185,10 +172,6 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
             slideDown.playFromStart();
         });
     }
-    @Override
-    public void onThemeChanged() {
-        layoutSlots(animatedCenter.get());
-    }
 
     private void layoutSlots(double centerIndexFrac) {
         double w = navWheelContainer.getWidth();
@@ -212,7 +195,6 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
 
         for (int slot = 0; slot < VISIBLE_COUNT; slot++) {
             WheelSlot s = slots.get(slot);
-
             double t = slot - frac;
 
             if (t < 0 || t > (VISIBLE_COUNT - 1)) {
@@ -253,7 +235,7 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
         int step = s.offsetFromCenter;
 
         if (step == 0) {
-            handleNavigation(s.itemIndex);
+            onNavigate.accept(s.itemIndex);
             return;
         }
 
@@ -265,7 +247,6 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
 
         startRoll(from, to);
     }
-
 
     private void startRoll(double from, double to) {
         rollFrom = from;
@@ -287,7 +268,6 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
                 layoutSlots(v);
 
                 if (p >= 1.0) {
-
                     stop();
                     int n = navItems.size();
                     currentIndex = mod((int) Math.round(rollTo), n);
@@ -297,60 +277,17 @@ public class FrontLayoutController implements ThemeAware, WheelCyclable {
                     if (pendingNavIndex != null) {
                         int idx = pendingNavIndex;
                         pendingNavIndex = null;
-                        handleNavigation(idx);
+                        onNavigate.accept(idx);
                     }
                 }
-
             }
         };
 
         rollTimer.start();
     }
 
-    private void handleNavigation(int index) {
-        try {
-            switch (index) {
-                case 5:
-                    SceneTransitionUtil.changeContent(
-                            "/com/example/harmony/courses-layout.fxml",
-                            SceneTransitionUtil.TransitionType.FADE,
-                            CoursesLayoutController.class
-                    );
-                    break;
-
-                default:
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private int mod(int a, int n) {
         int r = a % n;
         return (r < 0) ? (r + n) : r;
-    }
-    public void bindTheme(BooleanProperty darkMode) {
-        darkMode.addListener((obs, oldV, newV) -> onThemeChanged());
-    }
-
-    @Override
-    public void cycleWheel(int step) {
-        rollWheelByStep(step);
-    }
-
-    private void rollWheelByStep(int step) {
-        double from = animatedCenter.get();
-        int base = (int) Math.round(from);
-        double to = base + step;
-        if (rollTimer != null) rollTimer.stop();
-
-        rollTarget = to;
-
-        int n = navItems.size();
-        int newCenterIndex = mod((int) Math.round(to), n);
-        pendingNavIndex = newCenterIndex;
-
-        startRoll(from, to);
     }
 }

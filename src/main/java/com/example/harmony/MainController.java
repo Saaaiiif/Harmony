@@ -15,14 +15,13 @@ public class MainController {
     @FXML
     private Button upNextButton;
 
-    // Field for window operations
+
     private Stage stage;
 
     @FXML
     public void initialize() {
 
 
-        // Highlight the current page's navigation label
         if (upNextButton != null) {
             upNextButton.getStyleClass().add("active");
         }

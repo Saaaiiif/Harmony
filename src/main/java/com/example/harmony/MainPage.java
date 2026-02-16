@@ -26,7 +26,6 @@ public class MainPage extends Application {
         stage.getIcons().add(appIcon);
         stage.initStyle(StageStyle.UNDECORATED);
 
-        // 1) Show the shell (RootLayout)
         FXMLLoader shellLoader = new FXMLLoader(
                 MainPage.class.getResource("/com/example/harmony/root-layout.fxml")
         );
@@ -48,20 +47,16 @@ public class MainPage extends Application {
         });
 
 
-
-        // Default light for the whole app (optional)
         shellRoot.getStyleClass().add("light-mode");
 
         stage.setTitle("Harmony");
         stage.setScene(scene);
         stage.show();
 
-        // 2) Register the shell controller (this is what changeContent uses)
         RootLayoutController shellController = shellLoader.getController();
         shellController.setStage(stage);
         SceneTransitionUtil.setRootController(shellController);
 
-        // 3) Load the first visible page inside the shell
         FrontLayoutController frontController = SceneTransitionUtil.changeContent(
                 "/com/example/harmony/front-layout.fxml",
                 SceneTransitionUtil.TransitionType.FADE,
