@@ -65,7 +65,7 @@ public class EditUserPopupController {
         emailField.setText(u.getUser_email());
         dateNaissanceField.setValue(LocalDate.parse(u.getUser_date_de_naissance()));
 
-        // Nouveaux champs
+        // Champs secondaires
         if (u.getUser_sexe() != null) sexeCombo.setValue(u.getUser_sexe());
         if (u.getUser_poids() != null) poidsField.setText(u.getUser_poids().toString());
         if (u.getUser_taille() != null) tailleField.setText(u.getUser_taille().toString());
@@ -73,8 +73,9 @@ public class EditUserPopupController {
         if (u.getUser_niveau_scolaire() != null) niveauScolaireCombo.setValue(u.getUser_niveau_scolaire());
         etablissementField.setText(u.getUser_etablissement_scolaire());
 
-        roleLabel.setText("Rôle : " + u.getType_utilisateur().name());
-        dateInscriptionLabel.setText("Date d'inscription : " + u.getDate_inscription());
+        // Labels stylisés en badges via le FXML
+        roleLabel.setText("⭐ Rôle : " + u.getType_utilisateur().name());
+        dateInscriptionLabel.setText("🕒 Inscrit le : " + u.getDate_inscription());
     }
 
     private boolean validateNom() {
@@ -193,7 +194,6 @@ public class EditUserPopupController {
             return;
         }
 
-        // Récupérer valeurs nouveaux champs
         Sexe sexe = sexeCombo.getValue();
         Double poids = poidsField.getText().trim().isEmpty() ? null : Double.parseDouble(poidsField.getText().trim());
         Integer taille = tailleField.getText().trim().isEmpty() ? null : Integer.parseInt(tailleField.getText().trim());
@@ -201,16 +201,15 @@ public class EditUserPopupController {
         NiveauScolaire niveauScolaire = niveauScolaireCombo.getValue();
         String etablissement = etablissementField.getText().trim();
 
-        // Update (password et dateInscription non changés)
         service.updateById(
                 currentUser.getUser_id(),
                 nomField.getText().trim(),
                 prenomField.getText().trim(),
                 emailField.getText().trim(),
-                currentUser.getUser_password(), // Non changé
+                currentUser.getUser_password(),
                 dateNaissanceField.getValue().toString(),
-                currentUser.getDate_inscription(), // Non changé
-                currentUser.getType_utilisateur(), // Non changé
+                currentUser.getDate_inscription(),
+                currentUser.getType_utilisateur(),
                 sexe,
                 poids,
                 taille,
