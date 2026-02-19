@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -9,6 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,6 +19,8 @@ import models.user;
 import services.serviceUser;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
 
 public class GestionUsersController {
 
@@ -55,15 +60,13 @@ public class GestionUsersController {
                         "-fx-border-radius: 15;"
         );
 
-
         card.setOnMouseEntered(e -> card.setStyle(
                 "-fx-background-color: white;" +
                         "-fx-background-radius: 15;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.3), 15, 0, 0, 5);" +
                         "-fx-border-color: #8B5CF6;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-border-radius: 15;" +
-                        "-fx-cursor: hand;"
+                        "-fx-border-width: 1.5;" +
+                        "-fx-border-radius: 15;"
         ));
 
         card.setOnMouseExited(e -> card.setStyle(
@@ -75,123 +78,106 @@ public class GestionUsersController {
                         "-fx-border-radius: 15;"
         ));
 
-
-        HBox header = new HBox(10);
+        // Header avec nom/prénom
+        HBox header = new HBox(12);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Label iconLabel = new Label("👤");
-        iconLabel.setStyle("-fx-font-size: 32;");
+        Label avatar = new Label("👤");
+        avatar.setStyle("-fx-font-size: 32;");
 
-        VBox headerInfo = new VBox(3);
-        Label nameLabel = new Label(u.getUser_prenom() + " " + u.getUser_nom());
-        nameLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;");
+        VBox nameBox = new VBox(2);
+        Label fullName = new Label(u.getUser_prenom() + " " + u.getUser_nom());
+        fullName.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;");
 
-        Label roleLabel = new Label(u.getType_utilisateur().name());
-        roleLabel.setPadding(new Insets(3, 10, 3, 10));
-        roleLabel.setStyle(
-                "-fx-background-color: " + (u.getType_utilisateur().name().equals("ADMIN") ? "#8B5CF6" : "#6366F1") + ";" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 11;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 12;"
-        );
-
-        headerInfo.getChildren().addAll(nameLabel, roleLabel);
-        header.getChildren().addAll(iconLabel, headerInfo);
-
-
-        VBox infoBox = new VBox(8);
-        infoBox.setPadding(new Insets(10, 0, 0, 0));
-
-        Label emailLabel = new Label("📧 " + u.getUser_email());
+        Label emailLabel = new Label(u.getUser_email());
         emailLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #6B7280;");
 
-        Label birthLabel = new Label("🎂 " + u.getUser_date_de_naissance());
-        birthLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #6B7280;");
+        nameBox.getChildren().addAll(fullName, emailLabel);
+        header.getChildren().addAll(avatar, nameBox);
 
-        Label inscriptionLabel = new Label("📅 Inscrit le " + u.getDate_inscription());
-        inscriptionLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #9CA3AF;");
+        // Infos critiques
+        VBox infoBox = new VBox(8);
+        infoBox.setStyle("-fx-padding: 10 0 0 0;");
 
-        infoBox.getChildren().addAll(emailLabel, birthLabel, inscriptionLabel);
+        // Âge
+        int age = calculateAge(u.getUser_date_de_naissance());
+        Label ageLabel = new Label("Âge: " + age + " ans");
+        ageLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
 
+        // Sexe
+        Label sexeLabel = new Label("Sexe: " + (u.getUser_sexe() != null ? u.getUser_sexe().getDisplayName() : "Non spécifié"));
+        sexeLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
 
+        // Santé basique
+        Label poidsTailleLabel = new Label("Poids/Taille: " + (u.getUser_poids() != null ? u.getUser_poids() + " kg" : "N/A") + " / " + (u.getUser_taille() != null ? u.getUser_taille() + " cm" : "N/A"));
+        poidsTailleLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
+
+        // Scolaire
+        Label niveauScolaireLabel = new Label("Niveau Scolaire: " + (u.getUser_niveau_scolaire() != null ? u.getUser_niveau_scolaire().getDisplayName() : "Non spécifié"));
+        niveauScolaireLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
+
+        Label etablissementLabel = new Label("Établissement: " + (u.getUser_etablissement_scolaire() != null ? u.getUser_etablissement_scolaire() : "Non spécifié"));
+        etablissementLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
+
+        infoBox.getChildren().addAll(ageLabel, sexeLabel, poidsTailleLabel, niveauScolaireLabel, etablissementLabel);
+
+        // Bouton menu ":" en bas à droite
+        HBox bottomBox = new HBox();
+        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        MenuButton menuButton = new MenuButton("⋮");
+        menuButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-size: 18; -fx-cursor: hand;");
 
-        HBox actionBox = new HBox(10);
-        actionBox.setAlignment(Pos.CENTER);
+        MenuItem editItem = new MenuItem("Modifier");
+        editItem.setOnAction(e -> editUser(u));
 
-        Button btnEdit = new Button("✏️ Modifier");
-        btnEdit.setPrefWidth(140);
-        btnEdit.setStyle(
-                "-fx-background-color: #8B5CF6;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 13;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 15 8 15;" +
-                        "-fx-cursor: hand;"
-        );
+        MenuItem deleteItem = new MenuItem("Supprimer");
+        deleteItem.setOnAction(e -> deleteUser(u));
 
-        btnEdit.setOnMouseEntered(e -> btnEdit.setStyle(
-                "-fx-background-color: #7C3AED;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 13;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 15 8 15;" +
-                        "-fx-cursor: hand;"
-        ));
+        menuButton.getItems().addAll(editItem, deleteItem);
 
-        btnEdit.setOnMouseExited(e -> btnEdit.setStyle(
-                "-fx-background-color: #8B5CF6;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 13;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 15 8 15;" +
-                        "-fx-cursor: hand;"
-        ));
+        bottomBox.getChildren().addAll(spacer, menuButton);
 
-        btnEdit.setOnAction(e -> editUser(u));
+        // Double-clic pour afficher détails
+        card.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                showUserDetails(u);
+            }
+        });
 
-        Button btnDelete = new Button("🗑️");
-        btnDelete.setPrefWidth(45);
-        btnDelete.setStyle(
-                "-fx-background-color: #EF4444;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8;" +
-                        "-fx-cursor: hand;"
-        );
-
-        btnDelete.setOnMouseEntered(e -> btnDelete.setStyle(
-                "-fx-background-color: #DC2626;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8;" +
-                        "-fx-cursor: hand;"
-        ));
-
-        btnDelete.setOnMouseExited(e -> btnDelete.setStyle(
-                "-fx-background-color: #EF4444;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8;" +
-                        "-fx-cursor: hand;"
-        ));
-
-        btnDelete.setOnAction(e -> deleteUser(u));
-
-        actionBox.getChildren().addAll(btnEdit, btnDelete);
-
-        card.getChildren().addAll(header, infoBox, spacer, actionBox);
+        card.getChildren().addAll(header, infoBox, bottomBox);
 
         return card;
+    }
+
+    private int calculateAge(String birthDateStr) {
+        try {
+            LocalDate birthDate = LocalDate.parse(birthDateStr);
+            LocalDate currentDate = LocalDate.now();
+            return Period.between(birthDate, currentDate).getYears();
+        } catch (Exception e) {
+            return 0; // Default si erreur
+        }
+    }
+
+    private void showUserDetails(user u) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/DisplayUser.fxml"));
+            Parent root = loader.load();
+
+            DisplayUserController controller = loader.getController();
+            controller.setUser(u);
+
+            Stage stage = new Stage();
+            stage.setTitle("Détails Utilisateur");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteUser(user selected) {

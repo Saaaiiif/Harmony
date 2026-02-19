@@ -1,9 +1,10 @@
 package controllers;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import models.user;
+import models.*;
 import services.serviceUser;
 import utils.ValidationUtils;
 
@@ -11,24 +12,30 @@ import java.time.LocalDate;
 
 public class EditUserPopupController {
 
-    @FXML private TextField nomField, prenomField, emailField;
+    @FXML private TextField nomField, prenomField, emailField, poidsField, tailleField, etablissementField;
     @FXML private DatePicker dateNaissanceField;
     @FXML private Label roleLabel;
     @FXML private Label dateInscriptionLabel;
+    @FXML private ComboBox<Sexe> sexeCombo;
+    @FXML private ComboBox<NiveauActivitePhysique> niveauActiviteCombo;
+    @FXML private ComboBox<NiveauScolaire> niveauScolaireCombo;
 
-
-    @FXML private Label errorNom, errorPrenom, errorEmail, errorDate;
+    @FXML private Label errorNom, errorPrenom, errorEmail, errorDate, errorPoids, errorTaille, errorEtablissement;
 
     private user currentUser;
     private final serviceUser service = new serviceUser();
 
     @FXML
     public void initialize() {
-
         hideAllErrors();
+        populateComboBoxes();
+        setupRealtimeValidation();
+    }
 
-
-        setupRealtimeValidation(); //validation en temsp reel par ouvrir les listeners
+    private void populateComboBoxes() {
+        sexeCombo.setItems(FXCollections.observableArrayList(Sexe.values()));
+        niveauActiviteCombo.setItems(FXCollections.observableArrayList(NiveauActivitePhysique.values()));
+        niveauScolaireCombo.setItems(FXCollections.observableArrayList(NiveauScolaire.values()));
     }
 
     private void hideAllErrors() {
@@ -36,33 +43,19 @@ public class EditUserPopupController {
         errorPrenom.setVisible(false);
         errorEmail.setVisible(false);
         errorDate.setVisible(false);
+        errorPoids.setVisible(false);
+        errorTaille.setVisible(false);
+        errorEtablissement.setVisible(false);
     }
 
     private void setupRealtimeValidation() {
-
-        nomField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                validateNom();
-            }
-        });
-
-        prenomField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                validatePrenom();
-            }
-        });
-
-        emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                validateEmail();
-            }
-        });
-
-        dateNaissanceField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                validateDate();
-            }
-        });
+        nomField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validateNom(); });
+        prenomField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validatePrenom(); });
+        emailField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validateEmail(); });
+        dateNaissanceField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validateDate(); });
+        poidsField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validatePoids(); });
+        tailleField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validateTaille(); });
+        etablissementField.focusedProperty().addListener((obs, oldVal, newVal) -> { if (!newVal) validateEtablissement(); });
     }
 
     public void setUser(user u) {
@@ -72,15 +65,22 @@ public class EditUserPopupController {
         emailField.setText(u.getUser_email());
         dateNaissanceField.setValue(LocalDate.parse(u.getUser_date_de_naissance()));
 
+        // Nouveaux champs
+        if (u.getUser_sexe() != null) sexeCombo.setValue(u.getUser_sexe());
+        if (u.getUser_poids() != null) poidsField.setText(u.getUser_poids().toString());
+        if (u.getUser_taille() != null) tailleField.setText(u.getUser_taille().toString());
+        if (u.getUser_niveau_activite_physique() != null) niveauActiviteCombo.setValue(u.getUser_niveau_activite_physique());
+        if (u.getUser_niveau_scolaire() != null) niveauScolaireCombo.setValue(u.getUser_niveau_scolaire());
+        etablissementField.setText(u.getUser_etablissement_scolaire());
+
         roleLabel.setText("Rôle : " + u.getType_utilisateur().name());
         dateInscriptionLabel.setText("Date d'inscription : " + u.getDate_inscription());
     }
 
-
     private boolean validateNom() {
-        String nom = nomField.getText();
-        if (!ValidationUtils.isValidName(nom)) {
-            showError(errorNom, ValidationUtils.getNameErrorMessage(nom));
+        String errorMsg = ValidationUtils.getNameErrorMessage(nomField.getText());
+        if (!errorMsg.isEmpty()) {
+            showError(errorNom, errorMsg);
             return false;
         }
         hideError(errorNom);
@@ -88,9 +88,9 @@ public class EditUserPopupController {
     }
 
     private boolean validatePrenom() {
-        String prenom = prenomField.getText();
-        if (!ValidationUtils.isValidName(prenom)) {
-            showError(errorPrenom, ValidationUtils.getNameErrorMessage(prenom));
+        String errorMsg = ValidationUtils.getNameErrorMessage(prenomField.getText());
+        if (!errorMsg.isEmpty()) {
+            showError(errorPrenom, errorMsg);
             return false;
         }
         hideError(errorPrenom);
@@ -98,9 +98,9 @@ public class EditUserPopupController {
     }
 
     private boolean validateEmail() {
-        String email = emailField.getText();
-        if (!ValidationUtils.isValidEmail(email)) {
-            showError(errorEmail, ValidationUtils.getEmailErrorMessage(email));
+        String errorMsg = ValidationUtils.getEmailErrorMessage(emailField.getText());
+        if (!errorMsg.isEmpty()) {
+            showError(errorEmail, errorMsg);
             return false;
         }
         hideError(errorEmail);
@@ -108,12 +108,60 @@ public class EditUserPopupController {
     }
 
     private boolean validateDate() {
-        LocalDate date = dateNaissanceField.getValue();
-        if (!ValidationUtils.isValidBirthDate(date)) {
-            showError(errorDate, ValidationUtils.getBirthDateErrorMessage(date));
+        if (dateNaissanceField.getValue() == null) {
+            showError(errorDate, "La date est obligatoire");
+            return false;
+        }
+        if (!ValidationUtils.isValidBirthDate(dateNaissanceField.getValue())) {
+            showError(errorDate, ValidationUtils.getBirthDateErrorMessage(dateNaissanceField.getValue()));
             return false;
         }
         hideError(errorDate);
+        return true;
+    }
+
+    private boolean validatePoids() {
+        String poidsStr = poidsField.getText().trim();
+        if (poidsStr.isEmpty()) return true; // Optionnel dans edit
+        try {
+            double poids = Double.parseDouble(poidsStr);
+            if (!ValidationUtils.isValidPoids(poids)) {
+                showError(errorPoids, ValidationUtils.getPoidsErrorMessage(poids));
+                return false;
+            }
+            hideError(errorPoids);
+            return true;
+        } catch (NumberFormatException e) {
+            showError(errorPoids, "Nombre valide requis");
+            return false;
+        }
+    }
+
+    private boolean validateTaille() {
+        String tailleStr = tailleField.getText().trim();
+        if (tailleStr.isEmpty()) return true; // Optionnel
+        try {
+            int taille = Integer.parseInt(tailleStr);
+            if (!ValidationUtils.isValidTaille(taille)) {
+                showError(errorTaille, ValidationUtils.getTailleErrorMessage(taille));
+                return false;
+            }
+            hideError(errorTaille);
+            return true;
+        } catch (NumberFormatException e) {
+            showError(errorTaille, "Nombre entier valide requis");
+            return false;
+        }
+    }
+
+    private boolean validateEtablissement() {
+        String etablissement = etablissementField.getText();
+        String errorMsg = ValidationUtils.getEtablissementErrorMessage(etablissement);
+        if (!errorMsg.isEmpty()) {
+            showError(errorEtablissement, errorMsg);
+            return false;
+        }
+        hideError(errorEtablissement);
         return true;
     }
 
@@ -126,16 +174,17 @@ public class EditUserPopupController {
         errorLabel.setVisible(false);
     }
 
-
     @FXML
     void saveChanges() {
-        // Valider tous les champs
         boolean nomValid = validateNom();
         boolean prenomValid = validatePrenom();
         boolean emailValid = validateEmail();
         boolean dateValid = validateDate();
+        boolean poidsValid = validatePoids();
+        boolean tailleValid = validateTaille();
+        boolean etablissementValid = validateEtablissement();
 
-        if (!nomValid || !prenomValid || !emailValid || !dateValid) {
+        if (!nomValid || !prenomValid || !emailValid || !dateValid || !poidsValid || !tailleValid || !etablissementValid) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de validation");
             alert.setHeaderText(null);
@@ -144,21 +193,31 @@ public class EditUserPopupController {
             return;
         }
 
-        currentUser.setUser_nom(nomField.getText().trim());
-        currentUser.setUser_prenom(prenomField.getText().trim());
-        currentUser.setUser_email(emailField.getText().trim());
-        currentUser.setUser_date_de_naissance(dateNaissanceField.getValue().toString());
+        // Récupérer valeurs nouveaux champs
+        Sexe sexe = sexeCombo.getValue();
+        Double poids = poidsField.getText().trim().isEmpty() ? null : Double.parseDouble(poidsField.getText().trim());
+        Integer taille = tailleField.getText().trim().isEmpty() ? null : Integer.parseInt(tailleField.getText().trim());
+        NiveauActivitePhysique niveauActivite = niveauActiviteCombo.getValue();
+        NiveauScolaire niveauScolaire = niveauScolaireCombo.getValue();
+        String etablissement = etablissementField.getText().trim();
 
-//        service.updateById(
-//                currentUser.getUser_id(),
-//                currentUser.getUser_nom(),
-//                currentUser.getUser_prenom(),
-//                currentUser.getUser_email(),
-//                currentUser.getUser_password(),        // On ne change pas le mot de passe
-//                currentUser.getUser_date_de_naissance(),
-//                currentUser.getDate_inscription(),     // On ne change pas la date d'inscription
-//                currentUser.getType_utilisateur()      // Rôle non modifiable
-//        );
+        // Update (password et dateInscription non changés)
+        service.updateById(
+                currentUser.getUser_id(),
+                nomField.getText().trim(),
+                prenomField.getText().trim(),
+                emailField.getText().trim(),
+                currentUser.getUser_password(), // Non changé
+                dateNaissanceField.getValue().toString(),
+                currentUser.getDate_inscription(), // Non changé
+                currentUser.getType_utilisateur(), // Non changé
+                sexe,
+                poids,
+                taille,
+                niveauActivite,
+                niveauScolaire,
+                etablissement
+        );
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Succès");

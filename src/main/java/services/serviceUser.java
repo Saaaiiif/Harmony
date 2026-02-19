@@ -36,34 +36,35 @@ public class serviceUser implements services<user> {
             pstm.setString(5, user.getUser_date_de_naissance());
             pstm.setString(6, user.getDate_inscription());
             pstm.setString(7, user.getType_utilisateur().name());
-            
+
             // Nouveaux champs SANTÉ
             pstm.setString(8, user.getUser_sexe() != null ? user.getUser_sexe().name() : null);
-            
+
             if (user.getUser_poids() != null) {
                 pstm.setDouble(9, user.getUser_poids());
             } else {
                 pstm.setNull(9, Types.DECIMAL);
             }
-            
+
             if (user.getUser_taille() != null) {
                 pstm.setInt(10, user.getUser_taille());
             } else {
                 pstm.setNull(10, Types.INTEGER);
             }
-            
-            pstm.setString(11, user.getUser_niveau_activite_physique() != null ? 
-                                user.getUser_niveau_activite_physique().name() : null);
-            
+
+            pstm.setString(11, user.getUser_niveau_activite_physique() != null ?
+                    user.getUser_niveau_activite_physique().name() : null);
+
             // Nouveaux champs SCOLAIRE
-            pstm.setString(12, user.getUser_niveau_scolaire() != null ? 
-                                user.getUser_niveau_scolaire().name() : null);
+            pstm.setString(12, user.getUser_niveau_scolaire() != null ?
+                    user.getUser_niveau_scolaire().name() : null);
+
             pstm.setString(13, user.getUser_etablissement_scolaire());
 
             pstm.executeUpdate();
-            System.out.println("USER ADDED SUCCESSFULLY (with health & education data) !!!");
+            System.out.println("Utilisateur ajouté avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout : " + e.getMessage());
+            System.err.println("Erreur lors de l'ajout : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -72,11 +73,10 @@ public class serviceUser implements services<user> {
     public List<user> getAll() {
         List<user> users = new ArrayList<>();
         String req = "SELECT * FROM `user`";
-        
-        try {
-            Statement stm = cnx.createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            
+
+        try (Statement stm = cnx.createStatement();
+             ResultSet rs = stm.executeQuery(req)) {
+
             while (rs.next()) {
                 user u = new user();
                 u.setUser_id(rs.getInt("user_id"));
@@ -84,91 +84,61 @@ public class serviceUser implements services<user> {
                 u.setUser_prenom(rs.getString("user_prenom"));
                 u.setUser_email(rs.getString("user_email"));
                 u.setUser_password(rs.getString("user_password"));
-                u.setDate_inscription(rs.getString("date_inscription"));
                 u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
-                
-                // Role
-                String roleStr = rs.getString("type_utilisateur");
-                if (roleStr != null && !roleStr.isEmpty()) {
-                    try {
-                        u.setType_utilisateur(Role.valueOf(roleStr));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM Role invalide: " + roleStr);
-                        u.setType_utilisateur(Role.ETUDIANT);
-                    }
-                } else {
-                    u.setType_utilisateur(Role.ETUDIANT);
-                }
-                
-                // NOUVEAUX CHAMPS SANTÉ
+                u.setDate_inscription(rs.getString("date_inscription"));
+                u.setType_utilisateur(Role.valueOf(rs.getString("type_utilisateur")));
+
+                // Récupérer nouveaux champs SANTÉ
                 String sexeStr = rs.getString("user_sexe");
                 if (sexeStr != null && !sexeStr.isEmpty()) {
                     try {
                         u.setUser_sexe(Sexe.valueOf(sexeStr));
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM Sexe invalide: " + sexeStr);
+                        // Ignorer si invalide
                     }
                 }
-                
-                Double poids = rs.getDouble("user_poids");
-                if (!rs.wasNull()) {
-                    u.setUser_poids(poids);
-                }
-                
-                int taille = rs.getInt("user_taille");
-                if (!rs.wasNull()) {
-                    u.setUser_taille(taille);
-                }
-                
-                String niveauActiviteStr = rs.getString("user_niveau_activite_physique");
-                if (niveauActiviteStr != null && !niveauActiviteStr.isEmpty()) {
+
+                u.setUser_poids(rs.getObject("user_poids") != null ? rs.getDouble("user_poids") : null);
+                u.setUser_taille(rs.getObject("user_taille") != null ? rs.getInt("user_taille") : null);
+
+                String activiteStr = rs.getString("user_niveau_activite_physique");
+                if (activiteStr != null && !activiteStr.isEmpty()) {
                     try {
-                        u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(niveauActiviteStr));
+                        u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr));
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM NiveauActivite invalide: " + niveauActiviteStr);
+                        // Ignorer si invalide
                     }
                 }
-                
-                // NOUVEAUX CHAMPS SCOLAIRE
-                String niveauScolaireStr = rs.getString("user_niveau_scolaire");
-                if (niveauScolaireStr != null && !niveauScolaireStr.isEmpty()) {
+
+                // Récupérer nouveaux champs SCOLAIRE
+                String scolaireStr = rs.getString("user_niveau_scolaire");
+                if (scolaireStr != null && !scolaireStr.isEmpty()) {
                     try {
-                        u.setUser_niveau_scolaire(NiveauScolaire.valueOf(niveauScolaireStr));
+                        u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr));
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM NiveauScolaire invalide: " + niveauScolaireStr);
+                        // Ignorer si invalide
                     }
                 }
-                
+
                 u.setUser_etablissement_scolaire(rs.getString("user_etablissement_scolaire"));
-                
+
                 users.add(u);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération : " + e.getMessage());
+            System.err.println("Erreur lors de la récupération : " + e.getMessage());
             e.printStackTrace();
         }
-        
         return users;
     }
 
     @Override
     public void deleteById(int id) {
-        if (id <= 0) {
-            System.err.println("ID invalide pour suppression !!");
-            return;
-        }
-        
         String req = "DELETE FROM `user` WHERE `user_id` = ?";
-        
+
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
-            int affectedRows = pstm.executeUpdate();
-            
-            if (affectedRows > 0) {
-                System.out.println("USER DELETED SUCCESSFULLY !!!");
-            } else {
-                System.out.println("USER NOT FOUND (ID: " + id + ")");
-            }
+            pstm.executeUpdate();
+            System.out.println("Utilisateur supprimé avec succès !");
         } catch (SQLException e) {
             System.err.println("Erreur lors de la suppression : " + e.getMessage());
             e.printStackTrace();
@@ -176,60 +146,55 @@ public class serviceUser implements services<user> {
     }
 
     @Override
-    public void updateById(int id, String nom, String prenom, String email, String password,
-                           String dateNaissance, String dateInscription, Role role,
-                           Sexe sexe, Double poids, Integer taille, NiveauActivitePhysique niveauActivite,
-                           NiveauScolaire niveauScolaire, String etablissement) {
-        
-        if (id <= 0) {
-            System.err.println("ID invalide pour mise à jour !!");
-            return;
-        }
-        
+    public void updateById(int id,
+                           String nom,
+                           String prenom,
+                           String email,
+                           String password,
+                           String dateNaissance,
+                           String dateInscription,
+                           Role role,
+                           Sexe sexe,
+                           Double poids,
+                           Integer taille,
+                           NiveauActivitePhysique niveauActivite,
+                           NiveauScolaire niveauScolaire,
+                           String etablissement) {
         String req = "UPDATE `user` SET " +
-                "`user_nom` = ?, `user_prenom` = ?, `user_email` = ?, `user_password` = ?, " +
+                "`user_nom` = ?, `user_prenom` = ?, `user_email` = ?, " +
                 "`user_date_de_naissance` = ?, `date_inscription` = ?, `type_utilisateur` = ?, " +
                 "`user_sexe` = ?, `user_poids` = ?, `user_taille` = ?, " +
                 "`user_niveau_activite_physique` = ?, `user_niveau_scolaire` = ?, " +
                 "`user_etablissement_scolaire` = ? " +
                 "WHERE `user_id` = ?";
-        
+
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, nom);
             pstm.setString(2, prenom);
             pstm.setString(3, email);
-            pstm.setString(4, password);
-            pstm.setString(5, dateNaissance);
-            pstm.setString(6, dateInscription);
-            pstm.setString(7, role.name());
-            
-            // Nouveaux champs
-            pstm.setString(8, sexe != null ? sexe.name() : null);
-            
+            pstm.setString(4, dateNaissance);
+            pstm.setString(5, dateInscription);
+            pstm.setString(6, role.name());
+
+            pstm.setString(7, sexe != null ? sexe.name() : null);
             if (poids != null) {
-                pstm.setDouble(9, poids);
+                pstm.setDouble(8, poids);
             } else {
-                pstm.setNull(9, Types.DECIMAL);
+                pstm.setNull(8, Types.DECIMAL);
             }
-            
             if (taille != null) {
-                pstm.setInt(10, taille);
+                pstm.setInt(9, taille);
             } else {
-                pstm.setNull(10, Types.INTEGER);
+                pstm.setNull(9, Types.INTEGER);
             }
-            
-            pstm.setString(11, niveauActivite != null ? niveauActivite.name() : null);
-            pstm.setString(12, niveauScolaire != null ? niveauScolaire.name() : null);
-            pstm.setString(13, etablissement);
-            pstm.setInt(14, id);
+            pstm.setString(10, niveauActivite != null ? niveauActivite.name() : null);
+            pstm.setString(11, niveauScolaire != null ? niveauScolaire.name() : null);
+            pstm.setString(12, etablissement);
 
-            int affectedRows = pstm.executeUpdate();
+            pstm.setInt(13, id);
 
-            if (affectedRows > 0) {
-                System.out.println("USER UPDATED SUCCESSFULLY !!!");
-            } else {
-                System.out.println("USER NOT UPDATED (ID introuvable) !!!");
-            }
+            pstm.executeUpdate();
+            System.out.println("Utilisateur mis à jour avec succès !");
         } catch (SQLException e) {
             System.err.println("Erreur lors de la mise à jour : " + e.getMessage());
             e.printStackTrace();
@@ -238,11 +203,6 @@ public class serviceUser implements services<user> {
 
     @Override
     public user getOneById(int id) {
-        if (id <= 0) {
-            System.err.println("ID invalide pour la recherche !!");
-            return null;
-        }
-
         String req = "SELECT * FROM `user` WHERE `user_id` = ?";
 
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
@@ -258,58 +218,17 @@ public class serviceUser implements services<user> {
                 u.setUser_password(rs.getString("user_password"));
                 u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
                 u.setDate_inscription(rs.getString("date_inscription"));
+                u.setType_utilisateur(Role.valueOf(rs.getString("type_utilisateur")));
 
-                // Role
-                String roleStr = rs.getString("type_utilisateur");
-                if (roleStr != null && !roleStr.isEmpty()) {
-                    try {
-                        u.setType_utilisateur(Role.valueOf(roleStr));
-                    } catch (IllegalArgumentException e) {
-                        u.setType_utilisateur(Role.ETUDIANT);
-                    }
-                } else {
-                    u.setType_utilisateur(Role.ETUDIANT);
-                }
-                
-                // NOUVEAUX CHAMPS SANTÉ
+                // Nouveaux champs
                 String sexeStr = rs.getString("user_sexe");
-                if (sexeStr != null && !sexeStr.isEmpty()) {
-                    try {
-                        u.setUser_sexe(Sexe.valueOf(sexeStr));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM Sexe invalide: " + sexeStr);
-                    }
-                }
-                
-                Double poids = rs.getDouble("user_poids");
-                if (!rs.wasNull()) {
-                    u.setUser_poids(poids);
-                }
-                
-                int taille = rs.getInt("user_taille");
-                if (!rs.wasNull()) {
-                    u.setUser_taille(taille);
-                }
-                
-                String niveauActiviteStr = rs.getString("user_niveau_activite_physique");
-                if (niveauActiviteStr != null && !niveauActiviteStr.isEmpty()) {
-                    try {
-                        u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(niveauActiviteStr));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM NiveauActivite invalide");
-                    }
-                }
-                
-                // NOUVEAUX CHAMPS SCOLAIRE
-                String niveauScolaireStr = rs.getString("user_niveau_scolaire");
-                if (niveauScolaireStr != null && !niveauScolaireStr.isEmpty()) {
-                    try {
-                        u.setUser_niveau_scolaire(NiveauScolaire.valueOf(niveauScolaireStr));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Valeur ENUM NiveauScolaire invalide");
-                    }
-                }
-                
+                if (sexeStr != null) u.setUser_sexe(Sexe.valueOf(sexeStr));
+                u.setUser_poids(rs.getObject("user_poids") != null ? rs.getDouble("user_poids") : null);
+                u.setUser_taille(rs.getObject("user_taille") != null ? rs.getInt("user_taille") : null);
+                String activiteStr = rs.getString("user_niveau_activite_physique");
+                if (activiteStr != null) u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr));
+                String scolaireStr = rs.getString("user_niveau_scolaire");
+                if (scolaireStr != null) u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr));
                 u.setUser_etablissement_scolaire(rs.getString("user_etablissement_scolaire"));
 
                 return u;
@@ -344,7 +263,7 @@ public class serviceUser implements services<user> {
                     u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
                     u.setDate_inscription(rs.getString("date_inscription"));
                     u.setType_utilisateur(Role.valueOf(rs.getString("type_utilisateur")));
-                    
+
                     // Récupérer aussi les nouveaux champs si nécessaire
                     String sexeStr = rs.getString("user_sexe");
                     if (sexeStr != null && !sexeStr.isEmpty()) {
@@ -354,7 +273,7 @@ public class serviceUser implements services<user> {
                             // Ignorer si invalide
                         }
                     }
-                    
+
                     return u;
                 }
             }
