@@ -149,16 +149,16 @@ public class EditUserPopupController {
         currentUser.setUser_email(emailField.getText().trim());
         currentUser.setUser_date_de_naissance(dateNaissanceField.getValue().toString());
 
-        service.updateById(
-                currentUser.getUser_id(),
-                currentUser.getUser_nom(),
-                currentUser.getUser_prenom(),
-                currentUser.getUser_email(),
-                currentUser.getUser_password(),        // On ne change pas le mot de passe
-                currentUser.getUser_date_de_naissance(),
-                currentUser.getDate_inscription(),     // On ne change pas la date d'inscription
-                currentUser.getType_utilisateur()      // Rôle non modifiable
-        );
+//        service.updateById(
+//                currentUser.getUser_id(),
+//                currentUser.getUser_nom(),
+//                currentUser.getUser_prenom(),
+//                currentUser.getUser_email(),
+//                currentUser.getUser_password(),        // On ne change pas le mot de passe
+//                currentUser.getUser_date_de_naissance(),
+//                currentUser.getDate_inscription(),     // On ne change pas la date d'inscription
+//                currentUser.getType_utilisateur()      // Rôle non modifiable
+//        );
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Succès");
