@@ -11,10 +11,10 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700" prefWidth="1200" style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<AnchorPane prefHeight="700" prefWidth="931.0" style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
 
     <!-- Formulaire de connexion -->
-    <VBox alignment="CENTER" layoutX="250.0" layoutY="14.0" prefWidth="450" spacing="25" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 25, 0, 0, 10);">
+    <VBox alignment="CENTER" layoutX="241.0" layoutY="33.0" prefWidth="450" spacing="25" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 25, 0, 0, 10);">
         <padding>
             <Insets bottom="50" left="50" right="50" top="50" />
         </padding>

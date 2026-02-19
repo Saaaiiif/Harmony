@@ -2,7 +2,7 @@ package models;
 
 import java.util.Date;
 
-public class user {   // je garde "user" pour l'instant pour ne pas casser tes imports
+public class user {
 
     private int user_id;
     private String user_nom, user_prenom, user_email, user_password,user_date_de_naissance,date_inscription;

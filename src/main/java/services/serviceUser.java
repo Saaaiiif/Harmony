@@ -20,7 +20,7 @@ public class serviceUser implements services<user> {
 
     @Override
     public void add(user user) {
-        // Hachage du mot de passe AVANT insertion
+
         String hashedPassword = PasswordUtils.hashPassword(user.getUser_password());
 
         String req = "INSERT INTO `user`(`user_nom`, `user_prenom`, `user_email`, `user_password`, `user_date_de_naissance`, `date_inscription`, `type_utilisateur`) " +
@@ -30,7 +30,7 @@ public class serviceUser implements services<user> {
             pstm.setString(1, user.getUser_nom());
             pstm.setString(2, user.getUser_prenom());
             pstm.setString(3, user.getUser_email());
-            pstm.setString(4, hashedPassword);                    // ← Hashé
+            pstm.setString(4, hashedPassword);
             pstm.setString(5, user.getUser_date_de_naissance());
             pstm.setString(6, user.getDate_inscription());
             pstm.setString(7, user.getType_utilisateur().name());
@@ -61,13 +61,13 @@ public class serviceUser implements services<user> {
                 String roleStr = rs.getString("type_utilisateur");
                 if (roleStr != null && !roleStr.isEmpty()) {
                     try {
-                        user.setType_utilisateur(Role.valueOf(roleStr));  // Convertit "ETUDIANT" → Role.ETUDIANT
+                        user.setType_utilisateur(Role.valueOf(roleStr));
                     } catch (IllegalArgumentException e) {
                         System.err.println("Valeur ENUM invalide en BD: " + roleStr + ". Assigné ADMIN par défaut.");
-                        user.setType_utilisateur(Role.ETUDIANT);  // Fallback pour éviter crash
+                        user.setType_utilisateur(Role.ETUDIANT);
                     }
                 } else {
-                    user.setType_utilisateur(Role.ETUDIANT);  // Défaut si null
+                    user.setType_utilisateur(Role.ETUDIANT);
                 }
 
                 users.add(user);
@@ -203,7 +203,6 @@ public class serviceUser implements services<user> {
             if (rs.next()) {
                 String storedHashedPassword = rs.getString("user_password");
 
-                // Vérification du mot de passe avec le hash
                 if (PasswordUtils.checkPassword(plainPassword, storedHashedPassword)) {
                     user u = new user();
                     u.setUser_id(rs.getInt("user_id"));
