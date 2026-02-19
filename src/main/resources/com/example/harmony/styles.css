@@ -760,3 +760,260 @@
     -fx-background-color: rgba(205, 157, 241, 0.2);
     -fx-border-color: rgba(205, 157, 241, 0.8);
 }
+
+/* ========== Styles Kanban ========== */
+.kanban-view {
+    -fx-background-color: transparent;
+}
+
+.kanban-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px 0;
+}
+
+.light-mode .kanban-title {
+    -fx-text-fill: #333333;
+}
+
+.kanban-columns-container {
+    -fx-alignment: center;
+}
+
+.kanban-column {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-min-width: 300px;
+    -fx-max-width: 350px;
+}
+
+.light-mode .kanban-column {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+}
+
+.kanban-column-header {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.light-mode .kanban-column-header {
+    -fx-text-fill: #333333;
+}
+
+.kanban-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.kanban-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.kanban-list {
+    -fx-spacing: 8px;
+    -fx-padding: 5px;
+}
+
+.kanban-card {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.light-mode .kanban-card {
+    -fx-background-color: #ffffff;
+}
+
+.kanban-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 3);
+    -fx-translate-y: -2px;
+}
+
+.kanban-card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+}
+
+.kanban-card-deadline {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+}
+
+.kanban-card-notes {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+    -fx-wrap-text: true;
+}
+
+/* ========== Styles Calendrier Complet ========== */
+.calendar-full-view {
+    -fx-background-color: transparent;
+}
+
+.calendar-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.calendar-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.events-container {
+    -fx-spacing: 15px;
+    -fx-padding: 10px;
+}
+
+.event-card {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+}
+
+.light-mode .event-card {
+    -fx-background-color: #ffffff;
+}
+
+.event-card-header {
+    -fx-alignment: center-left;
+}
+
+.event-card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.event-card-type {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-padding: 4px 8px;
+    -fx-background-color: #e3f2fd;
+    -fx-background-radius: 4px;
+}
+
+.event-card-dates {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+.event-card-lieu {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+.event-card-description {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+    -fx-wrap-text: true;
+}
+
+.event-card-footer {
+    -fx-alignment: center-left;
+    -fx-padding-top: 10px;
+}
+
+.event-card-priorite {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+}
+
+.event-card-rappel {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+}
+
+.empty-message {
+    -fx-font-size: 18px;
+    -fx-text-fill: #999999;
+    -fx-alignment: center;
+    -fx-padding: 40px;
+}
+
+/* ========== Styles Backoffice Admin ========== */
+.admin-backoffice {
+    -fx-background-color: transparent;
+}
+
+.admin-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px 0;
+}
+
+.light-mode .admin-title {
+    -fx-text-fill: #333333;
+}
+
+.admin-tab-pane {
+    -fx-background-color: transparent;
+}
+
+.admin-header {
+    -fx-alignment: center-left;
+    -fx-padding: 10px 0;
+}
+
+.admin-section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.light-mode .admin-section-title {
+    -fx-text-fill: #333333;
+}
+
+.admin-actions {
+    -fx-spacing: 8px;
+}
+
+.admin-table {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 8px;
+}
+
+.light-mode .admin-table {
+    -fx-background-color: #ffffff;
+}
+
+.btn-admin {
+    -fx-background-color: rgba(205, 157, 241, 0.8);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.btn-admin:hover {
+    -fx-background-color: rgba(205, 157, 241, 1.0);
+}
+
+.btn-confirm {
+    -fx-background-color: rgba(76, 175, 80, 0.8);
+}
+
+.btn-confirm:hover {
+    -fx-background-color: rgba(76, 175, 80, 1.0);
+}
+
+.btn-reject {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+}
+
+.btn-reject:hover {
+    -fx-background-color: rgba(244, 67, 54, 1.0);
+}

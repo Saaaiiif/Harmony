@@ -117,13 +117,23 @@ public class CalendarViewController implements Initializable {
 
     @FXML
     private void onAjouter() {
-        Dialog<Evenement> dialog = creerDialogEvenement("Nouvel événement", null);
-        if (dialog == null) return;
-        Optional<Evenement> result = dialog.showAndWait();
-        result.filter(e -> e != null).ifPresent(e -> {
-            evenementService.add(e);
-            chargerEvenements();
-        });
+        try {
+            Dialog<Evenement> dialog = creerDialogEvenement("Nouvel événement", null);
+            if (dialog == null) return;
+            Optional<Evenement> result = dialog.showAndWait();
+            result.filter(e -> e != null).ifPresent(e -> {
+                try {
+                    evenementService.add(e);
+                    chargerEvenements();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlertErreur(getDialogOwner(), ex);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlertErreur(getDialogOwner(), e);
+        }
     }
 
     @FXML
@@ -142,9 +152,14 @@ public class CalendarViewController implements Initializable {
         if (dialog == null) return;
         Optional<Evenement> result = dialog.showAndWait();
         result.filter(e -> e != null).ifPresent(e -> {
-            e.setId(event.getId());
-            evenementService.update(e);
-            chargerEvenements();
+            try {
+                e.setId(event.getId());
+                evenementService.update(e);
+                chargerEvenements();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
         });
     }
 
@@ -166,10 +181,15 @@ public class CalendarViewController implements Initializable {
         confirm.setContentText(message);
         Optional<ButtonType> rep = confirm.showAndWait();
         if (rep.isPresent() && rep.get() == ButtonType.OK) {
-            for (Evenement e : selected) {
-                evenementService.delete(e.getId());
+            try {
+                for (Evenement e : selected) {
+                    evenementService.delete(e.getId());
+                }
+                chargerEvenements();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
             }
-            chargerEvenements();
         }
     }
 
@@ -315,9 +335,14 @@ public class CalendarViewController implements Initializable {
         Dialog<Tache> d = creerDialogTache("Modifier la tâche", t);
         if (d == null) return;
         d.showAndWait().filter(x -> x != null).ifPresent(x -> {
-            x.setId(t.getId());
-            tacheService.update(x);
-            chargerTaches();
+            try {
+                x.setId(t.getId());
+                tacheService.update(x);
+                chargerTaches();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
         });
     }
 
@@ -332,8 +357,13 @@ public class CalendarViewController implements Initializable {
         confirm.setHeaderText(null);
         confirm.setContentText(msg);
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            sel.forEach(t -> tacheService.delete(t.getId()));
-            chargerTaches();
+            try {
+                sel.forEach(t -> tacheService.delete(t.getId()));
+                chargerTaches();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
         }
     }
 

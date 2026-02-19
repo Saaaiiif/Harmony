@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,11 +62,11 @@ public class FrontLayoutController {
             new NavItem("Settings", "settings-5666"),
             new NavItem("About Us", "information-6255"),
             new NavItem("Calendar", "calendar-11015"),
-            new NavItem("Courses", "book-13427"),
+            new NavItem("Tasks", "book-13427"),
+            new NavItem("Admin", "settings-5666"),
             new NavItem("Health", "black-hospital-cross-10726"),
             new NavItem("Breathe", "cooling-symbol-3341"),
-            new NavItem("Pomodoro", "time-2624"),
-            new NavItem("Scenes", "photos-10614")
+            new NavItem("Pomodoro", "time-2624")
     );
 
     private AnimationTimer rollTimer;
@@ -394,12 +395,14 @@ public class FrontLayoutController {
         if (index < 0 || index >= navItems.size()) return;
         NavItem item = navItems.get(index);
         switch (item.label) {
-            case "Calendar" -> loadCalendarView();
+            case "Calendar" -> loadCalendarManagementView();
+            case "Tasks" -> loadKanbanView();
+            case "Admin" -> loadAdminBackoffice();
             default -> { /* autres items : garder la vue actuelle ou afficher un placeholder */ }
         }
     }
 
-    private void loadCalendarView() {
+    private void loadCalendarManagementView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/calendar-view.fxml"));
             Parent view = loader.load();
@@ -410,6 +413,40 @@ public class FrontLayoutController {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadKanbanView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/kanban-view.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+            if (!isDarkMode) {
+                view.getStyleClass().add("light-mode");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAdminBackoffice() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/admin-backoffice.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+            if (!isDarkMode) {
+                view.getStyleClass().add("light-mode");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Afficher une alerte si le chargement échoue
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle("Erreur");
+            error.setHeaderText("Impossible de charger le backoffice admin");
+            error.setContentText("Erreur : " + e.getMessage());
+            error.showAndWait();
         }
     }
 
