@@ -4,25 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/com/example/harmony/CalendarViewController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/com/example/harmony/EventFormController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/${project.build.directory}/classes/com/example/harmony/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/models/Evenement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/models/StatutTache.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/models/Tache.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/models/TypeEvenement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/services/EvenementService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/${project.build.directory}/classes/services/TacheService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/migration_sans_calendrier.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/schema_complet_phpmyadmin.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/supprimer_parent_tache_id.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
-    </list>
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -158,7 +140,7 @@
       <workItem from="1770902813735" duration="521000" />
       <workItem from="1770903358834" duration="14360000" />
       <workItem from="1771176067847" duration="21106000" />
-      <workItem from="1771534016573" duration="435000" />
+      <workItem from="1771534016573" duration="972000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
