@@ -55,7 +55,6 @@
                         <Button text="Ajouter" styleClass="btn-admin btn-add" onAction="#onAjouterEvent"/>
                         <Button text="Modifier" styleClass="btn-admin btn-edit" onAction="#onModifierEvent"/>
                         <Button text="Supprimer" styleClass="btn-admin btn-delete" onAction="#onSupprimerEvent"/>
-                        <Button text="Consulter" styleClass="btn-admin btn-view" onAction="#onConsulterEvent"/>
                     </HBox>
                 </HBox>
                 <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="admin-table">

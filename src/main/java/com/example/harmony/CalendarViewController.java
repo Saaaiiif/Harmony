@@ -8,8 +8,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.Cursor;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 import models.Evenement;
@@ -23,44 +27,71 @@ import services.TacheService;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CalendarViewController implements Initializable {
 
     @FXML private TabPane mainTabPane;
+    @FXML private HBox eventsHeader;
+    @FXML private HBox eventsActionBar;
+    @FXML private HBox tasksHeader;
+    @FXML private HBox tasksActionBar;
     @FXML private TableView<Evenement> eventsTable;
     @FXML private TableColumn<Evenement, Number> colId;
     @FXML private TableColumn<Evenement, String> colTitre;
-    @FXML private TableColumn<Evenement, String> colDescription;
     @FXML private TableColumn<Evenement, String> colDateDebut;
     @FXML private TableColumn<Evenement, String> colDateFin;
     @FXML private TableColumn<Evenement, String> colLieu;
     @FXML private TableColumn<Evenement, String> colSalle;
     @FXML private TableColumn<Evenement, String> colStatutDemande;
-    @FXML private TableColumn<Evenement, Number> colPriorite;
     @FXML private TableColumn<Evenement, String> colType;
+    @FXML private TableColumn<Evenement, Void> colActions;
 
     @FXML private TableView<Tache> tacheTable;
     @FXML private TableColumn<Tache, Number> colTacheId;
     @FXML private TableColumn<Tache, String> colTacheNom;
     @FXML private TableColumn<Tache, String> colTacheDeadline;
     @FXML private TableColumn<Tache, String> colTacheStatut;
+    @FXML private TableColumn<Tache, Void> colTacheActions;
+
+    @FXML private VBox calendarMonthBox;
+    @FXML private Label labelMonthYear;
+    @FXML private Button btnPrevMonth;
+    @FXML private Button btnNextMonth;
 
     private final EvenementService evenementService = new EvenementService();
     private final TacheService tacheService = new TacheService();
     private final SalleService salleService = new SalleService();
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("dd/MM/yyyy");
+    private YearMonth currentMonth = YearMonth.now();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurerColonnes();
         configurerColonnesTache();
         if (eventsTable != null) eventsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        configurerToolbarHover();
         chargerEvenements();
         chargerTaches();
+        buildCalendarMonth();
+        if (mainTabPane != null) {
+            mainTabPane.getSelectionModel().selectedItemProperty().addListener((o, oldTab, newTab) -> {
+                if (newTab != null && "Calendrier".equals(newTab.getText())) {
+                    buildCalendarMonth();
+                }
+            });
+        }
+    }
+
+    private void configurerToolbarHover() {
+        /* Boutons du header toujours visibles (Ajouter en haut) ; actions par ligne dans le tableau */
+        if (eventsActionBar != null) eventsActionBar.setOpacity(1);
+        if (tasksActionBar != null) tasksActionBar.setOpacity(1);
     }
 
     private Window getDialogOwner() {
@@ -72,9 +103,8 @@ public class CalendarViewController implements Initializable {
     private void configurerColonnes() {
         if (colId != null) colId.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getId()));
         if (colTitre != null) colTitre.setCellValueFactory(cell -> new SimpleStringProperty(nullToEmpty(cell.getValue().getTitre())));
-        if (colDescription != null) colDescription.setCellValueFactory(cell -> new SimpleStringProperty(nullToEmpty(cell.getValue().getDescription())));
-        if (colDateDebut != null) colDateDebut.setCellValueFactory(cell -> new SimpleStringProperty(formatDate(cell.getValue().getDateDebut())));
-        if (colDateFin != null) colDateFin.setCellValueFactory(cell -> new SimpleStringProperty(formatDate(cell.getValue().getDateFin())));
+        if (colDateDebut != null) colDateDebut.setCellValueFactory(cell -> new SimpleStringProperty(formatDateTime(cell.getValue().getDateDebut())));
+        if (colDateFin != null) colDateFin.setCellValueFactory(cell -> new SimpleStringProperty(formatDateTime(cell.getValue().getDateFin())));
         if (colLieu != null) colLieu.setCellValueFactory(cell -> new SimpleStringProperty(nullToEmpty(cell.getValue().getLieu())));
         if (colSalle != null) colSalle.setCellValueFactory(cell -> {
             if (cell.getValue().getSalleId() == null) return new SimpleStringProperty("");
@@ -91,15 +121,105 @@ public class CalendarViewController implements Initializable {
                 default: return new SimpleStringProperty(statut.name());
             }
         });
-        if (colPriorite != null) colPriorite.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getPriorite()));
         if (colType != null) colType.setCellValueFactory(cell -> {
             TypeEvenement t = cell.getValue().getType();
             return new SimpleStringProperty(t != null ? t.name() : "");
         });
+        if (colActions != null) {
+            colActions.setCellValueFactory(param -> null);
+            colActions.setCellFactory(param -> new TableCell<Evenement, Void>() {
+                private final HBox box = new HBox(8);
+                private final Button btnEdit = new Button("✎");
+                private final Button btnDelete = new Button("✕");
+                {
+                    box.setAlignment(Pos.CENTER);
+                    btnEdit.getStyleClass().addAll("row-action-btn", "row-action-edit");
+                    btnDelete.getStyleClass().addAll("row-action-btn", "row-action-delete");
+                    btnEdit.setOnAction(e -> {
+                        Evenement ev = getTableRow().getItem();
+                        if (ev != null) {
+                            eventsTable.getSelectionModel().clearSelection();
+                            eventsTable.getSelectionModel().select(ev);
+                            onModifier();
+                        }
+                    });
+                    btnDelete.setOnAction(e -> {
+                        Evenement ev = getTableRow().getItem();
+                        if (ev != null) supprimerEvenement(ev);
+                    });
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                        setGraphic(null);
+                    } else {
+                        box.getChildren().setAll(btnEdit, btnDelete);
+                        setGraphic(box);
+                    }
+                }
+            });
+        }
+    }
+
+    private void supprimerEvenement(Evenement e) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmer la suppression");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Supprimer l'événement \"" + (e.getTitre() != null ? e.getTitre() : "") + "\" ?");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                evenementService.delete(e.getId());
+                chargerEvenements();
+                buildCalendarMonth();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
+        }
+    }
+
+    private void consulterEvenement(Evenement e) {
+        String salleInfo = "";
+        if (e.getSalleId() != null) {
+            Salle s = salleService.getById(e.getSalleId());
+            salleInfo = "\nSalle : " + (s != null ? s.getNom() : "") + "\nStatut demande : " + (e.getStatutDemandeSalle() != null ? e.getStatutDemandeSalle() : "");
+        }
+        String detail = String.format(
+                "Titre : %s\nDescription : %s\nDate début : %s\nDate fin : %s\nLieu : %s%s\nType : %s",
+                nullToEmpty(e.getTitre()), nullToEmpty(e.getDescription()),
+                formatDateTime(e.getDateDebut()), formatDateTime(e.getDateFin()),
+                nullToEmpty(e.getLieu()), salleInfo, e.getType() != null ? e.getType().name() : "");
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setTitle("Détail de l'événement");
+        info.setHeaderText(e.getTitre());
+        info.setContentText(detail);
+        info.showAndWait();
+    }
+
+    private void modifierEvenementDepuisCalendrier(Evenement ev) {
+        Dialog<Evenement> dialog = creerDialogEvenement("Modifier l'événement", ev);
+        if (dialog == null) return;
+        dialog.showAndWait().filter(e -> e != null).ifPresent(e -> {
+            try {
+                e.setId(ev.getId());
+                evenementService.update(e);
+                chargerEvenements();
+                buildCalendarMonth();
+                showInfo("Événement modifié.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
+        });
+    }
+
+    private String formatDateTime(Date date) {
+        return date != null ? DATE_FORMAT.format(date) : "";
     }
 
     private String formatDate(Date date) {
-        return date != null ? DATE_FORMAT.format(date) : "";
+        return date != null ? DATE_FORMAT_SHORT.format(date) : "";
     }
 
     private String nullToEmpty(String s) {
@@ -112,6 +232,57 @@ public class CalendarViewController implements Initializable {
         if (colTacheDeadline != null) colTacheDeadline.setCellValueFactory(cell -> new SimpleStringProperty(formatDate(cell.getValue().getDeadline())));
         if (colTacheStatut != null) colTacheStatut.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStatut() != null ? cell.getValue().getStatut().name() : ""));
         if (tacheTable != null) tacheTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        if (colTacheActions != null) {
+            colTacheActions.setCellValueFactory(param -> null);
+            colTacheActions.setCellFactory(param -> new TableCell<Tache, Void>() {
+                private final HBox box = new HBox(8);
+                private final Button btnEdit = new Button("✎");
+                private final Button btnDelete = new Button("✕");
+                {
+                    box.setAlignment(Pos.CENTER);
+                    btnEdit.getStyleClass().addAll("row-action-btn", "row-action-edit");
+                    btnDelete.getStyleClass().addAll("row-action-btn", "row-action-delete");
+                    btnEdit.setOnAction(e -> {
+                        Tache t = getTableRow().getItem();
+                        if (t != null) {
+                            tacheTable.getSelectionModel().clearSelection();
+                            tacheTable.getSelectionModel().select(t);
+                            onModifierTache();
+                        }
+                    });
+                    btnDelete.setOnAction(e -> {
+                        Tache t = getTableRow().getItem();
+                        if (t != null) supprimerTache(t);
+                    });
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                        setGraphic(null);
+                    } else {
+                        box.getChildren().setAll(btnEdit, btnDelete);
+                        setGraphic(box);
+                    }
+                }
+            });
+        }
+    }
+
+    private void supprimerTache(Tache t) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmer la suppression");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Supprimer la tâche \"" + (t.getNom() != null ? t.getNom() : "") + "\" ?");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                tacheService.delete(t.getId());
+                chargerTaches();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlertErreur(getDialogOwner(), ex);
+            }
+        }
     }
 
     private void chargerEvenements() {
@@ -127,6 +298,92 @@ public class CalendarViewController implements Initializable {
     }
 
     @FXML
+    private void onPrevMonth() {
+        currentMonth = currentMonth.minusMonths(1);
+        buildCalendarMonth();
+    }
+
+    @FXML
+    private void onNextMonth() {
+        currentMonth = currentMonth.plusMonths(1);
+        buildCalendarMonth();
+    }
+
+    private void buildCalendarMonth() {
+        if (calendarMonthBox == null) return;
+        calendarMonthBox.getChildren().clear();
+        if (labelMonthYear != null) {
+            String[] mois = {"Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"};
+            labelMonthYear.setText(mois[currentMonth.getMonthValue() - 1] + " " + currentMonth.getYear());
+        }
+        List<Evenement> events = evenementService.getAll();
+        Map<LocalDate, List<Evenement>> byDay = new HashMap<>();
+        for (Evenement e : events) {
+            if (e.getDateDebut() == null) continue;
+            LocalDate d = e.getDateDebut().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (d.getYear() == currentMonth.getYear() && d.getMonth() == currentMonth.getMonth()) {
+                byDay.computeIfAbsent(d, k -> new ArrayList<>()).add(e);
+            }
+        }
+        String[] jours = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("calendar-grid");
+        grid.setHgap(4);
+        grid.setVgap(4);
+        for (int i = 0; i < 7; i++) {
+            Label h = new Label(jours[i]);
+            h.getStyleClass().add("calendar-weekday");
+            grid.add(h, i, 0);
+        }
+        LocalDate first = currentMonth.atDay(1);
+        int startOffset = first.getDayOfWeek().getValue() - 1;
+        int daysInMonth = currentMonth.lengthOfMonth();
+        int row = 1, col = startOffset;
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate date = currentMonth.atDay(day);
+            VBox cell = new VBox(4);
+            cell.getStyleClass().add("calendar-day-cell");
+            cell.setMinSize(100, 70);
+            cell.setPrefSize(120, 85);
+            Label num = new Label(String.valueOf(day));
+            num.getStyleClass().add("calendar-day-num");
+            cell.getChildren().add(num);
+            List<Evenement> dayEvents = byDay.getOrDefault(date, Collections.emptyList());
+            for (Evenement ev : dayEvents.stream().limit(3).collect(Collectors.toList())) {
+                Label el = new Label(ev.getTitre() != null ? (ev.getTitre().length() > 18 ? ev.getTitre().substring(0, 17) + "…" : ev.getTitre()) : "");
+                el.getStyleClass().add("calendar-day-event");
+                el.setWrapText(true);
+                el.setUserData(ev);
+                el.setCursor(Cursor.HAND);
+                el.setOnMouseClicked(me -> {
+                    Evenement event = (Evenement) el.getUserData();
+                    if (event == null) return;
+                    ContextMenu menu = new ContextMenu();
+                    MenuItem miConsulter = new MenuItem("Consulter");
+                    MenuItem miModifier = new MenuItem("Modifier");
+                    MenuItem miSupprimer = new MenuItem("Supprimer");
+                    miConsulter.setOnAction(e -> consulterEvenement(event));
+                    miModifier.setOnAction(e -> modifierEvenementDepuisCalendrier(event));
+                    miSupprimer.setOnAction(e -> supprimerEvenement(event));
+                    menu.getItems().addAll(miConsulter, miModifier, miSupprimer);
+                    menu.show(el, me.getScreenX(), me.getScreenY());
+                });
+                cell.getChildren().add(el);
+            }
+            if (dayEvents.size() > 3) {
+                Label more = new Label("+" + (dayEvents.size() - 3) + " autre(s)");
+                more.getStyleClass().add("calendar-day-more");
+                cell.getChildren().add(more);
+            }
+            grid.add(cell, col, row);
+            col++;
+            if (col == 7) { col = 0; row++; }
+        }
+        calendarMonthBox.getChildren().add(grid);
+        VBox.setVgrow(grid, Priority.ALWAYS);
+    }
+
+    @FXML
     private void onAjouter() {
         try {
             Dialog<Evenement> dialog = creerDialogEvenement("Nouvel événement", null);
@@ -135,7 +392,8 @@ public class CalendarViewController implements Initializable {
                 try {
                     evenementService.add(e);
                     chargerEvenements();
-                    showInfo("Événement créé." + (e.getStatutDemandeSalle() == StatutDemandeSalle.EN_ATTENTE ? " Votre demande de salle sera traitée par l'administrateur." : ""));
+                    buildCalendarMonth();
+                    showInfo("Événement créé." + (e.getStatutDemandeSalle() == StatutDemandeSalle.EN_ATTENTE ? " Demande de salle en attente." : ""));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     showAlertErreur(getDialogOwner(), ex);
@@ -160,6 +418,7 @@ public class CalendarViewController implements Initializable {
                 e.setId(event.getId());
                 evenementService.update(e);
                 chargerEvenements();
+                buildCalendarMonth();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 showAlertErreur(getDialogOwner(), ex);
@@ -181,34 +440,12 @@ public class CalendarViewController implements Initializable {
             try {
                 selected.forEach(e -> evenementService.delete(e.getId()));
                 chargerEvenements();
+                buildCalendarMonth();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 showAlertErreur(getDialogOwner(), ex);
             }
         }
-    }
-
-    @FXML
-    private void onConsulter() {
-        ObservableList<Evenement> selected = eventsTable.getSelectionModel().getSelectedItems();
-        if (selected.isEmpty()) { showInfo("Veuillez sélectionner un événement à consulter."); return; }
-        if (selected.size() > 1) { showInfo("Veuillez sélectionner un seul événement."); return; }
-        Evenement e = selected.get(0);
-        String salleInfo = "";
-        if (e.getSalleId() != null) {
-            Salle s = salleService.getById(e.getSalleId());
-            salleInfo = "\nSalle demandée : " + (s != null ? s.getNom() : "") + "\nStatut : " + (e.getStatutDemandeSalle() != null ? e.getStatutDemandeSalle().name() : "");
-        }
-        String detail = String.format(
-                "Titre : %s\nDescription : %s\nDate début : %s\nDate fin : %s\nLieu : %s%s\nPriorité : %d\nRappel : %s\nType : %s",
-                nullToEmpty(e.getTitre()), nullToEmpty(e.getDescription()), formatDate(e.getDateDebut()), formatDate(e.getDateFin()),
-                nullToEmpty(e.getLieu()), salleInfo, e.getPriorite(), e.isRappelActif() ? "Oui" : "Non", e.getType() != null ? e.getType().name() : ""
-        );
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Détail de l'événement");
-        info.setHeaderText(e.getTitre());
-        info.setContentText(detail);
-        info.showAndWait();
     }
 
     private Dialog<Evenement> creerDialogEvenement(String titre, Evenement initial) {
@@ -218,8 +455,8 @@ public class CalendarViewController implements Initializable {
         dialog.initModality(Modality.APPLICATION_MODAL);
         Window window = getDialogOwner();
         if (window != null) dialog.initOwner(window);
-        dialog.getDialogPane().setMinWidth(540);
-        dialog.getDialogPane().setMinHeight(520);
+        dialog.getDialogPane().setMinWidth(560);
+        dialog.getDialogPane().setMinHeight(560);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/event-form.fxml"));
@@ -260,7 +497,6 @@ public class CalendarViewController implements Initializable {
         err.showAndWait();
     }
 
-    /* ---------- Tâches ---------- */
     @FXML
     private void onAjouterTache() {
         Dialog<Tache> d = creerDialogTache("Nouvelle tâche", null);
@@ -314,21 +550,6 @@ public class CalendarViewController implements Initializable {
                 showAlertErreur(getDialogOwner(), ex);
             }
         }
-    }
-
-    @FXML
-    private void onConsulterTache() {
-        ObservableList<Tache> sel = tacheTable.getSelectionModel().getSelectedItems();
-        if (sel.isEmpty()) { showInfo("Veuillez sélectionner une tâche à consulter."); return; }
-        if (sel.size() > 1) { showInfo("Veuillez sélectionner une seule tâche."); return; }
-        Tache t = sel.get(0);
-        String detail = String.format("Nom : %s\nDeadline : %s\nNotes : %s\nStatut : %s",
-                nullToEmpty(t.getNom()), formatDate(t.getDeadline()), nullToEmpty(t.getNotes()), t.getStatut() != null ? t.getStatut().name() : "");
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Détail de la tâche");
-        info.setHeaderText(t.getNom());
-        info.setContentText(detail);
-        info.showAndWait();
     }
 
     private Dialog<Tache> creerDialogTache(String titre, Tache initial) {

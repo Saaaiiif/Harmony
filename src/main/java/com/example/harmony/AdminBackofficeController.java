@@ -241,30 +241,6 @@ public class AdminBackofficeController implements Initializable {
         }
     }
 
-    @FXML
-    private void onConsulterEvent() {
-        if (eventsTable == null) return;
-        ObservableList<Evenement> sel = eventsTable.getSelectionModel().getSelectedItems();
-        if (sel.isEmpty()) { showInfo("Veuillez sélectionner un événement à consulter."); return; }
-        if (sel.size() > 1) { showInfo("Veuillez sélectionner un seul événement."); return; }
-        Evenement e = sel.get(0);
-        String salleInfo = "";
-        if (e.getSalleId() != null) {
-            Salle s = salleService.getById(e.getSalleId());
-            salleInfo = "\nSalle : " + (s != null ? s.getNom() : "") + "\nStatut demande : " + (e.getStatutDemandeSalle() != null ? e.getStatutDemandeSalle() : "");
-        }
-        String detail = String.format("Titre : %s\nDescription : %s\nDate début : %s\nDate fin : %s\nLieu : %s%s\nType : %s",
-                nullToEmpty(e.getTitre()), nullToEmpty(e.getDescription()),
-                e.getDateDebut() != null ? DATE_FORMAT.format(e.getDateDebut()) : "",
-                e.getDateFin() != null ? DATE_FORMAT.format(e.getDateFin()) : "",
-                nullToEmpty(e.getLieu()), salleInfo, e.getType() != null ? e.getType().name() : "");
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Détail de l'événement");
-        info.setHeaderText(e.getTitre());
-        info.setContentText(detail);
-        info.showAndWait();
-    }
-
     private void majNotificationDemandes() {
         if (demandeNotificationLabel == null) return;
         int n = evenementService.getDemandesEnAttente().size();

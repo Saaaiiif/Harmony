@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -44,10 +45,22 @@
     <TextArea fx:id="fieldDescription" promptText="Description" wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" styleClass="form-textarea"/>
 
     <Label text="Date début *" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
-    <DatePicker fx:id="fieldDateDebut" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="form-field"/>
+    <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <DatePicker fx:id="fieldDateDebut" prefWidth="160" styleClass="form-field"/>
+        <Label text="Heure" styleClass="form-sublabel"/>
+        <Spinner fx:id="fieldHeureDebut" prefWidth="55" styleClass="form-spinner-small"/>
+        <Label text=":" styleClass="form-sublabel"/>
+        <Spinner fx:id="fieldMinuteDebut" prefWidth="55" styleClass="form-spinner-small"/>
+    </HBox>
 
     <Label text="Date fin *" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
-    <DatePicker fx:id="fieldDateFin" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="form-field"/>
+    <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+        <DatePicker fx:id="fieldDateFin" prefWidth="160" styleClass="form-field"/>
+        <Label text="Heure" styleClass="form-sublabel"/>
+        <Spinner fx:id="fieldHeureFin" prefWidth="55" styleClass="form-spinner-small"/>
+        <Label text=":" styleClass="form-sublabel"/>
+        <Spinner fx:id="fieldMinuteFin" prefWidth="55" styleClass="form-spinner-small"/>
+    </HBox>
 
     <Label text="Lieu" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
     <VBox fx:id="lieuContainer" GridPane.columnIndex="1" GridPane.rowIndex="4" spacing="10">

@@ -8,6 +8,7 @@ import utiles.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EvenementService implements Services<Evenement> {
@@ -20,8 +21,8 @@ public class EvenementService implements Services<Evenement> {
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
             ps.setString(2, e.getDescription());
-            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
-            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
+            ps.setTimestamp(3, new Timestamp(e.getDateDebut().getTime()));
+            ps.setTimestamp(4, new Timestamp(e.getDateFin().getTime()));
             ps.setString(5, e.getLieu());
             ps.setInt(6, e.getPriorite());
             ps.setBoolean(7, e.isRappelActif());
@@ -43,8 +44,8 @@ public class EvenementService implements Services<Evenement> {
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
             ps.setString(2, e.getDescription());
-            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
-            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
+            ps.setTimestamp(3, new Timestamp(e.getDateDebut().getTime()));
+            ps.setTimestamp(4, new Timestamp(e.getDateFin().getTime()));
             ps.setString(5, e.getLieu());
             ps.setInt(6, e.getPriorite());
             ps.setBoolean(7, e.isRappelActif());
@@ -82,12 +83,23 @@ public class EvenementService implements Services<Evenement> {
             if (s != null && !s.isEmpty()) statut = StatutDemandeSalle.valueOf(s);
         } catch (SQLException | IllegalArgumentException ignored) { }
 
+        Date dateDebut = null, dateFin = null;
+        try {
+            Timestamp t = rs.getTimestamp("date_debut");
+            if (t != null) dateDebut = new Date(t.getTime());
+        } catch (SQLException ignored) { }
+        try {
+            Timestamp t = rs.getTimestamp("date_fin");
+            if (t != null) dateFin = new Date(t.getTime());
+        } catch (SQLException ignored) { }
+        if (dateDebut == null) try { dateDebut = rs.getDate("date_debut"); } catch (SQLException ignored) { }
+        if (dateFin == null) try { dateFin = rs.getDate("date_fin"); } catch (SQLException ignored) { }
         return new Evenement(
                 rs.getInt("id"),
                 rs.getString("titre"),
                 rs.getString("description"),
-                rs.getDate("date_debut"),
-                rs.getDate("date_fin"),
+                dateDebut,
+                dateFin,
                 rs.getString("lieu"),
                 rs.getInt("priorite"),
                 rs.getBoolean("rappel_actif"),
@@ -103,8 +115,8 @@ public class EvenementService implements Services<Evenement> {
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
             ps.setString(2, e.getDescription());
-            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
-            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
+            ps.setTimestamp(3, new Timestamp(e.getDateDebut().getTime()));
+            ps.setTimestamp(4, new Timestamp(e.getDateFin().getTime()));
             ps.setString(5, e.getLieu());
             ps.setInt(6, e.getPriorite());
             ps.setBoolean(7, e.isRappelActif());
@@ -127,8 +139,8 @@ public class EvenementService implements Services<Evenement> {
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getTitre());
             ps.setString(2, e.getDescription());
-            ps.setDate(3, new java.sql.Date(e.getDateDebut().getTime()));
-            ps.setDate(4, new java.sql.Date(e.getDateFin().getTime()));
+            ps.setTimestamp(3, new Timestamp(e.getDateDebut().getTime()));
+            ps.setTimestamp(4, new Timestamp(e.getDateFin().getTime()));
             ps.setString(5, e.getLieu());
             ps.setInt(6, e.getPriorite());
             ps.setBoolean(7, e.isRappelActif());

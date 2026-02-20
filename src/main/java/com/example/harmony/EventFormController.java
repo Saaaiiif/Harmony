@@ -11,9 +11,7 @@ import models.TypeEvenement;
 import services.SalleService;
 
 import java.net.URL;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,6 +22,10 @@ public class EventFormController implements Initializable {
     @FXML private TextArea fieldDescription;
     @FXML private DatePicker fieldDateDebut;
     @FXML private DatePicker fieldDateFin;
+    @FXML private Spinner<Integer> fieldHeureDebut;
+    @FXML private Spinner<Integer> fieldMinuteDebut;
+    @FXML private Spinner<Integer> fieldHeureFin;
+    @FXML private Spinner<Integer> fieldMinuteFin;
     @FXML private TextField fieldLieu;
     @FXML private VBox salleChoiceBox;
     @FXML private ComboBox<Salle> fieldSalle;
@@ -44,6 +46,18 @@ public class EventFormController implements Initializable {
             if (!fieldType.getItems().isEmpty()) {
                 fieldType.getSelectionModel().selectFirst();
             }
+        }
+        if (fieldHeureDebut != null) {
+            fieldHeureDebut.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
+        }
+        if (fieldMinuteDebut != null) {
+            fieldMinuteDebut.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+        }
+        if (fieldHeureFin != null) {
+            fieldHeureFin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 17));
+        }
+        if (fieldMinuteFin != null) {
+            fieldMinuteFin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
         }
         if (fieldSalle != null) {
             chargerSalles();
@@ -96,6 +110,16 @@ public class EventFormController implements Initializable {
         if (fieldDescription != null) fieldDescription.setText(e.getDescription() != null ? e.getDescription() : "");
         if (fieldDateDebut != null) fieldDateDebut.setValue(dateToLocalDate(e.getDateDebut()));
         if (fieldDateFin != null) fieldDateFin.setValue(dateToLocalDate(e.getDateFin()));
+        if (e.getDateDebut() != null) {
+            LocalDateTime ldt = dateToLocalDateTime(e.getDateDebut());
+            if (fieldHeureDebut != null) fieldHeureDebut.getValueFactory().setValue(ldt.getHour());
+            if (fieldMinuteDebut != null) fieldMinuteDebut.getValueFactory().setValue(ldt.getMinute());
+        }
+        if (e.getDateFin() != null) {
+            LocalDateTime ldt = dateToLocalDateTime(e.getDateFin());
+            if (fieldHeureFin != null) fieldHeureFin.getValueFactory().setValue(ldt.getHour());
+            if (fieldMinuteFin != null) fieldMinuteFin.getValueFactory().setValue(ldt.getMinute());
+        }
         if (fieldLieu != null) fieldLieu.setText(e.getLieu() != null ? e.getLieu() : "");
         if (fieldPriorite != null) fieldPriorite.getValueFactory().setValue(Math.max(1, Math.min(10, e.getPriorite())));
         if (fieldRappelActif != null) fieldRappelActif.setSelected(e.isRappelActif());
@@ -114,6 +138,10 @@ public class EventFormController implements Initializable {
         String description = (fieldDescription != null && fieldDescription.getText() != null) ? fieldDescription.getText().trim() : "";
         LocalDate deb = fieldDateDebut != null ? fieldDateDebut.getValue() : null;
         LocalDate fin = fieldDateFin != null ? fieldDateFin.getValue() : null;
+        int hD = fieldHeureDebut != null && fieldHeureDebut.getValue() != null ? fieldHeureDebut.getValue() : 9;
+        int mD = fieldMinuteDebut != null && fieldMinuteDebut.getValue() != null ? fieldMinuteDebut.getValue() : 0;
+        int hF = fieldHeureFin != null && fieldHeureFin.getValue() != null ? fieldHeureFin.getValue() : 17;
+        int mF = fieldMinuteFin != null && fieldMinuteFin.getValue() != null ? fieldMinuteFin.getValue() : 0;
         String lieu = (fieldLieu != null && fieldLieu.getText() != null) ? fieldLieu.getText().trim() : "";
         int priorite = (fieldPriorite != null && fieldPriorite.getValue() != null) ? fieldPriorite.getValue() : 1;
         boolean rappel = fieldRappelActif != null && fieldRappelActif.isSelected();
@@ -121,8 +149,8 @@ public class EventFormController implements Initializable {
         TypeEvenement type = TypeEvenement.REUNION;
         try { type = TypeEvenement.valueOf(typeStr); } catch (IllegalArgumentException ignored) { }
 
-        Date dateDebut = deb != null ? localDateToDate(deb) : new Date();
-        Date dateFin = fin != null ? localDateToDate(fin) : new Date();
+        Date dateDebut = deb != null ? localDateTimeToDate(LocalDateTime.of(deb.getYear(), deb.getMonthValue(), deb.getDayOfMonth(), hD, mD, 0)) : new Date();
+        Date dateFin = fin != null ? localDateTimeToDate(LocalDateTime.of(fin.getYear(), fin.getMonthValue(), fin.getDayOfMonth(), hF, mF, 0)) : new Date();
 
         Integer salleId = null;
         StatutDemandeSalle statut = null;
@@ -154,6 +182,16 @@ public class EventFormController implements Initializable {
             showError("La date de fin doit être après la date de début.");
             return false;
         }
+        if (fieldDateDebut.getValue().equals(fieldDateFin.getValue())) {
+            int hD = fieldHeureDebut != null && fieldHeureDebut.getValue() != null ? fieldHeureDebut.getValue() : 0;
+            int mD = fieldMinuteDebut != null && fieldMinuteDebut.getValue() != null ? fieldMinuteDebut.getValue() : 0;
+            int hF = fieldHeureFin != null && fieldHeureFin.getValue() != null ? fieldHeureFin.getValue() : 0;
+            int mF = fieldMinuteFin != null && fieldMinuteFin.getValue() != null ? fieldMinuteFin.getValue() : 0;
+            if (hD > hF || (hD == hF && mD >= mF)) {
+                showError("L'heure de fin doit être après l'heure de début.");
+                return false;
+            }
+        }
         String lieu = fieldLieu != null && fieldLieu.getText() != null ? fieldLieu.getText().trim().toLowerCase() : "";
         if (lieu.contains("esprit")) {
             if (fieldSalle == null || fieldSalle.getItems().isEmpty()) {
@@ -181,8 +219,13 @@ public class EventFormController implements Initializable {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    private static Date localDateToDate(LocalDate localDate) {
-        if (localDate == null) return null;
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    private static LocalDateTime dateToLocalDateTime(Date date) {
+        if (date == null) return LocalDateTime.now();
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    private static Date localDateTimeToDate(LocalDateTime ldt) {
+        if (ldt == null) return null;
+        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
