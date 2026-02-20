@@ -7,6 +7,26 @@ public class Commentaire {
     private LocalDateTime dateCommentaire;
     private int idPost;
     private int idEtudiant;
+    private String titrePost;
+    private String nomEtudiant;
+
+
+    public String getTitrePost() {
+        return titrePost;
+    }
+
+    public void setTitrePost(String titrePost) {
+        this.titrePost = titrePost;
+    }
+
+    public String getNomEtudiant() {
+        return nomEtudiant;
+    }
+
+    public void setNomEtudiant(String nomEtudiant) {
+        this.nomEtudiant = nomEtudiant;
+    }
+
 
     public Commentaire() {}
     public Commentaire(String contenu, int idPost){

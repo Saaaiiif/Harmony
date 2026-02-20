@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Supprimer : CategoriesTableController , PostsTableController  et CommentairesTableController . créer : CategoriesCardController , PostsCardController et  CommentairesCardController">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Modification : Ne plus afficher les ID , dans la table post, afficher : nom catégorie, titre post, nom étudiant . (les modifications sont dans Post.java , ServicePost.java et PostsCardController.java )">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Commentaire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServiceCommentaire.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,7 +160,7 @@
       <workItem from="1770988683984" duration="22715000" />
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
-      <workItem from="1771511806772" duration="5954000" />
+      <workItem from="1771511806772" duration="7649000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -306,7 +306,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771520249653</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Modification : Ne plus afficher les ID , dans la table post, afficher : nom catégorie, titre post, nom étudiant . (les modifications sont dans Post.java , ServicePost.java et PostsCardController.java )">
+      <option name="closed" value="true" />
+      <created>1771576510957</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1771576510957</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -339,7 +347,8 @@
     <MESSAGE value="quelques rectifications de navigation" />
     <MESSAGE value="Suppression des TABLEVIEW , les fichiers CategoriesTable.fxml , PostsTable.fxml et  CommentairesTable.fxml et les remplacer par : CategoriesCards.fxml , PostsCards.fxml et CommentairesCards.fxml" />
     <MESSAGE value="Supprimer : CategoriesTableController , PostsTableController  et CommentairesTableController . créer : CategoriesCardController , PostsCardController et  CommentairesCardController" />
-    <option name="LAST_COMMIT_MESSAGE" value="Supprimer : CategoriesTableController , PostsTableController  et CommentairesTableController . créer : CategoriesCardController , PostsCardController et  CommentairesCardController" />
+    <MESSAGE value="Modification : Ne plus afficher les ID , dans la table post, afficher : nom catégorie, titre post, nom étudiant . (les modifications sont dans Post.java , ServicePost.java et PostsCardController.java )" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modification : Ne plus afficher les ID , dans la table post, afficher : nom catégorie, titre post, nom étudiant . (les modifications sont dans Post.java , ServicePost.java et PostsCardController.java )" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

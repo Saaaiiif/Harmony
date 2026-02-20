@@ -136,7 +136,11 @@ public class ServiceCommentaire implements Services<Commentaire> {
     public List<Commentaire> getAll() {
 
         List<Commentaire> commentaires = new ArrayList<>();
-        String req = "SELECT * FROM commentaire";
+        String req = "SELECT c.*, p.titre, e.nom, e.prenom " +
+                "FROM commentaire c " +
+                "JOIN post p ON c.id_post = p.id_post " +
+                "JOIN etudiant e ON c.id_etudiant = e.id_etudiant";
+
 
         try {
 
@@ -151,6 +155,14 @@ public class ServiceCommentaire implements Services<Commentaire> {
                 c.setContenu(rs.getString("contenu"));
                 c.setIdEtudiant(rs.getInt("id_etudiant"));
                 c.setIdPost(rs.getInt("id_post"));
+
+                // 🔥 AFFICHAGE PROPRE
+                c.setTitrePost(rs.getString("titre"));
+
+                String nomComplet = rs.getString("nom") + " " + rs.getString("prenom");
+                c.setNomEtudiant(nomComplet);
+
+
 
                 Timestamp ts = rs.getTimestamp("date_commentaire");
                 if (ts != null)
