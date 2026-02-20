@@ -16,18 +16,22 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.user;
 import services.serviceUser;
+import utils.FakeAccountDetector;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 public class GestionUsersController {
 
     @FXML private FlowPane cardsContainer;
     @FXML private TextField searchField;
+    @FXML private Button btnSortSuspicion; // Nouveau bouton de tri
 
     private final serviceUser service = new serviceUser();
     private ObservableList<user> observableList;
+    private boolean sortedBySuspicion = false; // État du tri
 
     @FXML
     public void initialize() {
@@ -45,39 +49,45 @@ public class GestionUsersController {
     }
 
     private VBox createUserCard(user u) {
+        // ========== CALCUL DU SCORE DE SUSPICION ==========
+        List<user> allUsers = observableList;
+        int suspicionScore = FakeAccountDetector.calculateSuspicionScore(u, allUsers);
+        String suspicionColor = FakeAccountDetector.getSuspicionColor(suspicionScore);
+        String suspicionLabel = FakeAccountDetector.getSuspicionLabel(suspicionScore);
+
         VBox card = new VBox(15);
         card.setPrefWidth(340);
         card.setMinHeight(280);
         card.setAlignment(Pos.TOP_LEFT);
         card.setPadding(new Insets(20));
 
-        // Style de base de la carte
+        // Style de base de la carte AVEC BORDURE COLORÉE selon suspicion
         String defaultStyle = "-fx-background-color: white;" +
                 "-fx-background-radius: 20;" +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 10, 0, 0, 5);" +
-                "-fx-border-color: transparent;" +
-                "-fx-border-width: 2;" +
+                "-fx-border-color: " + suspicionColor + ";" +
+                "-fx-border-width: 3;" +
                 "-fx-border-radius: 20;";
 
         card.setStyle(defaultStyle);
 
-        // Effet dynamique au survol
+        // Effet dynamique au survol avec la couleur de suspicion
         card.setOnMouseEntered(e -> {
             card.setStyle("-fx-background-color: white;" +
                     "-fx-background-radius: 20;" +
-                    "-fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.25), 20, 0, 0, 8);" +
-                    "-fx-border-color: #8B5CF6;" +
-                    "-fx-border-width: 2;" +
+                    "-fx-effect: dropshadow(three-pass-box, " + hexToRgba(suspicionColor, 0.25) + ", 20, 0, 0, 8);" +
+                    "-fx-border-color: " + suspicionColor + ";" +
+                    "-fx-border-width: 3;" +
                     "-fx-border-radius: 20;");
-            card.setTranslateY(-5); // Fait "sauter" la carte vers le haut
+            card.setTranslateY(-5);
         });
 
         card.setOnMouseExited(e -> {
             card.setStyle(defaultStyle);
-            card.setTranslateY(0); // Remet la carte en place
+            card.setTranslateY(0);
         });
 
-        // --- HEADER (Avatar + Nom) ---
+        // --- HEADER (Avatar + Nom + BADGE SUSPICION) ---
         HBox header = new HBox(15);
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -99,10 +109,23 @@ public class GestionUsersController {
         emailLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #6B7280;");
 
         nameBox.getChildren().addAll(fullName, emailLabel);
-        header.getChildren().addAll(avatarBox, nameBox);
+
+        // ========== BADGE DE SUSPICION ==========
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label suspicionBadge = new Label(suspicionLabel);
+        suspicionBadge.setStyle("-fx-background-color: " + suspicionColor + ";" +
+                "-fx-text-fill: white;" +
+                "-fx-padding: 5 12 5 12;" +
+                "-fx-background-radius: 12;" +
+                "-fx-font-size: 11;" +
+                "-fx-font-weight: bold;");
+
+        header.getChildren().addAll(avatarBox, nameBox, spacer, suspicionBadge);
 
         // --- INFOS (Badges/Chips) ---
-        FlowPane infoBox = new FlowPane(8, 8); // Espacement horizontal et vertical
+        FlowPane infoBox = new FlowPane(8, 8);
         infoBox.setStyle("-fx-padding: 10 0 10 0;");
 
         int age = calculateAge(u.getUser_date_de_naissance());
@@ -112,37 +135,39 @@ public class GestionUsersController {
         String santeStr = (u.getUser_poids() != null ? u.getUser_poids() + "kg" : "-") + " / " + (u.getUser_taille() != null ? u.getUser_taille() + "cm" : "-");
 
         infoBox.getChildren().addAll(
-                createChip("🎂 " + age + " ans", "#F3E8FF", "#6B21A8"), // Violet clair
-                createChip("🚻 " + sexeStr, "#E0F2FE", "#0369A1"), // Bleu clair
-                createChip("⚖️ " + santeStr, "#D1FAE5", "#065F46"), // Vert clair
-                createChip("🎓 " + niveauStr, "#FEF3C7", "#92400E"), // Jaune clair
-                createChip("🏫 " + etablissementStr, "#FCE7F3", "#9D174D") // Rose clair
+                createChip("🎂 " + age + " ans", "#F3E8FF", "#6B21A8"),
+                createChip("🚻 " + sexeStr, "#E0F2FE", "#0369A1"),
+                createChip("⚖️ " + santeStr, "#D1FAE5", "#065F46"),
+                createChip("🎓 " + niveauStr, "#FEF3C7", "#92400E"),
+                createChip("🏫 " + etablissementStr, "#FCE7F3", "#9D174D")
         );
 
         // --- BOTTOM (MenuButton ":" stylisé) ---
         HBox bottomBox = new HBox();
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
 
         MenuButton menuButton = new MenuButton("⋮");
-        // Style du bouton
         menuButton.setStyle("-fx-background-color: #F3F4F6; -fx-background-radius: 12; -fx-text-fill: #4B5563; -fx-font-size: 16; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 2 12 2 12;");
 
-        // Items avec icônes
         MenuItem editItem = new MenuItem("✏️ Modifier");
         editItem.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
         editItem.setOnAction(e -> editUser(u));
 
         MenuItem deleteItem = new MenuItem("🗑️ Supprimer");
-        deleteItem.setStyle("-fx-font-size: 14; -fx-text-fill: #DC2626;"); // Rouge pour suppression
+        deleteItem.setStyle("-fx-font-size: 14; -fx-text-fill: #DC2626;");
         deleteItem.setOnAction(e -> deleteUser(u));
 
-        menuButton.getItems().addAll(editItem, deleteItem);
-        bottomBox.getChildren().addAll(spacer, menuButton);
+        // ========== NOUVEAU : Menu item pour afficher les détails de suspicion ==========
+        MenuItem suspicionItem = new MenuItem("🔍 Détails suspicion (" + suspicionScore + " pts)");
+        suspicionItem.setStyle("-fx-font-size: 14; -fx-text-fill: " + suspicionColor + "; -fx-font-weight: bold;");
+        suspicionItem.setOnAction(e -> showSuspicionDetails(u, suspicionScore));
+
+        menuButton.getItems().addAll(editItem, deleteItem, new SeparatorMenuItem(), suspicionItem);
+        bottomBox.getChildren().addAll(spacer2, menuButton);
 
         // --- INTERACTIONS ---
-        // Double-clic pour afficher détails
         card.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 showUserDetails(u);
@@ -172,9 +197,154 @@ public class GestionUsersController {
             LocalDate currentDate = LocalDate.now();
             return Period.between(birthDate, currentDate).getYears();
         } catch (Exception e) {
-            return 0; // Default si erreur
+            return 0;
         }
     }
+
+    // Conversion hex en rgba pour les effets de survol
+    private String hexToRgba(String hex, double opacity) {
+        if (hex.startsWith("#")) hex = hex.substring(1);
+        int r = Integer.parseInt(hex.substring(0, 2), 16);
+        int g = Integer.parseInt(hex.substring(2, 4), 16);
+        int b = Integer.parseInt(hex.substring(4, 6), 16);
+        return "rgba(" + r + ", " + g + ", " + b + ", " + opacity + ")";
+    }
+
+    // ==================== TRI PAR SUSPICION ====================
+
+    @FXML
+    void handleSortBySuspicion() {
+        if (!sortedBySuspicion) {
+            // Trier par score DÉCROISSANT (plus suspect en premier)
+            observableList.sort((u1, u2) -> {
+                int score1 = FakeAccountDetector.calculateSuspicionScore(u1, observableList);
+                int score2 = FakeAccountDetector.calculateSuspicionScore(u2, observableList);
+                return Integer.compare(score2, score1); // Décroissant
+            });
+
+            // Changer l'apparence du bouton
+            btnSortSuspicion.setText("🔄 Réinitialiser tri");
+            btnSortSuspicion.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.3), 10, 0, 0, 3);");
+            sortedBySuspicion = true;
+        } else {
+            // Réinitialiser l'ordre par ID
+            observableList.setAll(service.getAll());
+            btnSortSuspicion.setText("⚠️ Trier par suspicion");
+            btnSortSuspicion.setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);");
+            sortedBySuspicion = false;
+        }
+
+        displayUserCards();
+    }
+
+    // ==================== AFFICHAGE DÉTAILS SUSPICION ====================
+
+    private void showSuspicionDetails(user u, int score) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Analyse de suspicion");
+        alert.setHeaderText("Compte : " + u.getUser_prenom() + " " + u.getUser_nom());
+
+        String level = FakeAccountDetector.getSuspicionLevel(score);
+        String levelLabel = FakeAccountDetector.getSuspicionLabel(score);
+
+        StringBuilder content = new StringBuilder();
+        content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        content.append("Score de suspicion : ").append(score).append(" / 20 pts\n");
+        content.append("Niveau : ").append(levelLabel).append("\n");
+        content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        content.append("Signaux détectés :\n\n");
+
+        boolean hasSignals = false;
+
+        // Vérifier nom suspect
+        String nomLower = u.getUser_nom().toLowerCase();
+        if (nomLower.contains("test") || nomLower.contains("user") || nomLower.contains("aaa") ||
+                nomLower.matches(".*\\d{2,}.*")) {
+            content.append("⚠️ Nom suspect : \"").append(u.getUser_nom()).append("\"\n");
+            hasSignals = true;
+        }
+
+        // Vérifier prénom suspect
+        String prenomLower = u.getUser_prenom().toLowerCase();
+        if (prenomLower.contains("test") || prenomLower.contains("user") || prenomLower.contains("aaa") ||
+                prenomLower.matches(".*\\d{2,}.*")) {
+            content.append("⚠️ Prénom suspect : \"").append(u.getUser_prenom()).append("\"\n");
+            hasSignals = true;
+        }
+
+        // Vérifier email avec beaucoup de chiffres
+        if (u.getUser_email().matches(".*\\d{3,}.*")) {
+            content.append("⚠️ Email contient beaucoup de chiffres\n");
+            hasSignals = true;
+        }
+
+        // Vérifier email temporaire
+        String emailLower = u.getUser_email().toLowerCase();
+        if (emailLower.contains("temp") || emailLower.contains("test") ||
+                emailLower.contains("yopmail") || emailLower.contains("fake")) {
+            content.append("⚠️ Email temporaire/suspect détecté\n");
+            hasSignals = true;
+        }
+
+        // Vérifier doublons
+        long duplicates = observableList.stream()
+                .filter(other -> other.getUser_id() != u.getUser_id())
+                .filter(other -> other.getUser_email().equalsIgnoreCase(u.getUser_email()) ||
+                        (other.getUser_nom().equalsIgnoreCase(u.getUser_nom()) &&
+                                other.getUser_prenom().equalsIgnoreCase(u.getUser_prenom())))
+                .count();
+        if (duplicates > 0) {
+            content.append("⚠️ ").append(duplicates).append(" doublon(s) détecté(s)\n");
+            hasSignals = true;
+        }
+
+        // Vérifier incohérence âge/activité
+        if (u.getUser_date_de_naissance() != null && u.getUser_niveau_activite_physique() != null) {
+            try {
+                LocalDate birthDate = LocalDate.parse(u.getUser_date_de_naissance());
+                int age = Period.between(birthDate, LocalDate.now()).getYears();
+                String niveauActivite = u.getUser_niveau_activite_physique().name();
+
+                if ((age < 15 && niveauActivite.equals("TRES_INTENSE")) ||
+                        (age > 70 && niveauActivite.equals("TRES_INTENSE"))) {
+                    content.append("⚠️ Activité physique incohérente avec l'âge\n");
+                    hasSignals = true;
+                }
+            } catch (Exception e) {
+                // Ignorer erreurs de parsing
+            }
+        }
+
+        // Vérifier établissement suspect
+        if (u.getUser_etablissement_scolaire() != null) {
+            String etabLower = u.getUser_etablissement_scolaire().toLowerCase();
+            if (etabLower.contains("test") || etabLower.contains("aaa") || etabLower.length() <= 2) {
+                content.append("⚠️ Établissement suspect : \"").append(u.getUser_etablissement_scolaire()).append("\"\n");
+                hasSignals = true;
+            }
+        }
+
+        if (!hasSignals) {
+            content.append("✅ Aucun signal majeur détecté\n");
+            content.append("\nCe compte semble fiable !\n");
+        } else {
+            content.append("\n━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+            content.append("Recommandation :\n");
+            if (score <= 2) {
+                content.append("✅ Compte fiable - Aucune action requise\n");
+            } else if (score <= 5) {
+                content.append("⚠️ Compte moyennement suspect - Surveillance recommandée\n");
+            } else {
+                content.append("🚨 Compte très suspect - Vérification manuelle nécessaire\n");
+            }
+        }
+
+        alert.setContentText(content.toString());
+        alert.showAndWait();
+    }
+
+    // ==================== MÉTHODES EXISTANTES ====================
 
     private void showUserDetails(user u) {
         try {
@@ -235,6 +405,9 @@ public class GestionUsersController {
     @FXML
     void refreshTable() {
         observableList.setAll(service.getAll());
+        sortedBySuspicion = false;
+        btnSortSuspicion.setText("⚠️ Trier par suspicion");
+        btnSortSuspicion.setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);");
         displayUserCards();
     }
 

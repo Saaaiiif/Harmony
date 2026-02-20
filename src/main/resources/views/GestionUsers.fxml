@@ -42,10 +42,14 @@
 
         <HBox alignment="CENTER_LEFT" spacing="15">
             <HBox alignment="CENTER_LEFT" prefWidth="400" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
-                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="29.0" prefWidth="556.0" promptText="Rechercher un utilisateur..." style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14;" />
+                <Label style="-fx-font-size: 16;" text="🔍" />
+                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="29.0" prefWidth="356.0" promptText="Rechercher un utilisateur..." style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14;" />
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" />
+
+            <!-- NOUVEAU BOUTON : Tri par suspicion -->
+            <Button fx:id="btnSortSuspicion" onAction="#handleSortBySuspicion" prefHeight="45" prefWidth="200" style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);" text="⚠ Trier par suspicion" />
 
             <Button onAction="#refreshTable" prefHeight="45" prefWidth="150" style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.3), 10, 0, 0, 3);" text="🔄 Actualiser" />
         </HBox>
@@ -55,7 +59,7 @@
                 <Insets top="10" />
             </VBox.margin>
 
-            <FlowPane fx:id="cardsContainer" hgap="25" vgap="25" prefWrapLength="900" style="-fx-background-color: transparent; -fx-padding: 15;">
+            <FlowPane fx:id="cardsContainer" hgap="25" prefWrapLength="900" style="-fx-background-color: transparent; -fx-padding: 15;" vgap="25">
             </FlowPane>
         </ScrollPane>
     </VBox>
