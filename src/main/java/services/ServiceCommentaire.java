@@ -15,28 +15,6 @@ public class ServiceCommentaire implements Services<Commentaire> {
     Connection cnx = MyDataBase.getInstance().getCnx();
 
 
-//    public boolean postExiste(int idPost){
-//
-//        String req = "SELECT id_post FROM post WHERE id_post = ?";
-//
-//        try{
-//            PreparedStatement ps = cnx.prepareStatement(req);
-//            ps.setInt(1, idPost);
-//
-//            ResultSet rs = ps.executeQuery();
-//
-//            return rs.next();
-//
-//        }catch(SQLException e){
-//            System.out.println(e.getMessage());
-//        }
-//
-//        return false;
-//    }
-
-
-
-
     @Override
     public void add(Commentaire commentaire) {
 
@@ -50,8 +28,6 @@ public class ServiceCommentaire implements Services<Commentaire> {
 
 
             ps.setTimestamp(2, Timestamp.valueOf(commentaire.getDateCommentaire()));
-//            ps.setInt(3, commentaire.getIdEtudiant());
-//            ps.setInt(4, commentaire.getIdPost());
             ps.setInt(3, commentaire.getIdPost());       // ✅ BON
             ps.setInt(4, commentaire.getIdEtudiant());
 

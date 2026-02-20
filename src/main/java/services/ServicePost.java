@@ -12,11 +12,6 @@ public class ServicePost implements Services<Post> {
 
     Connection cnx = MyDataBase.getInstance().getCnx();
 
-
-
-
-
-
     @Override
     public void add(Post post) {
 

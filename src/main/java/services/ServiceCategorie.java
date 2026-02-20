@@ -56,31 +56,6 @@ public class ServiceCategorie implements Services<Categorie> {
         }
     }
 
-//    @Override
-//    public void update(Categorie categorie) {
-//
-//        String req = "UPDATE categorie SET nom_categorie = ?, description = ? WHERE id_categorie = ?";
-//
-//        Connection cnx = MyDataBase.getInstance().getCnx();
-//
-//        try {
-//
-//            PreparedStatement ps = cnx.prepareStatement(req);
-//
-//            ps.setString(1, categorie.getNomCategorie());
-//            ps.setString(2, categorie.getDescription());
-//            ps.setInt(3, categorie.getIdCategorie());
-//
-//            ps.executeUpdate();
-//
-//            System.out.println("Categorie modifiée avec succès");
-//
-//
-//
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
 
     @Override
     public void update(Categorie categorie) {
