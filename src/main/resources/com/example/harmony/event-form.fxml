@@ -11,55 +11,64 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml"
          fx:controller="com.example.harmony.EventFormController"
          hgap="16" vgap="16"
-         styleClass="event-form"
-         prefWidth="480"
-         prefHeight="450">
+         styleClass="event-form modern-form"
+         prefWidth="500"
+         prefHeight="480">
 
     <columnConstraints>
-        <ColumnConstraints minWidth="120" prefWidth="120" hgrow="NEVER"/>
-        <ColumnConstraints minWidth="300" prefWidth="300" hgrow="ALWAYS"/>
+        <ColumnConstraints minWidth="130" prefWidth="130" hgrow="NEVER"/>
+        <ColumnConstraints minWidth="320" prefWidth="320" hgrow="ALWAYS"/>
     </columnConstraints>
 
     <rowConstraints>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="80" prefHeight="80" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
-        <RowConstraints minHeight="35" prefHeight="35" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="85" prefHeight="85" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="38" prefHeight="38" vgrow="NEVER"/>
+        <RowConstraints minHeight="50" prefHeight="50" vgrow="NEVER"/>
     </rowConstraints>
 
-    <Label text="Titre *" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
-    <TextField fx:id="fieldTitre" promptText="Titre de l'événement" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+    <Label text="Titre *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
+    <TextField fx:id="fieldTitre" promptText="Titre de l'événement" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" styleClass="form-field"/>
 
-    <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP"/>
-    <TextArea fx:id="fieldDescription" promptText="Description" wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+    <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label" GridPane.valignment="TOP"/>
+    <TextArea fx:id="fieldDescription" promptText="Description" wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" styleClass="form-textarea"/>
 
-    <Label text="Date début *" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="CENTER"/>
-    <DatePicker fx:id="fieldDateDebut" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
+    <Label text="Date début *" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
+    <DatePicker fx:id="fieldDateDebut" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="form-field"/>
 
-    <Label text="Date fin *" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
-    <DatePicker fx:id="fieldDateFin" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200"/>
+    <Label text="Date fin *" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
+    <DatePicker fx:id="fieldDateFin" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="form-field"/>
 
-    <Label text="Lieu" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
-    <TextField fx:id="fieldLieu" promptText="Lieu" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS"/>
+    <Label text="Lieu" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
+    <VBox fx:id="lieuContainer" GridPane.columnIndex="1" GridPane.rowIndex="4" spacing="10">
+        <TextField fx:id="fieldLieu" promptText="Ex: Esprit, Amphithéâtre, Salle 101..." styleClass="form-field"/>
+        <VBox fx:id="salleChoiceBox" visible="false" managed="false" spacing="8" styleClass="salle-choice-box">
+            <Label text="Dans quelle salle ?" styleClass="form-sublabel"/>
+            <ComboBox fx:id="fieldSalle" promptText="Choisir une salle..." prefWidth="280" styleClass="form-combo"/>
+            <Label fx:id="salleEmptyLabel" text="Aucune salle disponible. L'administrateur doit d'abord en ajouter." visible="false" managed="false" styleClass="form-empty-hint" wrapText="true"/>
+        </VBox>
+    </VBox>
 
-    <Label text="Priorité (1-10)" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="CENTER"/>
-    <Spinner fx:id="fieldPriorite" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="120"/>
+    <Label text="Priorité (1-10)" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="form-label"/>
+    <Spinner fx:id="fieldPriorite" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="form-spinner"/>
 
-    <Label text="Rappel actif" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.valignment="CENTER"/>
-    <CheckBox fx:id="fieldRappelActif" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+    <Label text="Rappel actif" GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="form-label"/>
+    <CheckBox fx:id="fieldRappelActif" text="Activer les rappels" GridPane.columnIndex="1" GridPane.rowIndex="6" styleClass="form-checkbox"/>
 
-    <Label text="Type *" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.valignment="CENTER"/>
-    <ComboBox fx:id="fieldType" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+    <Label text="Type *" GridPane.columnIndex="0" GridPane.rowIndex="7" styleClass="form-label"/>
+    <ComboBox fx:id="fieldType" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="7" styleClass="form-combo"/>
 
     <padding>
-        <Insets top="20" right="24" bottom="20" left="24"/>
+        <Insets top="24" right="24" bottom="24" left="24"/>
     </padding>
 </GridPane>

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -13,15 +14,15 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.harmony.AdminBackofficeController"
       styleClass="admin-backoffice"
-      spacing="16"
-      prefWidth="1200" prefHeight="700">
+      spacing="18"
+      prefWidth="1100" prefHeight="650">
 
     <Label text="Backoffice Administrateur" styleClass="admin-title" VBox.vgrow="NEVER"/>
 
     <TabPane fx:id="adminTabPane" styleClass="admin-tab-pane" VBox.vgrow="ALWAYS">
         <!-- Onglet Gestion des Salles -->
         <Tab text="Gestion des Salles" closable="false">
-            <VBox spacing="12">
+            <VBox spacing="14">
                 <HBox alignment="CENTER_LEFT" styleClass="admin-header">
                     <Label text="Salles" styleClass="admin-section-title"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -34,9 +35,9 @@
                 <TableView fx:id="salleTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
                     <columns>
                         <TableColumn fx:id="colSalleId" text="Id" prefWidth="50"/>
-                        <TableColumn fx:id="colSalleNom" text="Nom" prefWidth="150"/>
-                        <TableColumn fx:id="colSalleCapacite" text="Capacité" prefWidth="80"/>
-                        <TableColumn fx:id="colSalleEquipements" text="Équipements" prefWidth="200"/>
+                        <TableColumn fx:id="colSalleNom" text="Nom" prefWidth="160"/>
+                        <TableColumn fx:id="colSalleCapacite" text="Capacité" prefWidth="90"/>
+                        <TableColumn fx:id="colSalleEquipements" text="Équipements" prefWidth="180"/>
                         <TableColumn fx:id="colSalleDisponible" text="Disponible" prefWidth="100"/>
                         <TableColumn fx:id="colSalleDescription" text="Description" prefWidth="250"/>
                     </columns>
@@ -44,27 +45,55 @@
             </VBox>
         </Tab>
 
-        <!-- Onglet Confirmation des Séances -->
-        <Tab text="Confirmation des Séances" closable="false">
-            <VBox spacing="12">
+        <!-- Onglet Gestion des Événements (admin = accès complet CRUD) -->
+        <Tab text="Événements" closable="false">
+            <VBox spacing="14">
                 <HBox alignment="CENTER_LEFT" styleClass="admin-header">
-                    <Label text="Séances en attente de confirmation" styleClass="admin-section-title"/>
+                    <Label text="Tous les événements" styleClass="admin-section-title"/>
                     <Region HBox.hgrow="ALWAYS"/>
                     <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="admin-actions">
-                        <Button text="Confirmer" styleClass="btn-admin btn-confirm" onAction="#onConfirmerSeance"/>
-                        <Button text="Rejeter" styleClass="btn-admin btn-reject" onAction="#onRejeterSeance"/>
+                        <Button text="Ajouter" styleClass="btn-admin btn-add" onAction="#onAjouterEvent"/>
+                        <Button text="Modifier" styleClass="btn-admin btn-edit" onAction="#onModifierEvent"/>
+                        <Button text="Supprimer" styleClass="btn-admin btn-delete" onAction="#onSupprimerEvent"/>
+                        <Button text="Consulter" styleClass="btn-admin btn-view" onAction="#onConsulterEvent"/>
                     </HBox>
                 </HBox>
-                <TableView fx:id="seanceTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
                     <columns>
-                        <TableColumn fx:id="colSeanceId" text="Id" prefWidth="50"/>
-                        <TableColumn fx:id="colSeanceTitre" text="Titre" prefWidth="180"/>
-                        <TableColumn fx:id="colSeanceDateDebut" text="Date début" prefWidth="120"/>
-                        <TableColumn fx:id="colSeanceDateFin" text="Date fin" prefWidth="120"/>
-                        <TableColumn fx:id="colSeanceSalle" text="Salle" prefWidth="100"/>
-                        <TableColumn fx:id="colSeanceConfirmee" text="Confirmée" prefWidth="100"/>
-                        <TableColumn fx:id="colSeanceType" text="Type" prefWidth="100"/>
-                        <TableColumn fx:id="colSeanceParticipants" text="Participants" prefWidth="100"/>
+                        <TableColumn fx:id="colEventId" text="Id" prefWidth="45"/>
+                        <TableColumn fx:id="colEventTitre" text="Titre" prefWidth="140"/>
+                        <TableColumn fx:id="colEventDateDebut" text="Date début" prefWidth="115"/>
+                        <TableColumn fx:id="colEventDateFin" text="Date fin" prefWidth="115"/>
+                        <TableColumn fx:id="colEventLieu" text="Lieu" prefWidth="90"/>
+                        <TableColumn fx:id="colEventSalle" text="Salle" prefWidth="90"/>
+                        <TableColumn fx:id="colEventStatut" text="Statut" prefWidth="95"/>
+                        <TableColumn fx:id="colEventType" text="Type" prefWidth="85"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Demandes de salles (utilisateurs demandent une salle pour lieu=Esprit) -->
+        <Tab text="Demandes de salles" closable="false">
+            <VBox spacing="14">
+                <Label fx:id="demandeNotificationLabel" styleClass="admin-notification" visible="false" managed="false"/>
+                <HBox alignment="CENTER_LEFT" styleClass="admin-header">
+                    <Label text="Demandes de salles en attente" styleClass="admin-section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="admin-actions">
+                        <Button text="Accepter" styleClass="btn-admin btn-confirm" onAction="#onAccepterDemande"/>
+                        <Button text="Refuser" styleClass="btn-admin btn-reject" onAction="#onRefuserDemande"/>
+                    </HBox>
+                </HBox>
+                <Label text="Les utilisateurs ayant indiqué &quot;Esprit&quot; comme lieu doivent sélectionner une salle. Vérifiez la disponibilité puis accepter ou refuser." styleClass="admin-hint"/>
+                <TableView fx:id="demandesTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                    <columns>
+                        <TableColumn fx:id="colDemandeId" text="Id" prefWidth="50"/>
+                        <TableColumn fx:id="colDemandeTitre" text="Événement" prefWidth="150"/>
+                        <TableColumn fx:id="colDemandeDateDebut" text="Date début" prefWidth="120"/>
+                        <TableColumn fx:id="colDemandeDateFin" text="Date fin" prefWidth="120"/>
+                        <TableColumn fx:id="colDemandeSalle" text="Salle demandée" prefWidth="140"/>
+                        <TableColumn fx:id="colDemandeType" text="Type" prefWidth="90"/>
                     </columns>
                 </TableView>
             </VBox>

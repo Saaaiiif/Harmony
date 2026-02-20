@@ -1017,3 +1017,212 @@
 .btn-reject:hover {
     -fx-background-color: rgba(244, 67, 54, 1.0);
 }
+
+.admin-notification {
+    -fx-font-size: 14px;
+    -fx-text-fill: #e65100;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 14px;
+    -fx-background-color: #fff3e0;
+    -fx-background-radius: 8px;
+}
+
+.admin-hint {
+    -fx-font-size: 13px;
+    -fx-text-fill: #757575;
+    -fx-padding: 6 0 8 0;
+    -fx-wrap-text: true;
+}
+
+.light-mode .admin-hint {
+    -fx-text-fill: #5a5a5c;
+}
+
+.calendar-hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(205, 157, 241, 0.9);
+    -fx-padding: 6 0 10 0;
+    -fx-wrap-text: true;
+}
+
+.light-mode .calendar-hint {
+    -fx-text-fill: rgba(139, 107, 177, 0.95);
+}
+
+/* Bloc choix de salle (visible quand lieu = Esprit) */
+.salle-choice-box {
+    -fx-padding: 10 12;
+    -fx-background-color: rgba(205, 157, 241, 0.12);
+    -fx-background-radius: 8px;
+    -fx-border-color: rgba(205, 157, 241, 0.3);
+    -fx-border-radius: 8px;
+    -fx-border-width: 1;
+}
+
+.light-mode .salle-choice-box {
+    -fx-background-color: rgba(205, 157, 241, 0.08);
+    -fx-border-color: rgba(205, 157, 241, 0.25);
+}
+
+.form-sublabel {
+    -fx-font-size: 12px;
+    -fx-text-fill: #a0a0b0;
+}
+
+.light-mode .form-sublabel {
+    -fx-text-fill: #6b6b6b;
+}
+
+.form-empty-hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: #f59e0b;
+    -fx-wrap-text: true;
+}
+
+.light-mode .form-empty-hint {
+    -fx-text-fill: #d97706;
+}
+
+/* ========== Formulaires modernes (style iOS) ========== */
+.modern-form {
+    -fx-background-color: rgba(255, 255, 255, 0.98);
+    -fx-background-radius: 16px;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
+}
+
+.light-mode .modern-form {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+}
+
+.modern-form .form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #374151;
+}
+
+.modern-form .form-input,
+.modern-form .text-field {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1;
+    -fx-padding: 10 14;
+    -fx-font-size: 15px;
+    -fx-text-fill: #111827;
+}
+
+.modern-form .form-input:focused,
+.modern-form .text-field:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cd9df1;
+    -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 0.2), 0, 0, 0, 2);
+}
+
+.modern-form .form-textarea,
+.modern-form .text-area {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10px;
+    -fx-padding: 10 14;
+}
+
+.modern-form .form-spinner .text-field {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: #e5e7eb;
+}
+
+.modern-form .form-checkbox {
+    -fx-text-fill: #374151;
+    -fx-font-size: 14px;
+}
+
+.modern-form .form-checkbox .box {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+/* Tables admin - style carte iOS */
+.admin-table {
+    -fx-background-color: rgba(255, 255, 255, 0.97);
+    -fx-background-radius: 16px;
+    -fx-background-insets: 0;
+    -fx-padding: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 14, 0, 0, 4);
+}
+
+.light-mode .admin-table {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 12, 0, 0, 3);
+}
+
+.admin-table .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+    -fx-background-radius: 12px 12px 0 0;
+}
+
+.admin-table .column-header .label {
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+}
+
+.admin-table .table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.admin-table .table-row-cell:odd {
+    -fx-background-color: rgba(249, 250, 251, 0.6);
+}
+
+.admin-table .table-row-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.08);
+}
+
+.admin-table .table-cell {
+    -fx-text-fill: #374151;
+    -fx-padding: 14 16;
+    -fx-font-size: 14px;
+}
+
+/* Boutons admin - style pill iOS */
+.btn-admin {
+    -fx-background-color: linear-gradient(to bottom, #a78bfa, #8b5cf6);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+}
+
+.btn-admin:hover {
+    -fx-background-color: linear-gradient(to bottom, #8b5cf6, #7c3aed);
+}
+
+.btn-admin.btn-add {
+    -fx-background-color: linear-gradient(to bottom, #34d399, #10b981);
+}
+
+.btn-admin.btn-add:hover {
+    -fx-background-color: linear-gradient(to bottom, #10b981, #059669);
+}
+
+.btn-admin.btn-confirm {
+    -fx-background-color: linear-gradient(to bottom, #34d399, #10b981);
+}
+
+.btn-admin.btn-confirm:hover {
+    -fx-background-color: linear-gradient(to bottom, #10b981, #059669);
+}
+
+.btn-admin.btn-reject {
+    -fx-background-color: linear-gradient(to bottom, #f87171, #ef4444);
+}
+
+.btn-admin.btn-reject:hover {
+    -fx-background-color: linear-gradient(to bottom, #ef4444, #dc2626);
+}

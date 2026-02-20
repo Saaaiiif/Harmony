@@ -15,12 +15,12 @@
       fx:controller="com.example.harmony.CalendarViewController"
       styleClass="calendar-view"
       spacing="16"
-      prefWidth="900" prefHeight="500">
+      prefWidth="1000" prefHeight="550">
 
     <TabPane fx:id="mainTabPane" styleClass="calendar-tab-pane">
         <!-- Onglet Événements -->
         <Tab text="Événements" closable="false">
-            <VBox spacing="12">
+            <VBox spacing="14">
                 <HBox alignment="CENTER_LEFT" styleClass="calendar-header">
                     <Label text="Événements" styleClass="calendar-title"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -31,17 +31,19 @@
                         <Button text="Consulter" styleClass="btn-calendar btn-view" onAction="#onConsulter"/>
                     </HBox>
                 </HBox>
+                <Label text="Astuce : Pour réserver une salle Esprit, indiquez &quot;Esprit&quot; dans le champ Lieu puis sélectionnez la salle souhaitée. Votre demande sera traitée par l'administrateur." styleClass="calendar-hint"/>
                 <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="events-table">
                     <columns>
-                        <TableColumn fx:id="colId" text="Id" prefWidth="50"/>
+                        <TableColumn fx:id="colId" text="Id" prefWidth="45"/>
                         <TableColumn fx:id="colTitre" text="Titre" prefWidth="120"/>
-                        <TableColumn fx:id="colDescription" text="Description" prefWidth="150"/>
-                        <TableColumn fx:id="colDateDebut" text="Date début" prefWidth="100"/>
-                        <TableColumn fx:id="colDateFin" text="Date fin" prefWidth="100"/>
-                        <TableColumn fx:id="colLieu" text="Lieu" prefWidth="100"/>
-                        <TableColumn fx:id="colPriorite" text="Priorité" prefWidth="70"/>
-                        <TableColumn fx:id="colRappel" text="Rappel" prefWidth="60"/>
-                        <TableColumn fx:id="colType" text="Type" prefWidth="90"/>
+                        <TableColumn fx:id="colDescription" text="Description" prefWidth="140"/>
+                        <TableColumn fx:id="colDateDebut" text="Date début" prefWidth="95"/>
+                        <TableColumn fx:id="colDateFin" text="Date fin" prefWidth="95"/>
+                        <TableColumn fx:id="colLieu" text="Lieu" prefWidth="90"/>
+                        <TableColumn fx:id="colSalle" text="Salle" prefWidth="90"/>
+                        <TableColumn fx:id="colStatutDemande" text="Statut demande" prefWidth="110"/>
+                        <TableColumn fx:id="colPriorite" text="Priorité" prefWidth="65"/>
+                        <TableColumn fx:id="colType" text="Type" prefWidth="85"/>
                     </columns>
                 </TableView>
             </VBox>
@@ -49,7 +51,7 @@
 
         <!-- Onglet Tâches -->
         <Tab text="Tâches" closable="false">
-            <VBox spacing="12">
+            <VBox spacing="14">
                 <HBox alignment="CENTER_LEFT" styleClass="calendar-header">
                     <Label text="Tâches" styleClass="calendar-title"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -62,10 +64,10 @@
                 </HBox>
                 <TableView fx:id="tacheTable" VBox.vgrow="ALWAYS" styleClass="events-table">
                     <columns>
-                        <TableColumn fx:id="colTacheId" text="Id" prefWidth="50"/>
-                        <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="180"/>
+                        <TableColumn fx:id="colTacheId" text="Id" prefWidth="45"/>
+                        <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="200"/>
                         <TableColumn fx:id="colTacheDeadline" text="Deadline" prefWidth="100"/>
-                        <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="90"/>
+                        <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="95"/>
                     </columns>
                 </TableView>
             </VBox>
