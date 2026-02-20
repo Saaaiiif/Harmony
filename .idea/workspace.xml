@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Je vais créer une version plus professionnelle et propre avec des fichiers .fxml et  des controller pour chaque modification !" />
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Modifier categorie (nom + description) fonctionne !!" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,7 +156,7 @@
       <workItem from="1770988683984" duration="22715000" />
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
-      <workItem from="1771511806772" duration="11599000" />
+      <workItem from="1771511806772" duration="11796000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -342,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771581893542</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Modifier categorie (nom + description) fonctionne !!">
+      <option name="closed" value="true" />
+      <created>1771582137709</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1771582137709</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -380,7 +388,8 @@
     <MESSAGE value="Il n'y a plus d'affichage d'ID dans mes 3 tables du back !" />
     <MESSAGE value="faire une vraie modification avec formulaire, pas juste ajouter &quot;(modifié)&quot;" />
     <MESSAGE value="Je vais créer une version plus professionnelle et propre avec des fichiers .fxml et  des controller pour chaque modification !" />
-    <option name="LAST_COMMIT_MESSAGE" value="Je vais créer une version plus professionnelle et propre avec des fichiers .fxml et  des controller pour chaque modification !" />
+    <MESSAGE value="Modifier categorie (nom + description) fonctionne !!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modifier categorie (nom + description) fonctionne !!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
