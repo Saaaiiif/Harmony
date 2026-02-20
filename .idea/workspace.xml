@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Modifier post (titre + contenu) fonctionne !!">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Modifier commentaire (contenu) fonctionne !!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -158,7 +158,7 @@
       <workItem from="1770988683984" duration="22715000" />
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
-      <workItem from="1771511806772" duration="12995000" />
+      <workItem from="1771511806772" duration="14901000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -360,7 +360,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771582440540</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Modifier commentaire (contenu) fonctionne !!">
+      <option name="closed" value="true" />
+      <created>1771583467423</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1771583467423</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -400,7 +408,8 @@
     <MESSAGE value="Je vais créer une version plus professionnelle et propre avec des fichiers .fxml et  des controller pour chaque modification !" />
     <MESSAGE value="Modifier categorie (nom + description) fonctionne !!" />
     <MESSAGE value="Modifier post (titre + contenu) fonctionne !!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modifier post (titre + contenu) fonctionne !!" />
+    <MESSAGE value="Modifier commentaire (contenu) fonctionne !!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modifier commentaire (contenu) fonctionne !!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
