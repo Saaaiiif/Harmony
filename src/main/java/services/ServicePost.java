@@ -99,7 +99,10 @@ public class ServicePost implements Services<Post> {
     public List<Post> getAll() {
 
         List<Post> posts = new ArrayList<>();
-        String req = "SELECT * FROM post";
+        String req = "SELECT p.*, c.nom_categorie, e.nom, e.prenom " +
+                "FROM post p " +
+                "JOIN categorie c ON p.id_categorie = c.id_categorie " +
+                "JOIN etudiant e ON p.id_etudiant = e.id_etudiant";
 
         try {
 
@@ -115,6 +118,13 @@ public class ServicePost implements Services<Post> {
                 p.setContenu(rs.getString("contenu"));
                 p.setIdEtudiant(rs.getInt("id_etudiant"));
                 p.setIdCategorie(rs.getInt("id_categorie"));
+
+
+                // 🔥 IMPORTANT
+                p.setNomCategorie(rs.getString("nom_categorie"));
+
+                String nomComplet = rs.getString("nom") + " " + rs.getString("prenom");
+                p.setNomEtudiant(nomComplet);
 
                 Timestamp ts = rs.getTimestamp("date_creation");
                 if (ts != null)

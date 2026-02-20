@@ -8,7 +8,28 @@ public class Post {
     private String contenu;
     private LocalDateTime dateCreation;
     private int idEtudiant;
+    private String nomEtudiant;  // pour affichage
     private int idCategorie;
+    private String nomCategorie;  // pour affichage
+
+
+    public String getNomCategorie() {
+        return nomCategorie;
+    }
+    public void setNomCategorie(String nomCategorie) {
+        this.nomCategorie = nomCategorie;
+    }
+
+
+    public void setNomEtudiant(String nomEtudiant) {
+        this.nomEtudiant = nomEtudiant;
+    }
+    public String getNomEtudiant() {
+        return nomEtudiant;
+    }
+
+
+
 
     public Post() {}
     public Post(String titre, String contenu, int idEtudiant, int idCategorie) {
