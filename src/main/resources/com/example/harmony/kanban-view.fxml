@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.harmony.KanbanViewController"
+      styleClass="kanban-view"
+      spacing="20"
+      prefWidth="1200" prefHeight="700">
+
+    <Label text="Tâches" styleClass="kanban-title" VBox.vgrow="NEVER"/>
+
+    <HBox spacing="20" VBox.vgrow="ALWAYS" styleClass="kanban-columns-container">
+        <!-- Colonne TODO -->
+        <VBox fx:id="todoColumn" styleClass="kanban-column" HBox.hgrow="ALWAYS" spacing="10">
+            <Label text="TODO" styleClass="kanban-column-header"/>
+            <ScrollPane styleClass="kanban-scroll" VBox.vgrow="ALWAYS" fitToWidth="true">
+                <VBox fx:id="todoList" spacing="8" styleClass="kanban-list" minHeight="200"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Colonne DOING -->
+        <VBox fx:id="doingColumn" styleClass="kanban-column" HBox.hgrow="ALWAYS" spacing="10">
+            <Label text="DOING" styleClass="kanban-column-header"/>
+            <ScrollPane styleClass="kanban-scroll" VBox.vgrow="ALWAYS" fitToWidth="true">
+                <VBox fx:id="doingList" spacing="8" styleClass="kanban-list" minHeight="200"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Colonne DONE -->
+        <VBox fx:id="doneColumn" styleClass="kanban-column" HBox.hgrow="ALWAYS" spacing="10">
+            <Label text="DONE" styleClass="kanban-column-header"/>
+            <ScrollPane styleClass="kanban-scroll" VBox.vgrow="ALWAYS" fitToWidth="true">
+                <VBox fx:id="doneList" spacing="8" styleClass="kanban-list" minHeight="200"/>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+</VBox>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.harmony.CalendarViewController"
+      styleClass="calendar-view"
+      spacing="16"
+      prefWidth="1100" prefHeight="600">
+
+    <TabPane fx:id="mainTabPane" styleClass="calendar-tab-pane">
+        <!-- Onglet Calendrier (vue mois type Journal) -->
+        <Tab text="Calendrier" closable="false">
+            <VBox fx:id="calendrierTabContent" spacing="0" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER" spacing="20" styleClass="calendar-month-nav">
+                    <Button fx:id="btnPrevMonth" text="‹" styleClass="icon-btn nav-btn" onAction="#onPrevMonth"/>
+                    <Label fx:id="labelMonthYear" styleClass="calendar-month-title"/>
+                    <Button fx:id="btnNextMonth" text="›" styleClass="icon-btn nav-btn" onAction="#onNextMonth"/>
+                </HBox>
+                <VBox fx:id="calendarMonthBox" VBox.vgrow="ALWAYS" styleClass="calendar-month-grid"/>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Événements -->
+        <Tab text="Événements" closable="false">
+            <VBox spacing="14">
+                <HBox fx:id="eventsHeader" alignment="CENTER_LEFT" styleClass="calendar-header toolbar-header">
+                    <Label text="Événements" styleClass="calendar-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox fx:id="eventsActionBar" spacing="6" alignment="CENTER_RIGHT" styleClass="toolbar-actions">
+                        <Button text="+" styleClass="icon-btn btn-add" onAction="#onAjouter"/>
+                        <Button text="✎" styleClass="icon-btn btn-edit" onAction="#onModifier"/>
+                        <Button text="✕" styleClass="icon-btn btn-delete" onAction="#onSupprimer"/>
+                    </HBox>
+                </HBox>
+                <Label text="Pour réserver une salle Esprit : indiquez &quot;Esprit&quot; dans Lieu puis choisissez la salle." styleClass="calendar-hint"/>
+                <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="events-table">
+                    <columns>
+                        <TableColumn fx:id="colId" text="Id" prefWidth="42"/>
+                        <TableColumn fx:id="colTitre" text="Titre" prefWidth="130"/>
+                        <TableColumn fx:id="colDateDebut" text="Début" prefWidth="115"/>
+                        <TableColumn fx:id="colDateFin" text="Fin" prefWidth="115"/>
+                        <TableColumn fx:id="colLieu" text="Lieu" prefWidth="90"/>
+                        <TableColumn fx:id="colSalle" text="Salle" prefWidth="85"/>
+                        <TableColumn fx:id="colStatutDemande" text="Statut" prefWidth="95"/>
+                        <TableColumn fx:id="colType" text="Type" prefWidth="80"/>
+                        <TableColumn fx:id="colActions" text="" prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Tâches -->
+        <Tab text="Tâches" closable="false">
+            <VBox spacing="14">
+                <HBox fx:id="tasksHeader" alignment="CENTER_LEFT" styleClass="calendar-header toolbar-header">
+                    <Label text="Tâches" styleClass="calendar-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox fx:id="tasksActionBar" spacing="6" alignment="CENTER_RIGHT" styleClass="toolbar-actions">
+                        <Button text="+" styleClass="icon-btn btn-add" onAction="#onAjouterTache"/>
+                        <Button text="✎" styleClass="icon-btn btn-edit" onAction="#onModifierTache"/>
+                        <Button text="✕" styleClass="icon-btn btn-delete" onAction="#onSupprimerTache"/>
+                    </HBox>
+                </HBox>
+                <TableView fx:id="tacheTable" VBox.vgrow="ALWAYS" styleClass="events-table">
+                    <columns>
+                        <TableColumn fx:id="colTacheId" text="Id" prefWidth="42"/>
+                        <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="220"/>
+                        <TableColumn fx:id="colTacheDeadline" text="Deadline" prefWidth="110"/>
+                        <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="95"/>
+                        <TableColumn fx:id="colTacheActions" text="" prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+</VBox>

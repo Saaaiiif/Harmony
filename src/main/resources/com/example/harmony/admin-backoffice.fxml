@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.harmony.AdminBackofficeController"
+      styleClass="admin-backoffice"
+      spacing="18"
+      prefWidth="1100" prefHeight="650">
+
+    <Label text="Backoffice Administrateur" styleClass="admin-title" VBox.vgrow="NEVER"/>
+
+    <TabPane fx:id="adminTabPane" styleClass="admin-tab-pane" VBox.vgrow="ALWAYS">
+        <!-- Onglet Gestion des Salles -->
+        <Tab text="Gestion des Salles" closable="false">
+            <VBox spacing="14">
+                <HBox alignment="CENTER_LEFT" styleClass="admin-header">
+                    <Label text="Salles" styleClass="admin-section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="admin-actions">
+                        <Button text="Ajouter" styleClass="btn-admin btn-add" onAction="#onAjouterSalle"/>
+                        <Button text="Modifier" styleClass="btn-admin btn-edit" onAction="#onModifierSalle"/>
+                        <Button text="Supprimer" styleClass="btn-admin btn-delete" onAction="#onSupprimerSalle"/>
+                    </HBox>
+                </HBox>
+                <TableView fx:id="salleTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                    <columns>
+                        <TableColumn fx:id="colSalleId" text="Id" prefWidth="50"/>
+                        <TableColumn fx:id="colSalleNom" text="Nom" prefWidth="160"/>
+                        <TableColumn fx:id="colSalleCapacite" text="Capacité" prefWidth="90"/>
+                        <TableColumn fx:id="colSalleEquipements" text="Équipements" prefWidth="180"/>
+                        <TableColumn fx:id="colSalleDisponible" text="Disponible" prefWidth="100"/>
+                        <TableColumn fx:id="colSalleDescription" text="Description" prefWidth="250"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Gestion des Événements (admin = accès complet CRUD) -->
+        <Tab text="Événements" closable="false">
+            <VBox spacing="14">
+                <HBox alignment="CENTER_LEFT" styleClass="admin-header">
+                    <Label text="Tous les événements" styleClass="admin-section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="admin-actions">
+                        <Button text="Ajouter" styleClass="btn-admin btn-add" onAction="#onAjouterEvent"/>
+                        <Button text="Modifier" styleClass="btn-admin btn-edit" onAction="#onModifierEvent"/>
+                        <Button text="Supprimer" styleClass="btn-admin btn-delete" onAction="#onSupprimerEvent"/>
+                    </HBox>
+                </HBox>
+                <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                    <columns>
+                        <TableColumn fx:id="colEventId" text="Id" prefWidth="45"/>
+                        <TableColumn fx:id="colEventTitre" text="Titre" prefWidth="140"/>
+                        <TableColumn fx:id="colEventDateDebut" text="Date début" prefWidth="115"/>
+                        <TableColumn fx:id="colEventDateFin" text="Date fin" prefWidth="115"/>
+                        <TableColumn fx:id="colEventLieu" text="Lieu" prefWidth="90"/>
+                        <TableColumn fx:id="colEventSalle" text="Salle" prefWidth="90"/>
+                        <TableColumn fx:id="colEventStatut" text="Statut" prefWidth="95"/>
+                        <TableColumn fx:id="colEventType" text="Type" prefWidth="85"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Demandes de salles (utilisateurs demandent une salle pour lieu=Esprit) -->
+        <Tab text="Demandes de salles" closable="false">
+            <VBox spacing="14">
+                <Label fx:id="demandeNotificationLabel" styleClass="admin-notification" visible="false" managed="false"/>
+                <HBox alignment="CENTER_LEFT" styleClass="admin-header">
+                    <Label text="Demandes de salles en attente" styleClass="admin-section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="admin-actions">
+                        <Button text="Accepter" styleClass="btn-admin btn-confirm" onAction="#onAccepterDemande"/>
+                        <Button text="Refuser" styleClass="btn-admin btn-reject" onAction="#onRefuserDemande"/>
+                    </HBox>
+                </HBox>
+                <Label text="Les utilisateurs ayant indiqué &quot;Esprit&quot; comme lieu doivent sélectionner une salle. Vérifiez la disponibilité puis accepter ou refuser." styleClass="admin-hint"/>
+                <TableView fx:id="demandesTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                    <columns>
+                        <TableColumn fx:id="colDemandeId" text="Id" prefWidth="50"/>
+                        <TableColumn fx:id="colDemandeTitre" text="Événement" prefWidth="150"/>
+                        <TableColumn fx:id="colDemandeDateDebut" text="Date début" prefWidth="120"/>
+                        <TableColumn fx:id="colDemandeDateFin" text="Date fin" prefWidth="120"/>
+                        <TableColumn fx:id="colDemandeSalle" text="Salle demandée" prefWidth="140"/>
+                        <TableColumn fx:id="colDemandeType" text="Type" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+</VBox>
