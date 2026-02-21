@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -40,11 +41,34 @@ public class GestionUsersController {
     @FXML
     public void initialize() {
         if (!checkSession()) {
-            redirectToLogin();
+            switchToLogin();
             return;
         }
         observableList = FXCollections.observableArrayList(service.getAll());
         displayUserCards();
+    }
+
+    private void switchToLogin() {
+        switchToLogin(null);
+    }
+    private void switchToLogin(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
+
+            Stage currentStage;
+            if (event != null) {
+                currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            } else {
+                currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
+            }
+
+            currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Harmony - Connexion");
+            currentStage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean checkSession() {
@@ -444,7 +468,8 @@ public class GestionUsersController {
 
 
     @FXML
-    void handleLogout() {
+    void handleLogout(ActionEvent event) {
+        // Logique de session (inchangée)
         Session session = Session.getInstance();
         SessionDAO dao = new SessionDAO();
         if (session.getToken() != null) {
@@ -452,7 +477,8 @@ public class GestionUsersController {
         }
         session.clearSession();
         deleteRememberFile();
-        redirectToLogin();
+
+        switchToLogin(event);
     }
 
     private void deleteRememberFile() {

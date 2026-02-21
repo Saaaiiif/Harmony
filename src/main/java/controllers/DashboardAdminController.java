@@ -19,7 +19,7 @@ public class DashboardAdminController {
     @FXML
     public void initialize() {
         if (!checkSession()) {
-            redirectToLogin();
+            switchToLogin();
         }
     }
 
@@ -36,22 +36,6 @@ public class DashboardAdminController {
         return false;
     }
 
-    private void redirectToLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
-            Stage stage = (Stage) /* vous pouvez utiliser n'importe quel node chargé après initialize, ou créer une nouvelle fenêtre */
-                    new Stage(); // solution simple et fonctionnelle
-            stage.setScene(new Scene(root));
-            stage.setTitle("Harmony - Connexion");
-            stage.show();
-            // fermer l'ancienne fenêtre si nécessaire
-            Stage current = (Stage) /* si vous avez un node fx:id dans le FXML, utilisez-le */ new Stage().getScene().getWindow();
-            current.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     void openGestionUsers(ActionEvent event) {
         try {
@@ -65,7 +49,8 @@ public class DashboardAdminController {
     }
 
     @FXML
-    void handleLogout() {
+    void handleLogout(ActionEvent event) {
+        // Logique de session (inchangée comme demandé)
         Session session = Session.getInstance();
         SessionDAO dao = new SessionDAO();
         if (session.getToken() != null) {
@@ -73,7 +58,33 @@ public class DashboardAdminController {
         }
         session.clearSession();
         deleteRememberFile();
-        redirectToLogin();
+
+        // Fermeture propre + passage au Login dans la même fenêtre
+        switchToLogin(event);
+    }
+
+    private void switchToLogin() {
+        switchToLogin(null);
+    }
+
+    private void switchToLogin(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
+
+            Stage currentStage;
+            if (event != null) {
+                currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            } else {
+                currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
+            }
+
+            currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Harmony - Connexion");
+            currentStage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteRememberFile() {
