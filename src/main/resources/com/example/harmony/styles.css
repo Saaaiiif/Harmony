@@ -1,3 +1,30 @@
+.likes-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7B2CBF;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: #9D4EDD;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+.button:hover {
+    -fx-background-color: #7B2CBF;
+}
+
+.post-card {
+    -fx-background-color: #F8F5FF;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #E0D4FF;
+}
+
+
+
+
 .refresh-button {
     -fx-background-color: #2ecc71;
     -fx-text-fill: white;
