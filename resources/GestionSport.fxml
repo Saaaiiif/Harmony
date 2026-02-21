@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" styleClass="gradient-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GestionSportController">
+    <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding> <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" /> </padding>
+        <VBox styleClass="content-card" VBox.vgrow="ALWAYS" spacing="30.0">
+            <Label text="🏋️ Gestion des Exercices " styleClass="header-title" />
+            <HBox spacing="30.0" VBox.vgrow="ALWAYS">
+                <VBox spacing="20.0" prefWidth="350.0">
+                    <Label text="" style="-fx-font-weight: bold; -fx-font-size: 18px;" textFill="#6a1b9a" />
+                    <VBox spacing="8.0">
+                        <Label text="Nom de l'exercice :" style="-fx-text-fill: #555; -fx-font-weight: bold;" />
+                        <TextField fx:id="nomField" promptText="" styleClass="modern-textfield" />
+                    </VBox>
+                    <VBox spacing="8.0">
+                        <Label text="Type d'exercice :" style="-fx-text-fill: #555; -fx-font-weight: bold;" />
+                        <ComboBox fx:id="typeCombo" promptText="Choisir le type..." prefWidth="Infinity" style="-fx-background-radius: 50em; -fx-background-color: #f5f5f5; -fx-padding: 5px;" />
+                    </VBox>
+                    <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-padding: 20 0 0 0;">
+                        <Button text="Ajouter" onAction="#ajouterExercice" styleClass="action-button, btn-add" prefWidth="100.0" />
+                        <Button text="Modifier" onAction="#modifierExercice" styleClass="action-button, btn-update" prefWidth="100.0" />
+                    </HBox>
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Button text="Supprimer" onAction="#supprimerExercice" styleClass="action-button, btn-delete" prefWidth="100.0" />
+                        <Button text="Vider" onAction="#viderChamps" styleClass="action-button, btn-clear" prefWidth="100.0" />
+                    </HBox>
+                </VBox>
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label text="Liste des exercices disponibles" style="-fx-font-weight: bold; -fx-font-size: 18px;" textFill="#6a1b9a" />
+                    <TableView fx:id="tableExercices" styleClass="modern-table-view" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colNom" text="Nom de l'exercice" prefWidth="250" />
+                            <TableColumn fx:id="colType" text="Type" prefWidth="150" />
+                        </columns>
+                        <columnResizePolicy> <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /> </columnResizePolicy>
+                    </TableView>
+                </VBox>
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>
