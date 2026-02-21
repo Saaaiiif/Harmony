@@ -28,10 +28,9 @@
             <Button onAction="#openGestionUsers" prefHeight="45" prefWidth="210" style="-fx-background-color: transparent; -fx-text-fill: #D1D5DB; -fx-font-size: 14; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="👥 Gestion Utilisateurs" />
            
            <!-- Bouton déconnexion -->
-           <Button prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />
-         <padding>
-            <Insets top="40.0" />
-         </padding>
+
+             <Button fx:id="btnLogout" onAction="#handleLogout" prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />
+
         </VBox>
     </VBox>
 
@@ -47,7 +46,7 @@
         <!-- Statistiques -->
         <HBox spacing="25">
             <!-- Card Utilisateurs -->
-            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style=" -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
                 <Label style="-fx-font-size: 40;" text="👥" />
                 <VBox alignment="CENTER" spacing="3">
                     <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Utilisateurs" />
@@ -56,7 +55,7 @@
             </VBox>
 
             <!-- Card Nouveaux -->
-            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style=" -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
                 <Label style="-fx-font-size: 40;" text="📈" />
                 <VBox alignment="CENTER" spacing="3">
                     <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Nouveaux (30j)" />
@@ -65,7 +64,7 @@
             </VBox>
 
             <!-- Card Actifs -->
-            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); -fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
+            <VBox alignment="CENTER" prefHeight="150" prefWidth="250" spacing="15" style="-fx-background-radius: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 5); -fx-padding: 25;">
                 <Label style="-fx-font-size: 40;" text="⚡" />
                 <VBox alignment="CENTER" spacing="3">
                     <Label style="-fx-font-size: 14; -fx-text-fill: rgba(255,255,255,0.9);" text="Actifs" />

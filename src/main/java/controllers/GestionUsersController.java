@@ -15,9 +15,13 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.user;
+import models.Session;
+import models.Role;
 import services.serviceUser;
+import services.SessionDAO;
 import utils.FakeAccountDetector;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -27,21 +31,49 @@ public class GestionUsersController {
 
     @FXML private FlowPane cardsContainer;
     @FXML private TextField searchField;
-    @FXML private Button btnSortSuspicion; // Nouveau bouton de tri
+    @FXML private Button btnSortSuspicion;
 
     private final serviceUser service = new serviceUser();
     private ObservableList<user> observableList;
-    private boolean sortedBySuspicion = false; // État du tri
+    private boolean sortedBySuspicion = false;
 
     @FXML
     public void initialize() {
+        if (!checkSession()) {
+            redirectToLogin();
+            return;
+        }
         observableList = FXCollections.observableArrayList(service.getAll());
         displayUserCards();
     }
 
+    private boolean checkSession() {
+        Session session = Session.getInstance();
+        if (!session.isLoggedIn()) return false;
+
+        SessionDAO dao = new SessionDAO();
+        boolean valid = dao.isTokenValid(session.getToken());
+        if (valid) {
+            user currentUser = session.getUser();
+            return currentUser != null && currentUser.getType_utilisateur() == Role.ADMIN;
+        }
+        return false;
+    }
+
+    private void redirectToLogin() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Harmony - Connexion");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void displayUserCards() {
         cardsContainer.getChildren().clear();
-
         for (user u : observableList) {
             VBox card = createUserCard(u);
             cardsContainer.getChildren().add(card);
@@ -49,7 +81,6 @@ public class GestionUsersController {
     }
 
     private VBox createUserCard(user u) {
-        // ========== CALCUL DU SCORE DE SUSPICION ==========
         List<user> allUsers = observableList;
         int suspicionScore = FakeAccountDetector.calculateSuspicionScore(u, allUsers);
         String suspicionColor = FakeAccountDetector.getSuspicionColor(suspicionScore);
@@ -61,7 +92,6 @@ public class GestionUsersController {
         card.setAlignment(Pos.TOP_LEFT);
         card.setPadding(new Insets(20));
 
-        // Style de base de la carte AVEC BORDURE COLORÉE selon suspicion
         String defaultStyle = "-fx-background-color: white;" +
                 "-fx-background-radius: 20;" +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 10, 0, 0, 5);" +
@@ -71,7 +101,6 @@ public class GestionUsersController {
 
         card.setStyle(defaultStyle);
 
-        // Effet dynamique au survol avec la couleur de suspicion
         card.setOnMouseEntered(e -> {
             card.setStyle("-fx-background-color: white;" +
                     "-fx-background-radius: 20;" +
@@ -87,11 +116,9 @@ public class GestionUsersController {
             card.setTranslateY(0);
         });
 
-        // --- HEADER (Avatar + Nom + BADGE SUSPICION) ---
         HBox header = new HBox(15);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        // Avatar stylisé avec initiale
         StackPane avatarBox = new StackPane();
         avatarBox.setPrefSize(50, 50);
         avatarBox.setStyle("-fx-background-color: linear-gradient(to bottom right, #A78BFA, #8B5CF6); -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.4), 8, 0, 0, 3);");
@@ -110,7 +137,6 @@ public class GestionUsersController {
 
         nameBox.getChildren().addAll(fullName, emailLabel);
 
-        // ========== BADGE DE SUSPICION ==========
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
@@ -124,7 +150,6 @@ public class GestionUsersController {
 
         header.getChildren().addAll(avatarBox, nameBox, spacer, suspicionBadge);
 
-        // --- INFOS (Badges/Chips) ---
         FlowPane infoBox = new FlowPane(8, 8);
         infoBox.setStyle("-fx-padding: 10 0 10 0;");
 
@@ -142,7 +167,6 @@ public class GestionUsersController {
                 createChip("🏫 " + etablissementStr, "#FCE7F3", "#9D174D")
         );
 
-        // --- BOTTOM (MenuButton ":" stylisé) ---
         HBox bottomBox = new HBox();
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         Region spacer2 = new Region();
@@ -159,7 +183,6 @@ public class GestionUsersController {
         deleteItem.setStyle("-fx-font-size: 14; -fx-text-fill: #DC2626;");
         deleteItem.setOnAction(e -> deleteUser(u));
 
-        // ========== NOUVEAU : Menu item pour afficher les détails de suspicion ==========
         MenuItem suspicionItem = new MenuItem("🔍 Détails suspicion (" + suspicionScore + " pts)");
         suspicionItem.setStyle("-fx-font-size: 14; -fx-text-fill: " + suspicionColor + "; -fx-font-weight: bold;");
         suspicionItem.setOnAction(e -> showSuspicionDetails(u, suspicionScore));
@@ -167,7 +190,6 @@ public class GestionUsersController {
         menuButton.getItems().addAll(editItem, deleteItem, new SeparatorMenuItem(), suspicionItem);
         bottomBox.getChildren().addAll(spacer2, menuButton);
 
-        // --- INTERACTIONS ---
         card.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 showUserDetails(u);
@@ -175,11 +197,9 @@ public class GestionUsersController {
         });
 
         card.getChildren().addAll(header, infoBox, bottomBox);
-
         return card;
     }
 
-    // Méthode utilitaire pour créer les jolis badges
     private Label createChip(String text, String bgColor, String textColor) {
         Label chip = new Label(text);
         chip.setStyle("-fx-background-color: " + bgColor + "; " +
@@ -201,7 +221,6 @@ public class GestionUsersController {
         }
     }
 
-    // Conversion hex en rgba pour les effets de survol
     private String hexToRgba(String hex, double opacity) {
         if (hex.startsWith("#")) hex = hex.substring(1);
         int r = Integer.parseInt(hex.substring(0, 2), 16);
@@ -215,25 +234,20 @@ public class GestionUsersController {
     @FXML
     void handleSortBySuspicion() {
         if (!sortedBySuspicion) {
-            // Trier par score DÉCROISSANT (plus suspect en premier)
             observableList.sort((u1, u2) -> {
                 int score1 = FakeAccountDetector.calculateSuspicionScore(u1, observableList);
                 int score2 = FakeAccountDetector.calculateSuspicionScore(u2, observableList);
-                return Integer.compare(score2, score1); // Décroissant
+                return Integer.compare(score2, score1);
             });
-
-            // Changer l'apparence du bouton
             btnSortSuspicion.setText("🔄 Réinitialiser tri");
             btnSortSuspicion.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.3), 10, 0, 0, 3);");
             sortedBySuspicion = true;
         } else {
-            // Réinitialiser l'ordre par ID
             observableList.setAll(service.getAll());
             btnSortSuspicion.setText("⚠️ Trier par suspicion");
             btnSortSuspicion.setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);");
             sortedBySuspicion = false;
         }
-
         displayUserCards();
     }
 
@@ -414,14 +428,11 @@ public class GestionUsersController {
     @FXML
     void handleSearch() {
         String searchTerm = searchField.getText().toLowerCase().trim();
-
         if (searchTerm.isEmpty()) {
             displayUserCards();
             return;
         }
-
         cardsContainer.getChildren().clear();
-
         for (user u : observableList) {
             if (u.getUser_nom().toLowerCase().contains(searchTerm) ||
                     u.getUser_prenom().toLowerCase().contains(searchTerm) ||
@@ -429,5 +440,22 @@ public class GestionUsersController {
                 cardsContainer.getChildren().add(createUserCard(u));
             }
         }
+    }
+
+
+    @FXML
+    void handleLogout() {
+        Session session = Session.getInstance();
+        SessionDAO dao = new SessionDAO();
+        if (session.getToken() != null) {
+            dao.deleteSession(session.getToken());
+        }
+        session.clearSession();
+        deleteRememberFile();
+        redirectToLogin();
+    }
+
+    private void deleteRememberFile() {
+        new File("remember.dat").delete();
     }
 }

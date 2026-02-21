@@ -27,8 +27,7 @@
         <VBox spacing="40.0">
             <Button prefHeight="45" prefWidth="210" style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="👥 Gestion Utilisateurs" />
 
-            <Button prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />
-            <padding>
+            <Button fx:id="btnLogout" onAction="#handleLogout" prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />            <padding>
                 <Insets top="40.0" />
             </padding>
         </VBox>
