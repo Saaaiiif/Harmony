@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -12,8 +13,11 @@
     <VBox layoutX="25.0" layoutY="25.0" prefWidth="500" spacing="25" style="-fx-padding: 35; -fx-background-color: white; -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.2), 30, 0, 0, 10); -fx-border-color: #E9D5FF; -fx-border-width: 2; -fx-border-radius: 25;">
 
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <StackPane fx:id="avatarContainer" prefHeight="70" prefWidth="70" style="-fx-background-color: linear-gradient(to bottom right, #A78BFA, #8B5CF6); -fx-background-radius: 35; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.4), 10, 0, 0, 4);">
+            <!-- Avatar avec superposition image / initiale -->
+            <StackPane fx:id="avatarContainer" prefHeight="70" prefWidth="70"
+                       style="-fx-background-color: linear-gradient(to bottom right, #A78BFA, #8B5CF6); -fx-background-radius: 35; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.4), 10, 0, 0, 4);">
                 <Label fx:id="avatarLabel" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text="U" />
+                <ImageView fx:id="profileImageView" fitHeight="70" fitWidth="70" pickOnBounds="true" preserveRatio="false" visible="false" />
             </StackPane>
 
             <VBox alignment="CENTER_LEFT" spacing="5">

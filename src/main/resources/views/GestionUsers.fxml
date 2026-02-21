@@ -21,7 +21,7 @@
         <VBox alignment="CENTER" spacing="5">
             <Label style="-fx-font-size: 48;" text="⚡" textFill="#cb96d3" />
             <Label style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;" text="Harmony" />
-            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" text="Admin Dashboard" />
+            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" />
         </VBox>
 
         <VBox spacing="40.0">
@@ -40,7 +40,6 @@
 
         <HBox alignment="CENTER_LEFT" spacing="15">
             <HBox alignment="CENTER_LEFT" prefWidth="400" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
-                <Label style="-fx-font-size: 16;" text="🔍" />
                 <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="29.0" prefWidth="356.0" promptText="Rechercher un utilisateur..." style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14;" />
             </HBox>
 

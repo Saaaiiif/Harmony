@@ -10,9 +10,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.user;
@@ -48,33 +51,23 @@ public class GestionUsersController {
         displayUserCards();
     }
 
-    private void switchToLogin() {
-        switchToLogin(null);
-    }
+    private void switchToLogin() { switchToLogin(null); }
+
     private void switchToLogin(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
-
             Stage currentStage;
-            if (event != null) {
-                currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            } else {
-                currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
-            }
-
+            if (event != null) currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            else currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
             currentStage.setScene(new Scene(root));
             currentStage.setTitle("Harmony - Connexion");
             currentStage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private boolean checkSession() {
         Session session = Session.getInstance();
         if (!session.isLoggedIn()) return false;
-
         SessionDAO dao = new SessionDAO();
         boolean valid = dao.isTokenValid(session.getToken());
         if (valid) {
@@ -82,18 +75,6 @@ public class GestionUsersController {
             return currentUser != null && currentUser.getType_utilisateur() == Role.ADMIN;
         }
         return false;
-    }
-
-    private void redirectToLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Harmony - Connexion");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void displayUserCards() {
@@ -134,31 +115,48 @@ public class GestionUsersController {
                     "-fx-border-radius: 20;");
             card.setTranslateY(-5);
         });
-
-        card.setOnMouseExited(e -> {
-            card.setStyle(defaultStyle);
-            card.setTranslateY(0);
-        });
+        card.setOnMouseExited(e -> { card.setStyle(defaultStyle); card.setTranslateY(0); });
 
         HBox header = new HBox(15);
         header.setAlignment(Pos.CENTER_LEFT);
 
+        // ---- AVATAR avec image ou initiale ----
         StackPane avatarBox = new StackPane();
         avatarBox.setPrefSize(50, 50);
+        avatarBox.setMinSize(50, 50);
+        avatarBox.setMaxSize(50, 50);
         avatarBox.setStyle("-fx-background-color: linear-gradient(to bottom right, #A78BFA, #8B5CF6); -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.4), 8, 0, 0, 3);");
 
-        String initial = (u.getUser_prenom() != null && !u.getUser_prenom().isEmpty()) ? u.getUser_prenom().substring(0, 1).toUpperCase() : "U";
-        Label avatarText = new Label(initial);
-        avatarText.setStyle("-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;");
-        avatarBox.getChildren().add(avatarText);
+        String imagePath = u.getUser_image_path();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            File imgFile = new File(imagePath);
+            if (imgFile.exists()) {
+                try {
+                    Image img = new Image(imgFile.toURI().toString(), 50, 50, true, true);
+                    ImageView imageView = new ImageView(img);
+                    imageView.setFitWidth(50);
+                    imageView.setFitHeight(50);
+                    imageView.setPreserveRatio(false);
+                    // Clip circulaire
+                    Circle clip = new Circle(25, 25, 25);
+                    imageView.setClip(clip);
+                    avatarBox.getChildren().add(imageView);
+                } catch (Exception e) {
+                    // Fallback initiale
+                    addAvatarInitial(avatarBox, u);
+                }
+            } else {
+                addAvatarInitial(avatarBox, u);
+            }
+        } else {
+            addAvatarInitial(avatarBox, u);
+        }
 
         VBox nameBox = new VBox(2);
         Label fullName = new Label(u.getUser_prenom() + " " + u.getUser_nom());
         fullName.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;");
-
         Label emailLabel = new Label(u.getUser_email());
         emailLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #6B7280;");
-
         nameBox.getChildren().addAll(fullName, emailLabel);
 
         Region spacer = new Region();
@@ -224,6 +222,14 @@ public class GestionUsersController {
         return card;
     }
 
+    private void addAvatarInitial(StackPane avatarBox, user u) {
+        String initial = (u.getUser_prenom() != null && !u.getUser_prenom().isEmpty())
+                ? u.getUser_prenom().substring(0, 1).toUpperCase() : "U";
+        Label avatarText = new Label(initial);
+        avatarText.setStyle("-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;");
+        avatarBox.getChildren().add(avatarText);
+    }
+
     private Label createChip(String text, String bgColor, String textColor) {
         Label chip = new Label(text);
         chip.setStyle("-fx-background-color: " + bgColor + "; " +
@@ -238,11 +244,8 @@ public class GestionUsersController {
     private int calculateAge(String birthDateStr) {
         try {
             LocalDate birthDate = LocalDate.parse(birthDateStr);
-            LocalDate currentDate = LocalDate.now();
-            return Period.between(birthDate, currentDate).getYears();
-        } catch (Exception e) {
-            return 0;
-        }
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } catch (Exception e) { return 0; }
     }
 
     private String hexToRgba(String hex, double opacity) {
@@ -275,107 +278,68 @@ public class GestionUsersController {
         displayUserCards();
     }
 
-    // ==================== AFFICHAGE DÉTAILS SUSPICION ====================
+    // ==================== DÉTAILS SUSPICION ====================
 
     private void showSuspicionDetails(user u, int score) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Analyse de suspicion");
         alert.setHeaderText("Compte : " + u.getUser_prenom() + " " + u.getUser_nom());
 
-        String level = FakeAccountDetector.getSuspicionLevel(score);
         String levelLabel = FakeAccountDetector.getSuspicionLabel(score);
-
         StringBuilder content = new StringBuilder();
         content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n");
         content.append("Score de suspicion : ").append(score).append(" / 20 pts\n");
         content.append("Niveau : ").append(levelLabel).append("\n");
         content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-
         content.append("Signaux détectés :\n\n");
-
         boolean hasSignals = false;
 
-        // Vérifier nom suspect
         String nomLower = u.getUser_nom().toLowerCase();
-        if (nomLower.contains("test") || nomLower.contains("user") || nomLower.contains("aaa") ||
-                nomLower.matches(".*\\d{2,}.*")) {
-            content.append("⚠️ Nom suspect : \"").append(u.getUser_nom()).append("\"\n");
-            hasSignals = true;
+        if (nomLower.contains("test") || nomLower.contains("user") || nomLower.contains("aaa") || nomLower.matches(".*\\d{2,}.*")) {
+            content.append("⚠️ Nom suspect : \"").append(u.getUser_nom()).append("\"\n"); hasSignals = true;
         }
-
-        // Vérifier prénom suspect
         String prenomLower = u.getUser_prenom().toLowerCase();
-        if (prenomLower.contains("test") || prenomLower.contains("user") || prenomLower.contains("aaa") ||
-                prenomLower.matches(".*\\d{2,}.*")) {
-            content.append("⚠️ Prénom suspect : \"").append(u.getUser_prenom()).append("\"\n");
-            hasSignals = true;
+        if (prenomLower.contains("test") || prenomLower.contains("user") || prenomLower.contains("aaa") || prenomLower.matches(".*\\d{2,}.*")) {
+            content.append("⚠️ Prénom suspect : \"").append(u.getUser_prenom()).append("\"\n"); hasSignals = true;
         }
-
-        // Vérifier email avec beaucoup de chiffres
         if (u.getUser_email().matches(".*\\d{3,}.*")) {
-            content.append("⚠️ Email contient beaucoup de chiffres\n");
-            hasSignals = true;
+            content.append("⚠️ Email contient beaucoup de chiffres\n"); hasSignals = true;
         }
-
-        // Vérifier email temporaire
         String emailLower = u.getUser_email().toLowerCase();
-        if (emailLower.contains("temp") || emailLower.contains("test") ||
-                emailLower.contains("yopmail") || emailLower.contains("fake")) {
-            content.append("⚠️ Email temporaire/suspect détecté\n");
-            hasSignals = true;
+        if (emailLower.contains("temp") || emailLower.contains("test") || emailLower.contains("yopmail") || emailLower.contains("fake")) {
+            content.append("⚠️ Email temporaire/suspect détecté\n"); hasSignals = true;
         }
-
-        // Vérifier doublons
         long duplicates = observableList.stream()
                 .filter(other -> other.getUser_id() != u.getUser_id())
                 .filter(other -> other.getUser_email().equalsIgnoreCase(u.getUser_email()) ||
-                        (other.getUser_nom().equalsIgnoreCase(u.getUser_nom()) &&
-                                other.getUser_prenom().equalsIgnoreCase(u.getUser_prenom())))
+                        (other.getUser_nom().equalsIgnoreCase(u.getUser_nom()) && other.getUser_prenom().equalsIgnoreCase(u.getUser_prenom())))
                 .count();
-        if (duplicates > 0) {
-            content.append("⚠️ ").append(duplicates).append(" doublon(s) détecté(s)\n");
-            hasSignals = true;
-        }
+        if (duplicates > 0) { content.append("⚠️ ").append(duplicates).append(" doublon(s) détecté(s)\n"); hasSignals = true; }
 
-        // Vérifier incohérence âge/activité
         if (u.getUser_date_de_naissance() != null && u.getUser_niveau_activite_physique() != null) {
             try {
                 LocalDate birthDate = LocalDate.parse(u.getUser_date_de_naissance());
                 int age = Period.between(birthDate, LocalDate.now()).getYears();
                 String niveauActivite = u.getUser_niveau_activite_physique().name();
-
-                if ((age < 15 && niveauActivite.equals("TRES_INTENSE")) ||
-                        (age > 70 && niveauActivite.equals("TRES_INTENSE"))) {
-                    content.append("⚠️ Activité physique incohérente avec l'âge\n");
-                    hasSignals = true;
+                if ((age < 15 && niveauActivite.equals("TRES_INTENSE")) || (age > 70 && niveauActivite.equals("TRES_INTENSE"))) {
+                    content.append("⚠️ Activité physique incohérente avec l'âge\n"); hasSignals = true;
                 }
-            } catch (Exception e) {
-                // Ignorer erreurs de parsing
-            }
+            } catch (Exception e) {}
         }
-
-        // Vérifier établissement suspect
         if (u.getUser_etablissement_scolaire() != null) {
             String etabLower = u.getUser_etablissement_scolaire().toLowerCase();
             if (etabLower.contains("test") || etabLower.contains("aaa") || etabLower.length() <= 2) {
-                content.append("⚠️ Établissement suspect : \"").append(u.getUser_etablissement_scolaire()).append("\"\n");
-                hasSignals = true;
+                content.append("⚠️ Établissement suspect : \"").append(u.getUser_etablissement_scolaire()).append("\"\n"); hasSignals = true;
             }
         }
 
         if (!hasSignals) {
-            content.append("✅ Aucun signal majeur détecté\n");
-            content.append("\nCe compte semble fiable !\n");
+            content.append("✅ Aucun signal majeur détecté\n\nCe compte semble fiable !\n");
         } else {
-            content.append("\n━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-            content.append("Recommandation :\n");
-            if (score <= 2) {
-                content.append("✅ Compte fiable - Aucune action requise\n");
-            } else if (score <= 5) {
-                content.append("⚠️ Compte moyennement suspect - Surveillance recommandée\n");
-            } else {
-                content.append("🚨 Compte très suspect - Vérification manuelle nécessaire\n");
-            }
+            content.append("\n━━━━━━━━━━━━━━━━━━━━━━━━━\nRecommandation :\n");
+            if (score <= 2) content.append("✅ Compte fiable - Aucune action requise\n");
+            else if (score <= 5) content.append("⚠️ Compte moyennement suspect - Surveillance recommandée\n");
+            else content.append("🚨 Compte très suspect - Vérification manuelle nécessaire\n");
         }
 
         alert.setContentText(content.toString());
@@ -388,28 +352,22 @@ public class GestionUsersController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/DisplayUser.fxml"));
             Parent root = loader.load();
-
             DisplayUserController controller = loader.getController();
             controller.setUser(u);
-
             Stage stage = new Stage();
             stage.setTitle("Détails Utilisateur");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void deleteUser(user selected) {
         if (selected == null) return;
-
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Supprimer cet utilisateur ?");
         confirm.setContentText(selected.getUser_prenom() + " " + selected.getUser_nom() + " sera définitivement supprimé.");
-
         if (confirm.showAndWait().get() == ButtonType.OK) {
             service.deleteById(selected.getUser_id());
             observableList.remove(selected);
@@ -419,25 +377,19 @@ public class GestionUsersController {
 
     private void editUser(user selected) {
         if (selected == null) return;
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/EditUserPopup.fxml"));
             Parent root = loader.load();
-
             EditUserPopupController popupController = loader.getController();
             popupController.setUser(selected);
-
             Stage popupStage = new Stage();
             popupStage.setTitle("Modifier Utilisateur");
             popupStage.setScene(new Scene(root));
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.showAndWait();
-
             observableList.setAll(service.getAll());
             displayUserCards();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     @FXML
@@ -452,10 +404,7 @@ public class GestionUsersController {
     @FXML
     void handleSearch() {
         String searchTerm = searchField.getText().toLowerCase().trim();
-        if (searchTerm.isEmpty()) {
-            displayUserCards();
-            return;
-        }
+        if (searchTerm.isEmpty()) { displayUserCards(); return; }
         cardsContainer.getChildren().clear();
         for (user u : observableList) {
             if (u.getUser_nom().toLowerCase().contains(searchTerm) ||
@@ -466,22 +415,15 @@ public class GestionUsersController {
         }
     }
 
-
     @FXML
     void handleLogout(ActionEvent event) {
-        // Logique de session (inchangée)
         Session session = Session.getInstance();
         SessionDAO dao = new SessionDAO();
-        if (session.getToken() != null) {
-            dao.deleteSession(session.getToken());
-        }
+        if (session.getToken() != null) dao.deleteSession(session.getToken());
         session.clearSession();
         deleteRememberFile();
-
         switchToLogin(event);
     }
 
-    private void deleteRememberFile() {
-        new File("remember.dat").delete();
-    }
+    private void deleteRememberFile() { new File("remember.dat").delete(); }
 }
