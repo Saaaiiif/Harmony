@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.admin.AdminMeditationController" 
+      spacing="20" styleClass="content-area" stylesheets="@../css/style.css">
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Sessions de Méditation" styleClass="title-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ Nouvelle Session" styleClass="btn-primary" onAction="#showAddForm"/>
+    </HBox>
+
+    <VBox fx:id="formSection" visible="false" managed="false" styleClass="card" spacing="15">
+        <Label fx:id="formTitle" text="Ajouter une Session" styleClass="section-title"/>
+        
+        <HBox spacing="20">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Thème" styleClass="form-label"/>
+                <TextField fx:id="themeField" promptText="Ex: Relaxation, Stress, Sommeil..." styleClass="text-field"/>
+                <Label fx:id="themeError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Auteur" styleClass="form-label"/>
+                <TextField fx:id="auteurField" promptText="Nom de l'auteur" styleClass="text-field"/>
+                <Label fx:id="auteurError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="20">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Durée (minutes)" styleClass="form-label"/>
+                <TextField fx:id="dureeField" promptText="Ex: 15" styleClass="text-field"/>
+                <Label fx:id="dureeError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="URL Audio" styleClass="form-label"/>
+                <TextField fx:id="audioUrlField" promptText="Lien vers le fichier audio" styleClass="text-field"/>
+                <Label fx:id="audioUrlError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="10">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Conseils" styleClass="form-label"/>
+                <Button text="+ Ajouter Conseil" styleClass="button" onAction="#addConseilField" style="-fx-font-size: 12px;"/>
+            </HBox>
+            <VBox fx:id="conseilsContainer" spacing="10">
+            </VBox>
+            <Label fx:id="conseilsError" styleClass="error-label" visible="false" managed="false"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Annuler" styleClass="btn-secondary" onAction="#hideForm"/>
+            <Button fx:id="submitBtn" text="Enregistrer" styleClass="btn-primary" onAction="#saveSession"/>
+        </HBox>
+    </VBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+        <VBox fx:id="sessionsContainer" spacing="15">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+        </VBox>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false" VBox.vgrow="ALWAYS">
+        <Label text="🧘" style="-fx-font-size: 60px;"/>
+        <Label text="Aucune session de méditation" styleClass="empty-state-text"/>
+        <Button text="Créer la première session" styleClass="btn-primary" onAction="#showAddForm"/>
+    </VBox>
+
+</VBox>

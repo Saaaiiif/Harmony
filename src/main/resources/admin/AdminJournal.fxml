@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.admin.AdminJournalController"
+      spacing="20" styleClass="content-area" stylesheets="@../css/style.css">
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Liste des Étudiants" styleClass="title-label"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+        <VBox fx:id="studentListContainer" spacing="10">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+        </VBox>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false" VBox.vgrow="ALWAYS">
+        <Label text="👤" style="-fx-font-size: 60px;"/>
+        <Label text="Aucun étudiant trouvé" styleClass="empty-state-text"/>
+    </VBox>
+
+</VBox>

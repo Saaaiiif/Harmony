@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="controllers.admin.AdminDashboardController" 
+            styleClass="main-container" stylesheets="@../css/style.css">
+
+    <left>
+        <VBox styleClass="sidebar" spacing="10">
+            <VBox styleClass="logo-container" alignment="CENTER">
+                <ImageView fx:id="logoImage" fitWidth="100" fitHeight="100" preserveRatio="true">
+                    <Image url="@../assets/harmonie.png"/>
+                </ImageView>
+                <Label text="Harmonie" styleClass="app-title"/>
+                <Label text="Espace Admin" styleClass="subtitle-label"/>
+            </VBox>
+
+            <Separator/>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <padding><Insets top="15"/></padding>
+                
+                <Button fx:id="btnMeditations" text="🧘 Sessions Méditation" 
+                        styleClass="sidebar-btn, sidebar-btn-active" onAction="#showMeditations" maxWidth="Infinity"/>
+                
+                <Button fx:id="btnJournaux" text="📔 Journaux Étudiants" 
+                        styleClass="sidebar-btn" onAction="#showJournaux" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="5">
+                <Separator/>
+                <Label fx:id="userNameLabel" text="Admin: Sarra Brahmi" styleClass="label"/>
+                <Label text="sarra.brahmi@esprit.tn" styleClass="subtitle-label" style="-fx-font-size: 11px;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+        </StackPane>
+    </center>
+
+</BorderPane>

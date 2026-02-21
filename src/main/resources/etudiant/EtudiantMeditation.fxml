@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20" styleClass="content-area" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.etudiant.EtudiantMeditationController">
+
+    <VBox spacing="5">
+        <Label styleClass="title-label" text="Sessions de Méditation" />
+        <Label styleClass="subtitle-label" text="Découvrez des sessions pour vous aider à vous détendre et vous sentir mieux" />
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="filter-section">
+        <Label styleClass="filter-label" text="Filtrer par thème:" />
+        <ComboBox fx:id="themeFilter" onAction="#filterByTheme" prefWidth="200" promptText="Tous les thèmes" />
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" onKeyReleased="#onSearch" prefWidth="250" promptText="🔍 Rechercher..." styleClass="text-field" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+        <FlowPane fx:id="sessionsContainer" alignment="TOP_LEFT" hgap="20" vgap="20">
+            <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+        </FlowPane>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" managed="false" spacing="10" visible="false" VBox.vgrow="ALWAYS">
+        <Label style="-fx-font-size: 60px;" text="🧘" />
+        <Label styleClass="empty-state-text" text="Aucune session disponible" />
+        <Label styleClass="subtitle-label" text="Revenez plus tard pour découvrir de nouvelles sessions" />
+    </VBox>
+
+</VBox>
