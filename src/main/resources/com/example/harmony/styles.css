@@ -1,4 +1,14 @@
+.refresh-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
 
+.refresh-button:hover {
+    -fx-background-color: #27ae60;
+}
 .back-card {
     -fx-background-color: white;
     -fx-padding: 15;
