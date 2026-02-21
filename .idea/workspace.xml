@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
-    </list>
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -160,7 +157,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="7384000" />
+      <workItem from="1771668340810" duration="8170000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -378,7 +375,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771590292816</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!">
+      <option name="closed" value="true" />
+      <created>1771677441090</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1771677441090</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,7 +425,8 @@
     <MESSAGE value="Modifier post (titre + contenu) fonctionne !!" />
     <MESSAGE value="Modifier commentaire (contenu) fonctionne !!" />
     <MESSAGE value="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire." />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire." />
+    <MESSAGE value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
+    <option name="LAST_COMMIT_MESSAGE" value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
