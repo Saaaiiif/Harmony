@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="720.0" prefWidth="1080.0" alignment="CENTER" styleClass="neon-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterExerciceMuscuController">
+    <children>
+        <VBox alignment="CENTER" spacing="25.0" maxWidth="750.0" styleClass="glass-form-card">
+            <padding>
+                <Insets top="35.0" right="60.0" bottom="35.0" left="60.0"/>
+            </padding>
+            <children>
+                <VBox alignment="CENTER" spacing="5">
+                    <Label text="🦾 Séquence Musculation" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(three-pass-box, #d500f9, 15, 0, 0, 0);" />
+                    <Label text="Configurez votre module de surcharge progressive." style="-fx-text-fill: #e1bee7; -fx-font-size: 15px;" />
+                </VBox>
+
+                <VBox spacing="20.0" maxWidth="600.0">
+
+                    <VBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="RECHERCHER UN EXERCICE MUSCU" styleClass="neon-label"/>
+                        <TextField fx:id="tfRecherche" promptText="🔍 Taper le nom de l'exercice (ex: Développé)..." prefHeight="50.0" maxWidth="Infinity" styleClass="neon-input" />
+                        <ListView fx:id="listResultats" prefHeight="120.0" maxWidth="Infinity" styleClass="neon-list" visible="false" managed="false" />
+                    </VBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="DATE DE SÉANCE" styleClass="neon-label"/>
+                        <DatePicker fx:id="dpDate" prefHeight="50.0" maxWidth="Infinity" styleClass="neon-datepicker" />
+                    </VBox>
+
+                    <HBox spacing="20.0">
+                        <VBox HBox.hgrow="ALWAYS" spacing="8" maxWidth="Infinity">
+                            <Label text="SÉRIES" styleClass="neon-label"/>
+                            <Spinner fx:id="spinnerSeries" prefHeight="50.0" maxWidth="Infinity" styleClass="neon-spinner" editable="true" />
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="8" maxWidth="Infinity">
+                            <Label text="RÉPÉTITIONS" styleClass="neon-label"/>
+                            <Spinner fx:id="spinnerRepetitions" prefHeight="50.0" maxWidth="Infinity" styleClass="neon-spinner" editable="true" />
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="8" maxWidth="Infinity">
+                            <Label text="CHARGE (KG)" styleClass="neon-label"/>
+                            <Spinner fx:id="spinnerPoids" prefHeight="50.0" maxWidth="Infinity" styleClass="neon-spinner" editable="true" />
+                        </VBox>
+                    </HBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="JOURNAL DE BORD / RESSENTI" styleClass="neon-label"/>
+                        <TextField fx:id="tfNotes" promptText="Ex: Bonne congestion..." prefHeight="50.0" maxWidth="Infinity" styleClass="neon-input" />
+                    </VBox>
+                </VBox>
+
+                <Label fx:id="erreurLabel" textFill="#ff1744" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+
+                <HBox spacing="30.0" alignment="CENTER">
+                    <padding><Insets top="10" /></padding>
+                    <children>
+                        <Button onAction="#goToExercices" text="Annuler le module" styleClass="btn-neon-cancel" prefHeight="45.0" prefWidth="180.0" />
+                        <Button onAction="#validerAjoutMuscu" text="Enregistrer la Séquence" styleClass="btn-neon-action" prefHeight="45.0" prefWidth="220.0" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>
