@@ -13,6 +13,7 @@
 
 <AnchorPane prefHeight="700" prefWidth="1200" style="-fx-background-color: linear-gradient(to bottom right, #F3E8FF, #E9D5FF);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GestionUsersController">
 
+    <!-- Sidebar -->
     <VBox prefHeight="768.0" prefWidth="226.0" style="-fx-background-color: linear-gradient(to bottom, #1F2937, #111827); -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
         <padding>
             <Insets bottom="30" left="25" right="25" top="30" />
@@ -21,42 +22,65 @@
         <VBox alignment="CENTER" spacing="5">
             <Label style="-fx-font-size: 48;" text="⚡" textFill="#cb96d3" />
             <Label style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;" text="Harmony" />
-            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" />
+            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" text="Admin Dashboard" />
         </VBox>
 
         <VBox spacing="40.0">
-            <Button prefHeight="45" prefWidth="210" style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="👥 Gestion Utilisateurs" />
+            <Button prefHeight="45" prefWidth="210"
+                    style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;"
+                    text="👥 Gestion Utilisateurs" />
 
-            <Button fx:id="btnLogout" onAction="#handleLogout" prefHeight="45" prefWidth="210" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;" text="🚪 Déconnexion" />
-
+            <Button fx:id="btnLogout" onAction="#handleLogout" prefHeight="45" prefWidth="210"
+                    style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 13; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-padding: 0 0 0 20;"
+                    text="🚪 Déconnexion" />
         </VBox>
     </VBox>
 
+    <!-- Zone principale -->
     <VBox layoutX="280" layoutY="30" prefWidth="900" spacing="25">
+
+        <!-- Titre dynamique -->
         <VBox spacing="8">
-            <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #1F2937;" text="Gestion des Utilisateurs" />
+            <Label fx:id="lblCurrentView" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #1F2937;" text="Gestion des Utilisateurs" />
             <Label style="-fx-font-size: 14; -fx-text-fill: #6B7280;" text="Gérez et organisez tous vos utilisateurs" />
         </VBox>
 
+        <!-- Barre d'actions -->
         <HBox alignment="CENTER_LEFT" spacing="15">
-            <HBox alignment="CENTER_LEFT" prefWidth="400" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
-                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="29.0" prefWidth="356.0" promptText="Rechercher un utilisateur..." style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14;" />
+            <!-- Recherche -->
+            <HBox alignment="CENTER_LEFT" prefWidth="380" spacing="10"
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+                <Label style="-fx-font-size: 16;" text="🔍" />
+                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="29.0" prefWidth="336.0"
+                           promptText="Rechercher un utilisateur..."
+                           style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14;" />
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <!-- NOUVEAU BOUTON : Tri par suspicion -->
-            <Button fx:id="btnSortSuspicion" onAction="#handleSortBySuspicion" prefHeight="45" prefWidth="200" style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);" text="⚠ Trier par suspicion" />
+            <!-- Bouton Voir Archivés / Voir Actifs -->
+            <Button fx:id="btnToggleArchived" onAction="#handleToggleArchived" prefHeight="45" prefWidth="175"
+                    style="-fx-background-color: #6B7280; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(107, 114, 128, 0.3), 10, 0, 0, 3);"
+                    text="🗃 Voir archivés" />
 
-            <Button onAction="#refreshTable" prefHeight="45" prefWidth="150" style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.3), 10, 0, 0, 3);" text="🔄 Actualiser" />
+            <!-- Bouton Tri par suspicion -->
+            <Button fx:id="btnSortSuspicion" onAction="#handleSortBySuspicion" prefHeight="45" prefWidth="200"
+                    style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);"
+                    text="⚠ Trier par suspicion" />
+
+            <!-- Bouton Actualiser -->
+            <Button onAction="#refreshTable" prefHeight="45" prefWidth="140"
+                    style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(139, 92, 246, 0.3), 10, 0, 0, 3);"
+                    text="🔄 Actualiser" />
         </HBox>
 
+        <!-- Grille des cards -->
         <ScrollPane fitToWidth="true" prefHeight="550" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;">
             <VBox.margin>
                 <Insets top="10" />
             </VBox.margin>
-
-            <FlowPane fx:id="cardsContainer" hgap="25" prefWrapLength="900" style="-fx-background-color: transparent; -fx-padding: 15;" vgap="25">
+            <FlowPane fx:id="cardsContainer" hgap="25" prefWrapLength="900"
+                      style="-fx-background-color: transparent; -fx-padding: 15;" vgap="25">
             </FlowPane>
         </ScrollPane>
     </VBox>

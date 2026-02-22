@@ -28,26 +28,19 @@ public class serviceUser implements services<user> {
         new File(IMAGE_DIR).mkdirs();
     }
 
-    /**
-     * Copie une image dans le dossier user_images et retourne le chemin relatif.
-     * Retourne null si sourceImagePath est null ou invalide.
-     */
+    // ==================== GESTION IMAGE ====================
+
     public String saveUserImage(String sourceImagePath) {
         if (sourceImagePath == null || sourceImagePath.isEmpty()) return null;
         try {
             File sourceFile = new File(sourceImagePath);
             if (!sourceFile.exists()) return null;
-
-            // Extension du fichier original
             String extension = "";
             int dotIndex = sourceFile.getName().lastIndexOf('.');
             if (dotIndex >= 0) extension = sourceFile.getName().substring(dotIndex);
-
-            // Nom unique pour éviter les conflits
             String uniqueName = UUID.randomUUID().toString() + extension;
             Path destPath = Paths.get(IMAGE_DIR + uniqueName);
             Files.copy(sourceFile.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
-
             return IMAGE_DIR + uniqueName;
         } catch (IOException e) {
             System.err.println("Erreur lors de la copie de l'image: " + e.getMessage());
@@ -55,41 +48,28 @@ public class serviceUser implements services<user> {
         }
     }
 
-    /**
-     * Supprime une image du dossier user_images.
-     */
     public void deleteUserImage(String imagePath) {
         if (imagePath == null || imagePath.isEmpty()) return;
-        try {
-            new File(imagePath).delete();
-        } catch (Exception e) {
+        try { new File(imagePath).delete(); } catch (Exception e) {
             System.err.println("Erreur suppression image: " + e.getMessage());
         }
     }
 
+    // ==================== ADD ====================
+
     @Override
-    public void add(user user) {
-        add(user, null);
-    }
+    public void add(user user) { add(user, null); }
 
-    /**
-     * Ajoute un utilisateur avec une image optionnelle.
-     * @param user L'utilisateur à ajouter
-     * @param sourceImagePath Chemin absolu de l'image source (peut être null)
-     */
     public void add(user user, String sourceImagePath) {
-        // Hachage du mot de passe AVANT insertion
         String hashedPassword = PasswordUtils.hashPassword(user.getUser_password());
-
-        // Copier l'image si fournie
         String savedImagePath = saveUserImage(sourceImagePath);
 
         String req = "INSERT INTO `user`(" +
                 "`user_nom`, `user_prenom`, `user_email`, `user_password`, " +
                 "`user_date_de_naissance`, `date_inscription`, `type_utilisateur`, " +
                 "`user_sexe`, `user_poids`, `user_taille`, `user_niveau_activite_physique`, " +
-                "`user_niveau_scolaire`, `user_etablissement_scolaire`, `user_image_path`) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "`user_niveau_scolaire`, `user_etablissement_scolaire`, `user_image_path`, `is_active`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
 
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, user.getUser_nom());
@@ -112,25 +92,33 @@ public class serviceUser implements services<user> {
             pstm.executeUpdate();
             System.out.println("Utilisateur ajouté avec succès !");
         } catch (SQLException e) {
-            // Si erreur, supprimer l'image copiée
             if (savedImagePath != null) deleteUserImage(savedImagePath);
             System.err.println("Erreur lors de l'ajout : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    // ==================== GET ALL (actifs uniquement) ====================
+
     @Override
     public List<user> getAll() {
+        return getAllByStatus(true);
+    }
+
+    /**
+     * Récupère les utilisateurs archivés (is_active = 0).
+     */
+    public List<user> getArchived() {
+        return getAllByStatus(false);
+    }
+
+    private List<user> getAllByStatus(boolean activeStatus) {
         List<user> users = new ArrayList<>();
-        String req = "SELECT * FROM `user`";
-
-        try (Statement stm = cnx.createStatement();
-             ResultSet rs = stm.executeQuery(req)) {
-
-            while (rs.next()) {
-                user u = mapResultSetToUser(rs);
-                users.add(u);
-            }
+        String req = "SELECT * FROM `user` WHERE `is_active` = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setInt(1, activeStatus ? 1 : 0);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) users.add(mapResultSetToUser(rs));
         } catch (SQLException e) {
             System.err.println("Erreur lors de la récupération : " + e.getMessage());
             e.printStackTrace();
@@ -138,24 +126,69 @@ public class serviceUser implements services<user> {
         return users;
     }
 
+    // ==================== ARCHIVAGE (remplace deleteById) ====================
+
+    /**
+     * Archive un utilisateur (is_active = 0) sans le supprimer de la BDD.
+     * Supprime également sa session active pour le déconnecter immédiatement.
+     */
+    public void archiveById(int id) {
+        // 1. Invalider les sessions actives de cet utilisateur
+        String deleteSessionsReq = "DELETE FROM sessions WHERE user_id = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(deleteSessionsReq)) {
+            pstm.setInt(1, id);
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erreur suppression sessions : " + e.getMessage());
+        }
+
+        // 2. Archiver l'utilisateur
+        String req = "UPDATE `user` SET `is_active` = 0 WHERE `user_id` = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setInt(1, id);
+            pstm.executeUpdate();
+            System.out.println("Utilisateur archivé avec succès (ID=" + id + ")");
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'archivage : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Réactive un utilisateur archivé (is_active = 1).
+     */
+    public void restoreById(int id) {
+        String req = "UPDATE `user` SET `is_active` = 1 WHERE `user_id` = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setInt(1, id);
+            pstm.executeUpdate();
+            System.out.println("Utilisateur restauré avec succès (ID=" + id + ")");
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la restauration : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Suppression définitive (réservé à l'admin pour cas extrêmes).
+     */
     @Override
     public void deleteById(int id) {
-        // Récupérer le chemin image avant suppression pour la supprimer aussi
         user u = getOneById(id);
-        if (u != null && u.getUser_image_path() != null) {
-            deleteUserImage(u.getUser_image_path());
-        }
+        if (u != null && u.getUser_image_path() != null) deleteUserImage(u.getUser_image_path());
 
         String req = "DELETE FROM `user` WHERE `user_id` = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            System.out.println("Utilisateur supprimé avec succès !");
+            System.out.println("Utilisateur supprimé définitivement (ID=" + id + ")");
         } catch (SQLException e) {
             System.err.println("Erreur lors de la suppression : " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+    // ==================== UPDATE ====================
 
     @Override
     public void updateById(int id, String nom, String prenom, String email, String password,
@@ -167,11 +200,6 @@ public class serviceUser implements services<user> {
                 sexe, poids, taille, niveauActivite, niveauScolaire, etablissement, null, false);
     }
 
-    /**
-     * Met à jour un utilisateur avec gestion optionnelle de l'image.
-     * @param newImageSourcePath Chemin absolu de la nouvelle image (null = pas de changement)
-     * @param removeImage true = supprimer l'image actuelle sans en mettre une nouvelle
-     */
     public void updateById(int id, String nom, String prenom, String email, String password,
                            String dateNaissance, String dateInscription, Role role,
                            Sexe sexe, Double poids, Integer taille,
@@ -179,21 +207,18 @@ public class serviceUser implements services<user> {
                            String etablissement, String newImageSourcePath, boolean removeImage) {
 
         // Gérer l'image
-        String finalImagePath;
         user existing = getOneById(id);
         String oldImagePath = (existing != null) ? existing.getUser_image_path() : null;
+        String finalImagePath;
 
         if (removeImage) {
-            // Supprimer l'image actuelle
             if (oldImagePath != null) deleteUserImage(oldImagePath);
             finalImagePath = null;
         } else if (newImageSourcePath != null) {
-            // Nouvelle image : copier et supprimer l'ancienne
             String newSavedPath = saveUserImage(newImageSourcePath);
             if (oldImagePath != null) deleteUserImage(oldImagePath);
             finalImagePath = newSavedPath;
         } else {
-            // Pas de changement d'image : conserver l'ancienne
             finalImagePath = oldImagePath;
         }
 
@@ -229,23 +254,28 @@ public class serviceUser implements services<user> {
         }
     }
 
+    // ==================== GET ONE ====================
+
     @Override
     public user getOneById(int id) {
+        // Recherche dans tous les users (actifs ET archivés) pour les opérations internes
         String req = "SELECT * FROM `user` WHERE `user_id` = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) return mapResultSetToUser(rs);
-            else System.out.println("Aucun utilisateur trouvé avec l'ID : " + id);
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération : " + e.getMessage());
+            System.err.println("Erreur getOneById : " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
+    // ==================== LOGIN : vérifie actif + mot de passe ====================
+
     public user getByEmailAndPassword(String email, String plainPassword) {
-        String req = "SELECT * FROM `user` WHERE `user_email` = ?";
+        // On sélectionne uniquement les utilisateurs ACTIFS
+        String req = "SELECT * FROM `user` WHERE `user_email` = ? AND `is_active` = 1";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, email);
             ResultSet rs = pstm.executeQuery();
@@ -262,8 +292,22 @@ public class serviceUser implements services<user> {
     }
 
     /**
-     * Mappe un ResultSet vers un objet user (factorisation).
+     * Vérifie si un email existe mais est archivé (pour afficher un message adapté au login).
      */
+    public boolean isEmailArchived(String email) {
+        String req = "SELECT COUNT(*) FROM `user` WHERE `user_email` = ? AND `is_active` = 0";
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setString(1, email);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // ==================== MAPPING ResultSet -> user ====================
+
     private user mapResultSetToUser(ResultSet rs) throws SQLException {
         user u = new user();
         u.setUser_id(rs.getInt("user_id"));
@@ -277,21 +321,28 @@ public class serviceUser implements services<user> {
 
         String sexeStr = rs.getString("user_sexe");
         if (sexeStr != null && !sexeStr.isEmpty()) {
-            try { u.setUser_sexe(Sexe.valueOf(sexeStr)); } catch (IllegalArgumentException e) {}
+            try { u.setUser_sexe(Sexe.valueOf(sexeStr)); } catch (IllegalArgumentException ignored) {}
         }
         u.setUser_poids(rs.getObject("user_poids") != null ? rs.getDouble("user_poids") : null);
         u.setUser_taille(rs.getObject("user_taille") != null ? rs.getInt("user_taille") : null);
 
         String activiteStr = rs.getString("user_niveau_activite_physique");
         if (activiteStr != null && !activiteStr.isEmpty()) {
-            try { u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr)); } catch (IllegalArgumentException e) {}
+            try { u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr)); } catch (IllegalArgumentException ignored) {}
         }
         String scolaireStr = rs.getString("user_niveau_scolaire");
         if (scolaireStr != null && !scolaireStr.isEmpty()) {
-            try { u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr)); } catch (IllegalArgumentException e) {}
+            try { u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr)); } catch (IllegalArgumentException ignored) {}
         }
         u.setUser_etablissement_scolaire(rs.getString("user_etablissement_scolaire"));
         u.setUser_image_path(rs.getString("user_image_path"));
+
+        // is_active : récupération robuste (colonne peut ne pas exister sur ancienne BDD)
+        try {
+            u.setIs_active(rs.getInt("is_active") == 1);
+        } catch (SQLException e) {
+            u.setIs_active(true); // fallback sécurisé
+        }
 
         return u;
     }

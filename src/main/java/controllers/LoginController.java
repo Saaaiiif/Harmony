@@ -35,8 +35,6 @@ public class LoginController {
     public void initialize() {
         errorLabel.setVisible(false);
         linkToRegister.setOnAction(e -> goToRegister());
-
-        // Remember-Me : on attend que la scène soit complètement chargée
         Platform.runLater(this::checkRememberMe);
     }
 
@@ -46,9 +44,17 @@ public class LoginController {
             SessionDAO sessionDAO = new SessionDAO();
             if (sessionDAO.isTokenValid(rememberedToken)) {
                 Optional<user> optUser = sessionDAO.getUserByToken(rememberedToken);
-                optUser.ifPresent(user -> {
-                    Session.getInstance().startSession(user, rememberedToken, LocalDateTime.now().plusHours(2));
-                    redirectAccordingToRole(user);
+                optUser.ifPresent(u -> {
+                    // Vérifier que le compte est toujours actif même via remember-me
+                    if (u.isIs_active()) {
+                        Session.getInstance().startSession(u, rememberedToken, LocalDateTime.now().plusHours(2));
+                        redirectAccordingToRole(u);
+                    } else {
+                        // Compte archivé entre temps : nettoyer le token
+                        sessionDAO.deleteSession(rememberedToken);
+                        deleteRememberFile();
+                        showArchivedError();
+                    }
                 });
             } else {
                 deleteRememberFile();
@@ -62,36 +68,54 @@ public class LoginController {
         String pass = passwordLogin.getText();
 
         if (email.isEmpty() || pass.isEmpty()) {
-            errorLabel.setText("Veuillez remplir tous les champs");
-            errorLabel.setVisible(true);
+            showError("Veuillez remplir tous les champs");
             return;
         }
 
+        // getByEmailAndPassword ne retourne que les utilisateurs ACTIFS (is_active = 1)
         user utilisateur = service.getByEmailAndPassword(email, pass);
 
         if (utilisateur != null) {
+            // Utilisateur actif trouvé → connexion normale
             SecureRandom random = new SecureRandom();
             byte[] bytes = new byte[32];
             random.nextBytes(bytes);
             String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(2);
 
             SessionDAO sessionDAO = new SessionDAO();
             sessionDAO.deleteSessionsByUser(utilisateur.getUser_id());
             sessionDAO.createSession(utilisateur.getUser_id(), token, expiresAt);
-
             Session.getInstance().startSession(utilisateur, token, expiresAt);
 
-            if (rememberMe.isSelected()) {
-                saveRememberToken(token);
-            }
+            if (rememberMe.isSelected()) saveRememberToken(token);
 
             redirectAccordingToRole(utilisateur);
         } else {
-            errorLabel.setText("Email ou mot de passe incorrect");
-            errorLabel.setVisible(true);
+            // Distinguer : compte archivé vs mauvais identifiants
+            if (service.isEmailArchived(email)) {
+                showArchivedError();
+            } else {
+                showError("Email ou mot de passe incorrect");
+            }
         }
+    }
+
+    /**
+     * Affiche un message d'erreur spécifique pour un compte archivé.
+     */
+    private void showArchivedError() {
+        errorLabel.setText("🚫 Ce compte a été désactivé. Contactez l'administrateur.");
+        errorLabel.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 13; -fx-font-weight: bold; " +
+                "-fx-background-color: #FEE2E2; -fx-padding: 10 15; -fx-background-radius: 8;");
+        errorLabel.setVisible(true);
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 13; -fx-font-weight: bold; " +
+                "-fx-background-color: #FEE2E2; -fx-padding: 10 15; -fx-background-radius: 8;");
+        errorLabel.setVisible(true);
     }
 
     private void redirectAccordingToRole(user user) {
@@ -102,18 +126,16 @@ public class LoginController {
 
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
 
-            // Récupération sécurisée de la Stage (fonctionne même pendant initialize)
             Stage stage = (Stage) emailLogin.getScene().getWindow();
             if (stage == null) {
-                // Fallback ultra-sécurisé (au cas où)
-                stage = (Stage) ((Stage) javafx.stage.Window.getWindows().get(0));
+                stage = (Stage) javafx.stage.Window.getWindows().get(0);
             }
 
             stage.setScene(new Scene(root));
             stage.setTitle(user.getType_utilisateur() == Role.ETUDIANT
                     ? "Accueil - Harmony"
                     : "Dashboard Admin - Harmony");
-            stage.centerOnScreen(); // optionnel mais joli
+            stage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();

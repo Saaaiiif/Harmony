@@ -20,6 +20,9 @@ public class user {
     // IMAGE
     private String user_image_path;
 
+    // ARCHIVAGE : true = actif, false = archivé
+    private boolean is_active = true;
+
     // ========== CONSTRUCTEURS ==========
 
     public user() {}
@@ -34,6 +37,7 @@ public class user {
         this.date_inscription = dateInscription;
         this.type_utilisateur = role;
         this.user_id = 0;
+        this.is_active = true;
     }
 
     public user(String nom, String prenom, String email, String password,
@@ -70,7 +74,7 @@ public class user {
     public void setDate_inscription(String date_inscription) { this.date_inscription = date_inscription; }
 
     public String getUser_date_de_naissance() { return user_date_de_naissance; }
-    public void setUser_date_de_naissance(String user_date_de_naissance) { this.user_date_de_naissance = user_date_de_naissance; }
+    public void setUser_date_de_naissance(String ddn) { this.user_date_de_naissance = ddn; }
 
     public Role getType_utilisateur() { return type_utilisateur; }
     public void setType_utilisateur(Role type_utilisateur) { this.type_utilisateur = type_utilisateur; }
@@ -86,22 +90,22 @@ public class user {
     public void setUser_taille(Integer user_taille) { this.user_taille = user_taille; }
 
     public NiveauActivitePhysique getUser_niveau_activite_physique() { return user_niveau_activite_physique; }
-    public void setUser_niveau_activite_physique(NiveauActivitePhysique user_niveau_activite_physique) {
-        this.user_niveau_activite_physique = user_niveau_activite_physique;
-    }
+    public void setUser_niveau_activite_physique(NiveauActivitePhysique nap) { this.user_niveau_activite_physique = nap; }
 
     // SCOLAIRE
     public NiveauScolaire getUser_niveau_scolaire() { return user_niveau_scolaire; }
-    public void setUser_niveau_scolaire(NiveauScolaire user_niveau_scolaire) { this.user_niveau_scolaire = user_niveau_scolaire; }
+    public void setUser_niveau_scolaire(NiveauScolaire niveauScolaire) { this.user_niveau_scolaire = niveauScolaire; }
 
     public String getUser_etablissement_scolaire() { return user_etablissement_scolaire; }
-    public void setUser_etablissement_scolaire(String user_etablissement_scolaire) {
-        this.user_etablissement_scolaire = user_etablissement_scolaire;
-    }
+    public void setUser_etablissement_scolaire(String e) { this.user_etablissement_scolaire = e; }
 
     // IMAGE
     public String getUser_image_path() { return user_image_path; }
     public void setUser_image_path(String user_image_path) { this.user_image_path = user_image_path; }
+
+    // ARCHIVAGE
+    public boolean isIs_active() { return is_active; }
+    public void setIs_active(boolean is_active) { this.is_active = is_active; }
 
     @Override
     public String toString() {
@@ -110,10 +114,8 @@ public class user {
                 ", user_nom='" + user_nom + '\'' +
                 ", user_prenom='" + user_prenom + '\'' +
                 ", user_email='" + user_email + '\'' +
-                ", user_date_de_naissance='" + user_date_de_naissance + '\'' +
-                ", date_inscription='" + date_inscription + '\'' +
                 ", type_utilisateur=" + type_utilisateur +
-                ", user_image_path='" + user_image_path + '\'' +
+                ", is_active=" + is_active +
                 '}';
     }
 }
