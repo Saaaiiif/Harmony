@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -13,6 +15,13 @@
       prefWidth="1200" prefHeight="700">
 
     <Label text="Tâches" styleClass="kanban-title" VBox.vgrow="NEVER"/>
+
+    <HBox alignment="CENTER_LEFT" spacing="24" styleClass="kanban-api-bar">
+        <Label fx:id="labelAdvice" text="Conseil du jour : chargement…" wrapText="true" maxWidth="400" styleClass="kanban-advice-label"/>
+        <Label fx:id="labelWorldTime" text="Heure Paris : --:--" styleClass="kanban-time-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Exporter (JSON)" styleClass="btn-kanban-export" onAction="#onExportTachesJson"/>
+    </HBox>
 
     <HBox spacing="20" VBox.vgrow="ALWAYS" styleClass="kanban-columns-container">
         <!-- Colonne TODO -->

@@ -18,6 +18,9 @@
       prefWidth="1100" prefHeight="650">
 
     <Label text="Backoffice Administrateur" styleClass="admin-title" VBox.vgrow="NEVER"/>
+    <HBox alignment="CENTER_LEFT" styleClass="admin-external-stats-bar">
+        <Label fx:id="labelExternalStats" text="Chargement…" styleClass="admin-external-stats-label" wrapText="true"/>
+    </HBox>
 
     <TabPane fx:id="adminTabPane" styleClass="admin-tab-pane" VBox.vgrow="ALWAYS">
         <!-- Onglet Gestion des Salles -->

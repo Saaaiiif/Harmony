@@ -8,11 +8,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/AdminBackofficeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/AdminBackofficeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/EventFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/EventFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/EvenementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/EvenementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/KanbanViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/KanbanViewController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/admin-backoffice.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/admin-backoffice.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/calendar-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/calendar-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/event-form.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/event-form.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/kanban-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/kanban-view.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,7 +150,7 @@
       <workItem from="1770903358834" duration="14360000" />
       <workItem from="1771176067847" duration="21106000" />
       <workItem from="1771534016573" duration="2954000" />
-      <workItem from="1771617506598" duration="5018000" />
+      <workItem from="1771617506598" duration="7726000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />

@@ -26,6 +26,11 @@
                     <Label fx:id="labelMonthYear" styleClass="calendar-month-title"/>
                     <Button fx:id="btnNextMonth" text="›" styleClass="icon-btn nav-btn" onAction="#onNextMonth"/>
                 </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="16" styleClass="calendar-api-bar">
+                    <Label fx:id="labelWeather" text="Météo : chargement…" styleClass="calendar-weather-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Exporter (JSON)" styleClass="btn-calendar btn-export" onAction="#onExportEvenementsJson"/>
+                </HBox>
                 <VBox fx:id="calendarMonthBox" VBox.vgrow="ALWAYS" styleClass="calendar-month-grid"/>
             </VBox>
         </Tab>

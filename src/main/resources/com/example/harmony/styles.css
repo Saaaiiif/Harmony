@@ -957,6 +957,15 @@
     -fx-text-fill: #333333;
 }
 
+.admin-external-stats-bar {
+    -fx-padding: 6 0 10 0;
+}
+
+.admin-external-stats-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-base;
+}
+
 .admin-tab-pane {
     -fx-background-color: transparent;
 }
@@ -1171,6 +1180,31 @@
 /* Calendrier vue mois (type Journal iPhone) */
 .calendar-month-nav {
     -fx-padding: 20 0 16 0;
+}
+
+.calendar-api-bar {
+    -fx-padding: 8 0 12 0;
+}
+
+.calendar-weather-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-base;
+}
+
+.calendar-day-holiday {
+    -fx-background-color: rgba(255, 193, 7, 0.15);
+    -fx-border-color: rgba(255, 193, 7, 0.4);
+    -fx-border-width: 1;
+    -fx-border-radius: 10px;
+}
+
+.light-mode .calendar-day-holiday {
+    -fx-background-color: rgba(255, 193, 7, 0.2);
+    -fx-border-color: rgba(255, 152, 0, 0.5);
+}
+
+.btn-export {
+    -fx-font-size: 12px;
 }
 
 .calendar-month-title {

@@ -12,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.application.Platform;
 import javafx.scene.layout.*;
 import javafx.scene.Cursor;
 import javafx.stage.Modality;
@@ -21,10 +22,16 @@ import models.Salle;
 import models.StatutDemandeSalle;
 import models.Tache;
 import models.TypeEvenement;
+import api.HolidaysApiService;
+import api.WeatherApiService;
 import services.EvenementService;
 import services.SalleService;
 import services.TacheService;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -60,10 +67,15 @@ public class CalendarViewController implements Initializable {
 
     @FXML private VBox calendarMonthBox;
     @FXML private Label labelMonthYear;
+    @FXML private Label labelWeather;
     @FXML private Button btnPrevMonth;
     @FXML private Button btnNextMonth;
 
     private final EvenementService evenementService = new EvenementService();
+    private final WeatherApiService weatherApiService = new WeatherApiService();
+    private final HolidaysApiService holidaysApiService = new HolidaysApiService();
+    private Set<LocalDate> holidaysForYear = new HashSet<>();
+    private int lastHolidaysYear = -1;
     private final TacheService tacheService = new TacheService();
     private final SalleService salleService = new SalleService();
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -78,7 +90,9 @@ public class CalendarViewController implements Initializable {
         configurerToolbarHover();
         chargerEvenements();
         chargerTaches();
+        loadWeatherForToday();
         buildCalendarMonth();
+        loadHolidaysThenBuildCalendar();
         if (mainTabPane != null) {
             mainTabPane.getSelectionModel().selectedItemProperty().addListener((o, oldTab, newTab) -> {
                 if (newTab != null && "Calendrier".equals(newTab.getText())) {
@@ -297,16 +311,69 @@ public class CalendarViewController implements Initializable {
         tacheTable.setItems(FXCollections.observableArrayList(list));
     }
 
+    private void loadWeatherForToday() {
+        if (labelWeather == null) return;
+        weatherApiService.getWeatherForDate(LocalDate.now()).thenAccept(w -> {
+            Platform.runLater(() -> {
+                if (labelWeather == null) return;
+                if (w.error != null) labelWeather.setText("Météo : " + w.error);
+                else if (w.tempMax != null) labelWeather.setText("Météo aujourd'hui : " + w.description + ", " + w.tempMin.intValue() + "° / " + w.tempMax.intValue() + "°");
+                else labelWeather.setText("Météo : " + w.description);
+            });
+        });
+    }
+
+    private void loadHolidaysThenBuildCalendar() {
+        int year = currentMonth.getYear();
+        lastHolidaysYear = year;
+        holidaysApiService.getHolidaysForYear(year).thenAccept(set -> {
+            holidaysForYear = set != null ? set : new HashSet<>();
+            Platform.runLater(this::buildCalendarMonth);
+        });
+    }
+
     @FXML
     private void onPrevMonth() {
         currentMonth = currentMonth.minusMonths(1);
-        buildCalendarMonth();
+        if (currentMonth.getYear() != lastHolidaysYear) loadHolidaysThenBuildCalendar();
+        else buildCalendarMonth();
     }
 
     @FXML
     private void onNextMonth() {
         currentMonth = currentMonth.plusMonths(1);
-        buildCalendarMonth();
+        if (currentMonth.getYear() != lastHolidaysYear) loadHolidaysThenBuildCalendar();
+        else buildCalendarMonth();
+    }
+
+    @FXML
+    private void onExportEvenementsJson() {
+        List<Evenement> list = evenementService.getAll();
+        org.json.JSONArray arr = new org.json.JSONArray();
+        java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+        for (Evenement e : list) {
+            org.json.JSONObject o = new org.json.JSONObject();
+            o.put("id", e.getId());
+            o.put("titre", e.getTitre());
+            o.put("description", e.getDescription());
+            o.put("dateDebut", e.getDateDebut() != null ? df.format(e.getDateDebut()) : null);
+            o.put("dateFin", e.getDateFin() != null ? df.format(e.getDateFin()) : null);
+            o.put("lieu", e.getLieu());
+            o.put("type", e.getType() != null ? e.getType().name() : null);
+            arr.put(o);
+        }
+        javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
+        fc.setTitle("Exporter les événements");
+        fc.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("JSON", "*.json"));
+        File f = fc.showSaveDialog(getDialogOwner());
+        if (f != null) {
+            try (BufferedWriter w = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
+                w.write(arr.toString(2));
+                showInfo("Export réussi : " + f.getAbsolutePath());
+            } catch (Exception ex) {
+                showAlertErreur(getDialogOwner(), ex);
+            }
+        }
     }
 
     private void buildCalendarMonth() {
@@ -343,6 +410,7 @@ public class CalendarViewController implements Initializable {
             LocalDate date = currentMonth.atDay(day);
             VBox cell = new VBox(4);
             cell.getStyleClass().add("calendar-day-cell");
+            if (holidaysForYear.contains(date)) cell.getStyleClass().add("calendar-day-holiday");
             cell.setMinSize(100, 70);
             cell.setPrefSize(120, 85);
             Label num = new Label(String.valueOf(day));

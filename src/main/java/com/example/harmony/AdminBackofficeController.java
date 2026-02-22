@@ -10,11 +10,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.application.Platform;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 import models.Evenement;
 import models.Salle;
 import models.StatutDemandeSalle;
+import api.AdminNotificationApiService;
+import api.PublicStatsApiService;
 import services.EvenementService;
 import services.SalleService;
 
@@ -52,9 +55,12 @@ public class AdminBackofficeController implements Initializable {
     @FXML private TableColumn<Evenement, String> colDemandeSalle;
     @FXML private TableColumn<Evenement, String> colDemandeType;
     @FXML private Label demandeNotificationLabel;
+    @FXML private Label labelExternalStats;
 
     private final SalleService salleService = new SalleService();
     private final EvenementService evenementService = new EvenementService();
+    private final AdminNotificationApiService adminNotificationApiService = new AdminNotificationApiService();
+    private final PublicStatsApiService publicStatsApiService = new PublicStatsApiService();
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Override
@@ -65,6 +71,7 @@ public class AdminBackofficeController implements Initializable {
         chargerSalles();
         chargerEvents();
         chargerDemandes();
+        loadExternalStats();
         if (adminTabPane != null) {
             adminTabPane.getSelectionModel().selectedItemProperty().addListener((o, oldTab, newTab) -> {
                 if (newTab == null) return;
@@ -74,6 +81,15 @@ public class AdminBackofficeController implements Initializable {
                 }
             });
         }
+    }
+
+    private void loadExternalStats() {
+        if (labelExternalStats == null) return;
+        publicStatsApiService.getExternalInfo().thenAccept(info -> {
+            Platform.runLater(() -> {
+                if (labelExternalStats != null) labelExternalStats.setText("Info externe : " + info);
+            });
+        });
     }
 
     private void configurerColonnesSalle() {
@@ -274,6 +290,7 @@ public class AdminBackofficeController implements Initializable {
                 }
                 e.setStatutDemandeSalle(StatutDemandeSalle.CONFIRME);
                 evenementService.update(e);
+                adminNotificationApiService.notifyDemandProcessed(e.getTitre(), salle.getNom(), true);
             }
             chargerDemandes();
             showInfo("Demande(s) acceptée(s) avec succès.");
@@ -296,8 +313,10 @@ public class AdminBackofficeController implements Initializable {
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
                 for (Evenement e : sel) {
+                    Salle salle = e.getSalleId() != null ? salleService.getById(e.getSalleId()) : null;
                     e.setStatutDemandeSalle(StatutDemandeSalle.REFUSE);
                     evenementService.update(e);
+                    adminNotificationApiService.notifyDemandProcessed(e.getTitre(), salle != null ? salle.getNom() : "?", false);
                 }
                 chargerDemandes();
                 showInfo("Demande(s) refusée(s).");

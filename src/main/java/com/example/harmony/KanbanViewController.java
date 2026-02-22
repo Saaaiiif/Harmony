@@ -1,14 +1,24 @@
 package com.example.harmony;
 
+import api.AdviceApiService;
+import api.WorldTimeApiService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import models.StatutTache;
 import models.Tache;
 import services.TacheService;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,8 +29,12 @@ public class KanbanViewController implements Initializable {
     @FXML private VBox todoList;
     @FXML private VBox doingList;
     @FXML private VBox doneList;
+    @FXML private Label labelAdvice;
+    @FXML private Label labelWorldTime;
 
     private final TacheService tacheService = new TacheService();
+    private final AdviceApiService adviceApiService = new AdviceApiService();
+    private final WorldTimeApiService worldTimeApiService = new WorldTimeApiService();
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
@@ -29,6 +43,58 @@ public class KanbanViewController implements Initializable {
         configurerColonneDrop(doingList);
         configurerColonneDrop(doneList);
         chargerTaches();
+        loadAdvice();
+        loadWorldTime();
+    }
+
+    private void loadAdvice() {
+        if (labelAdvice == null) return;
+        adviceApiService.getRandomAdvice().thenAccept(advice -> {
+            Platform.runLater(() -> {
+                if (labelAdvice != null) labelAdvice.setText("Conseil du jour : " + advice);
+            });
+        });
+    }
+
+    private void loadWorldTime() {
+        if (labelWorldTime == null) return;
+        worldTimeApiService.getCurrentTime().thenAccept(info -> {
+            Platform.runLater(() -> {
+                if (labelWorldTime != null) {
+                    if (info.error != null) labelWorldTime.setText("Heure Paris : " + info.error);
+                    else labelWorldTime.setText("Heure Paris : " + info.timeHHmm);
+                }
+            });
+        });
+    }
+
+    @FXML
+    private void onExportTachesJson() {
+        List<Tache> list = tacheService.getAll();
+        org.json.JSONArray arr = new org.json.JSONArray();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        for (Tache t : list) {
+            org.json.JSONObject o = new org.json.JSONObject();
+            o.put("id", t.getId());
+            o.put("nom", t.getNom());
+            o.put("notes", t.getNotes());
+            o.put("deadline", t.getDeadline() != null ? df.format(t.getDeadline()) : null);
+            o.put("statut", t.getStatut() != null ? t.getStatut().name() : null);
+            arr.put(o);
+        }
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Exporter les tâches");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+        Window window = todoList != null && todoList.getScene() != null ? todoList.getScene().getWindow() : null;
+        File f = fc.showSaveDialog(window);
+        if (f != null) {
+            try (BufferedWriter w = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
+                w.write(arr.toString(2));
+                new Alert(Alert.AlertType.INFORMATION, "Export réussi : " + f.getAbsolutePath()).showAndWait();
+            } catch (Exception ex) {
+                new Alert(Alert.AlertType.ERROR, "Erreur : " + ex.getMessage()).showAndWait();
+            }
+        }
     }
 
     private void chargerTaches() {
