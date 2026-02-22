@@ -11,6 +11,16 @@ public class Post {
     private String nomEtudiant;  // pour affichage
     private int idCategorie;
     private String nomCategorie;  // pour affichage
+    private String imagePath;
+
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
 
     public String getNomCategorie() {
@@ -32,12 +42,13 @@ public class Post {
 
 
     public Post() {}
-    public Post(String titre, String contenu, int idEtudiant, int idCategorie) {
+    public Post(String titre, String contenu, int idEtudiant, int idCategorie ,String imagePath) {
         this.titre = titre;
         this.contenu = contenu;
         this.dateCreation = LocalDateTime.now();
         this.idEtudiant = idEtudiant;
         this.idCategorie = idCategorie;
+        this.imagePath = imagePath;
     }
 
     public Post(int idPost, String titre, String contenu,

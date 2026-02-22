@@ -15,7 +15,7 @@ public class ServicePost implements Services<Post> {
     @Override
     public void add(Post post) {
 
-        String req = "INSERT INTO post (titre, contenu, date_creation, id_etudiant, id_categorie) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO post (titre, contenu, date_creation, id_etudiant, id_categorie, image_path) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
@@ -26,6 +26,8 @@ public class ServicePost implements Services<Post> {
            // ps.setTimestamp(3, Timestamp.valueOf(post.getDateCreation()));
             ps.setInt(4, post.getIdEtudiant());
             ps.setInt(5, post.getIdCategorie());
+            ps.setString(6, post.getImagePath());
+
 
             ps.executeUpdate();
 
@@ -154,6 +156,8 @@ public class ServicePost implements Services<Post> {
                 p.setTitre(rs.getString("titre"));
                 p.setContenu(rs.getString("contenu"));
                 p.setIdCategorie(rs.getInt("id_categorie"));
+                p.setImagePath(rs.getString("image_path"));
+
 
                 Timestamp ts = rs.getTimestamp("date_creation");
                 if (ts != null) {
