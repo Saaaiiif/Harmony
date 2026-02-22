@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Je commence a traviller sur le métier avancé Upload Image !">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +159,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="12322000" />
+      <workItem from="1771668340810" duration="13573000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -403,7 +401,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771679671794</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Je commence a traviller sur le métier avancé Upload Image !">
+      <option name="closed" value="true" />
+      <created>1771758248593</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1771758248593</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -421,7 +427,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="UI update 1.1 (Sidebar animation)" />
     <MESSAGE value="UI update 1.2 (Sidebar animation)" />
     <MESSAGE value="crud + test catégorie , post et comment fonctionnelles" />
     <MESSAGE value="Home Forum Controller + Forom home fonctionnelles" />
@@ -446,7 +451,8 @@
     <MESSAGE value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
     <MESSAGE value="Je commence a traviller sur le métier avancé Systéme de Like" />
     <MESSAGE value="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel" />
-    <option name="LAST_COMMIT_MESSAGE" value="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel" />
+    <MESSAGE value="Je commence a traviller sur le métier avancé Upload Image !" />
+    <option name="LAST_COMMIT_MESSAGE" value="Je commence a traviller sur le métier avancé Upload Image !" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
