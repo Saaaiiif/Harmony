@@ -2,20 +2,24 @@ package controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import models.Activite;
 import models.Exercice;
 import services.ServiceActivite;
 import services.ServiceExercice;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,19 +33,26 @@ public class JournalExercicesController {
     private ServiceExercice serviceExercice = new ServiceExercice();
     private Map<Integer, Exercice> cacheExercices = new HashMap<>();
 
+    // --- VARIABLES POUR LE COACH IA ---
+    @FXML private StackPane coachOverlayPane;
+    @FXML private TextArea chatArea;
+    @FXML private TextField chatInput;
+
     @FXML
     public void initialize() {
         for (Exercice ex : serviceExercice.afficherTout()) {
             cacheExercices.put(ex.getId_exercice(), ex);
         }
         chargerHistoriqueInnovant();
+        if(chatArea != null) {
+            chatArea.setText("🤖 Coach: Bonjour ! Je suis votre coach virtuel basé sur l'IA. Posez-moi vos questions sur vos entraînements, vos douleurs ou la nutrition sportive !\n\n");
+        }
     }
 
     private void chargerHistoriqueInnovant() {
         flowPaneHistorique.getChildren().clear();
         List<Activite> toutes = serviceActivite.afficherTout();
 
-        // Grouper par date de séance
         Map<LocalDate, List<Activite>> seancesParJour = toutes.stream()
                 .collect(Collectors.groupingBy(a -> a.getDate_activite().toLocalDateTime().toLocalDate()));
 
@@ -51,12 +62,10 @@ public class JournalExercicesController {
                     LocalDate date = entry.getKey();
                     List<Activite> activites = entry.getValue();
 
-                    // Création de la Card "Séance"
                     VBox seanceCard = new VBox(15);
                     seanceCard.setStyle("-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
                     seanceCard.setPrefWidth(350);
 
-                    // En-tête de la séance
                     HBox header = new HBox(10);
                     header.setAlignment(Pos.CENTER_LEFT);
                     Label lblDate = new Label("📅 " + date.toString());
@@ -73,7 +82,6 @@ public class JournalExercicesController {
                     seanceCard.getChildren().add(header);
                     seanceCard.getChildren().add(new Separator());
 
-                    // Lister les exercices dans cette séance
                     for (Activite act : activites) {
                         Exercice ex = cacheExercices.get(act.getId_exercice());
                         if (ex == null) continue;
@@ -113,13 +121,10 @@ public class JournalExercicesController {
                 });
     }
 
-    // --- DIALOGUES MODALES ---
-
     private void showEditDialog(Activite act, Exercice ex) {
         VBox dialog = new VBox(20);
         dialog.setStyle("-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 0);");
         dialog.setMaxWidth(400);
-        dialog.setMaxHeight(Region.USE_PREF_SIZE);
         dialog.setAlignment(Pos.CENTER);
 
         Label title = new Label("Modifier " + ex.getNom_exercice());
@@ -169,12 +174,14 @@ public class JournalExercicesController {
                     act.setNb_repetitions(Integer.parseInt(tf2.getText()));
                     act.setPoids(Float.parseFloat(tf3.getText()));
                 }
-                // Si vous avez une méthode modifier dans ServiceActivite, décommentez ceci :
-                // serviceActivite.modifier(act);
+
+                // 🚀 LA CORRECTION EST ICI : On envoie la modification à la base de données !
+                serviceActivite.modifier(act);
+
                 closeDialog();
                 chargerHistoriqueInnovant();
             } catch (Exception excep) {
-                // Ignore silent format error
+                System.out.println("Erreur de modification : " + excep.getMessage());
             }
         });
 
@@ -190,7 +197,7 @@ public class JournalExercicesController {
     }
 
     private void showDeleteActivityDialog(Activite act) {
-        VBox dialog = buildConfirmDialog("Supprimer l'exercice", "Voulez-vous vraiment retirer cet exercice de la séance ?", () -> {
+        VBox dialog = buildConfirmDialog("Supprimer l'exercice", "Voulez-vous retirer cet exercice de la séance ?", () -> {
             serviceActivite.supprimer(act.getId_activite());
             closeDialog();
             chargerHistoriqueInnovant();
@@ -213,7 +220,6 @@ public class JournalExercicesController {
         VBox dialog = new VBox(20);
         dialog.setStyle("-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 0);");
         dialog.setMaxWidth(400);
-        dialog.setMaxHeight(Region.USE_PREF_SIZE);
         dialog.setAlignment(Pos.CENTER);
 
         Label title = new Label(titleText);
@@ -221,7 +227,7 @@ public class JournalExercicesController {
 
         Label desc = new Label(descText);
         desc.setWrapText(true);
-        desc.setStyle("-fx-font-size: 14px; -fx-text-alignment: center;");
+        desc.setStyle("-fx-text-alignment: center;");
 
         Button btnConf = new Button("Supprimer");
         btnConf.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 15;");
@@ -259,7 +265,108 @@ public class JournalExercicesController {
     @FXML void goToAccueil(ActionEvent event) { FrontLayoutController.instance.loadPage("/AccueilActivite.fxml"); }
     @FXML void goToAliments(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalAlimentaire.fxml"); }
     @FXML void goToExercices(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalExercices.fxml"); }
-
-    // LA CORRECTION DU LIEN EST ICI :
     @FXML void goToSommeil(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalSommeil.fxml"); }
+
+    // =========================================================================
+    // === METHODES POUR LE COACH IA ===
+    // =========================================================================
+
+    @FXML
+    void ouvrirCoach(ActionEvent event) {
+        coachOverlayPane.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(300), coachOverlayPane);
+        ft.setFromValue(0.0); ft.setToValue(1.0); ft.play();
+    }
+
+    @FXML
+    void fermerCoach(ActionEvent event) {
+        FadeTransition ft = new FadeTransition(Duration.millis(300), coachOverlayPane);
+        ft.setFromValue(1.0); ft.setToValue(0.0);
+        ft.setOnFinished(e -> coachOverlayPane.setVisible(false));
+        ft.play();
+    }
+
+    @FXML
+    void envoyerMessageCoach(ActionEvent event) {
+        String question = chatInput.getText().trim();
+        if (question.isEmpty()) return;
+
+        chatArea.appendText("👤 Vous: " + question + "\n");
+        chatInput.clear();
+        chatArea.appendText("🤖 Coach: (En train d'analyser votre question...)\n");
+
+        new Thread(() -> appelerApiGemini(question)).start();
+    }
+
+    private void appelerApiGemini(String question) {
+        String API_KEY = "AIzaSyBtBKGk6TkcQKB5qvXV6pOg0S7GqZXkLes";
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+
+        String safeQuestion = question.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", "");
+        String promptInstruction = "Tu es un coach sportif expert et bienveillant. Réponds de façon très concise et motivante à : " + safeQuestion;
+
+        String jsonBody = "{\"contents\": [{\"parts\":[{\"text\": \"" + promptInstruction + "\"}]}]}";
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String reponseJSON = response.body();
+
+            String texteReponse = extraireTexteDeLaReponseGemini(reponseJSON);
+
+            Platform.runLater(() -> {
+                String currentText = chatArea.getText();
+                chatArea.setText(currentText.replace("🤖 Coach: (En train d'analyser votre question...)\n", ""));
+                chatArea.appendText("🤖 Coach: " + texteReponse + "\n\n");
+            });
+
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                String currentText = chatArea.getText();
+                chatArea.setText(currentText.replace("🤖 Coach: (En train d'analyser votre question...)\n", ""));
+                chatArea.appendText("⚠️ Erreur réseau : impossible de joindre le serveur.\n\n");
+            });
+        }
+    }
+
+    private String extraireTexteDeLaReponseGemini(String json) {
+        try {
+            String searchKey = "\"text\":";
+            int indexDebut = json.indexOf(searchKey);
+
+            if (indexDebut == -1) {
+                if(json.contains("API_KEY_INVALID")) return "Votre clé API n'est pas valide.";
+                if(json.contains("NOT_FOUND")) return "Modèle d'IA non trouvé pour cette clé.";
+                return "Désolé, problème technique avec la réponse de l'IA.";
+            }
+
+            indexDebut = json.indexOf("\"", indexDebut + searchKey.length());
+            if (indexDebut == -1) return "Erreur format de réponse.";
+            indexDebut++;
+
+            int indexFin = indexDebut;
+            while (indexFin < json.length()) {
+                if (json.charAt(indexFin) == '"' && json.charAt(indexFin - 1) != '\\') {
+                    break;
+                }
+                indexFin++;
+            }
+
+            String texteBrut = json.substring(indexDebut, indexFin);
+
+            return texteBrut.replace("\\n", "\n")
+                    .replace("\\\"", "\"")
+                    .replace("\\\\", "\\")
+                    .replace("\\r", "")
+                    .replace("\\*", "");
+        } catch (Exception e) {
+            return "Erreur lors de la lecture de la réponse.";
+        }
+    }
 }
