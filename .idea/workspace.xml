@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="je commence a travailler sur Recherche intelligente">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="WIP : Recherche intelligente: Recherche par mot clé">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,7 +162,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="25885000" />
+      <workItem from="1771668340810" duration="26802000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -437,7 +436,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771840648384</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="WIP : Recherche intelligente: Recherche par mot clé">
+      <option name="closed" value="true" />
+      <created>1771841376143</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1771841376143</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,7 +462,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add Catégorie est fonctionnelle" />
     <MESSAGE value="L'affichage de post est fonctionnel" />
     <MESSAGE value="L'ajout  du post est fonctionnel" />
     <MESSAGE value="commentaire en prograis" />
@@ -480,7 +486,8 @@
     <MESSAGE value="le métier avancé Upload Image fonctionel !" />
     <MESSAGE value="Quelques modifications dans  Upload Image" />
     <MESSAGE value="je commence a travailler sur Recherche intelligente" />
-    <option name="LAST_COMMIT_MESSAGE" value="je commence a travailler sur Recherche intelligente" />
+    <MESSAGE value="WIP : Recherche intelligente: Recherche par mot clé" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP : Recherche intelligente: Recherche par mot clé" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
