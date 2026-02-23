@@ -17,7 +17,7 @@ public class ServicePost implements Services<Post> {
 
         String sql = "SELECT p.*, c.nom_categorie AS categorie_nom " +
                 "FROM post p " +
-                "JOIN categorie c ON p.categorie_id = c.id " +
+                "JOIN categorie c ON p.id_categorie = c.id_categorie " +
                 "WHERE LOWER(p.titre) LIKE ? " +
                 "OR LOWER(p.contenu) LIKE ? " +
                 "OR LOWER(c.nom_categorie) LIKE ?";
@@ -35,10 +35,13 @@ public class ServicePost implements Services<Post> {
 
             while (rs.next()) {
                 Post p = new Post();
-                p.setIdPost(rs.getInt("id"));
+                p.setIdPost(rs.getInt("id_post")); // ✔ correct
                 p.setTitre(rs.getString("titre"));
                 p.setContenu(rs.getString("contenu"));
-                p.setImagePath(rs.getString("image"));
+                // seulement si image_path existe
+                try {
+                    p.setImagePath(rs.getString("image_path"));
+                } catch (Exception ignored) {}
                 p.setNomCategorie(rs.getString("categorie_nom"));
 
                 posts.add(p);

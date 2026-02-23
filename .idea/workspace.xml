@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Quelques modifications dans  Upload Image">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="je commence a travailler sur Recherche intelligente">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ServicePost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +163,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="25246000" />
+      <workItem from="1771668340810" duration="25885000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -432,7 +429,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771760374921</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="je commence a travailler sur Recherche intelligente">
+      <option name="closed" value="true" />
+      <created>1771840648384</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1771840648384</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -450,7 +455,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Home Forum Controller + Forom home fonctionnelles" />
     <MESSAGE value="Add Catégorie est fonctionnelle" />
     <MESSAGE value="L'affichage de post est fonctionnel" />
     <MESSAGE value="L'ajout  du post est fonctionnel" />
@@ -475,7 +479,8 @@
     <MESSAGE value="Je commence a traviller sur le métier avancé Upload Image !" />
     <MESSAGE value="le métier avancé Upload Image fonctionel !" />
     <MESSAGE value="Quelques modifications dans  Upload Image" />
-    <option name="LAST_COMMIT_MESSAGE" value="Quelques modifications dans  Upload Image" />
+    <MESSAGE value="je commence a travailler sur Recherche intelligente" />
+    <option name="LAST_COMMIT_MESSAGE" value="je commence a travailler sur Recherche intelligente" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
