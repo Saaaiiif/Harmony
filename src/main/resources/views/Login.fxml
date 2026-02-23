@@ -22,7 +22,12 @@
         </VBox>
 
         <VBox spacing="6">
-            <Label style="-fx-font-size: 14; -fx-text-fill: #374151; -fx-font-weight: bold;" text="Mot de passe" />
+            <HBox alignment="CENTER_LEFT">
+                <Label style="-fx-font-size: 14; -fx-text-fill: #374151; -fx-font-weight: bold;" text="Mot de passe" HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS" />
+                <!-- ✅ NOUVEAU : Lien "Mot de passe oublié ?" -->
+                <Hyperlink fx:id="linkForgotPassword" style="-fx-font-size: 13; -fx-text-fill: #8B5CF6; -fx-font-weight: bold; -fx-border-color: transparent;" text="Mot de passe oublié ?" />
+            </HBox>
             <PasswordField fx:id="passwordLogin" prefHeight="50" style="-fx-background-color: #F3F4F6; -fx-background-radius: 12; -fx-text-fill: #1F2937; -fx-font-size: 14; -fx-padding: 0 20;" />
         </VBox>
 

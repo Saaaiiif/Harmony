@@ -27,6 +27,7 @@ public class LoginController {
     @FXML private PasswordField passwordLogin;
     @FXML private Label errorLabel;
     @FXML private Hyperlink linkToRegister;
+    @FXML private Hyperlink linkForgotPassword; // ✅ NOUVEAU
     @FXML private CheckBox rememberMe;
 
     private final serviceUser service = new serviceUser();
@@ -35,6 +36,10 @@ public class LoginController {
     public void initialize() {
         errorLabel.setVisible(false);
         linkToRegister.setOnAction(e -> goToRegister());
+
+        // ✅ NOUVEAU : handler "Mot de passe oublié ?"
+        linkForgotPassword.setOnAction(e -> goToForgotPassword());
+
         Platform.runLater(this::checkRememberMe);
     }
 
@@ -45,12 +50,10 @@ public class LoginController {
             if (sessionDAO.isTokenValid(rememberedToken)) {
                 Optional<user> optUser = sessionDAO.getUserByToken(rememberedToken);
                 optUser.ifPresent(u -> {
-                    // Vérifier que le compte est toujours actif même via remember-me
                     if (u.isIs_active()) {
                         Session.getInstance().startSession(u, rememberedToken, LocalDateTime.now().plusHours(2));
                         redirectAccordingToRole(u);
                     } else {
-                        // Compte archivé entre temps : nettoyer le token
                         sessionDAO.deleteSession(rememberedToken);
                         deleteRememberFile();
                         showArchivedError();
@@ -72,11 +75,9 @@ public class LoginController {
             return;
         }
 
-        // getByEmailAndPassword ne retourne que les utilisateurs ACTIFS (is_active = 1)
         user utilisateur = service.getByEmailAndPassword(email, pass);
 
         if (utilisateur != null) {
-            // Utilisateur actif trouvé → connexion normale
             SecureRandom random = new SecureRandom();
             byte[] bytes = new byte[32];
             random.nextBytes(bytes);
@@ -92,7 +93,6 @@ public class LoginController {
 
             redirectAccordingToRole(utilisateur);
         } else {
-            // Distinguer : compte archivé vs mauvais identifiants
             if (service.isEmailArchived(email)) {
                 showArchivedError();
             } else {
@@ -101,9 +101,18 @@ public class LoginController {
         }
     }
 
-    /**
-     * Affiche un message d'erreur spécifique pour un compte archivé.
-     */
+    // ✅ NOUVEAU : navigation vers la page "Mot de passe oublié"
+    private void goToForgotPassword() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/views/ForgotPassword.fxml"));
+            Stage stage = (Stage) linkForgotPassword.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Harmony - Mot de passe oublié");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void showArchivedError() {
         errorLabel.setText("🚫 Ce compte a été désactivé. Contactez l'administrateur.");
         errorLabel.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 13; -fx-font-weight: bold; " +
