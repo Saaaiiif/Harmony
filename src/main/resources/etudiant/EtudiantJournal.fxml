@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controllers.etudiant.EtudiantJournalController" 
+      spacing="20" styleClass="content-area" stylesheets="@../css/style.css">
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Mon Journal d'Humeur" styleClass="title-label"/>
+            <Label text="Exprimez vos émotions et suivez votre bien-être" styleClass="subtitle-label"/>
+        </VBox>
+        <Button text="+ Nouvelle Entrée" styleClass="btn-primary" onAction="#showAddForm"/>
+    </HBox>
+
+    <VBox fx:id="formSection" visible="false" managed="false" styleClass="card" spacing="15">
+        <Label fx:id="formTitle" text="Comment vous sentez-vous ?" styleClass="section-title"/>
+        
+        <HBox spacing="20">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Humeur" styleClass="form-label"/>
+                <ComboBox fx:id="humeurCombo" promptText="Sélectionnez votre humeur" prefWidth="300"/>
+                <Label fx:id="humeurError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Date" styleClass="form-label"/>
+                <DatePicker fx:id="datePicker" prefWidth="200"/>
+                <Label fx:id="dateError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Qu'avez-vous sur le cœur ?" styleClass="form-label"/>
+            <TextArea fx:id="contenuArea" promptText="Écrivez librement vos pensées, émotions, ce qui s'est passé aujourd'hui..." 
+                      prefRowCount="5" styleClass="text-area" wrapText="true"/>
+            <Label fx:id="contenuError" styleClass="error-label" visible="false" managed="false"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Annuler" styleClass="btn-secondary" onAction="#hideForm"/>
+            <Button fx:id="submitBtn" text="Enregistrer" styleClass="btn-primary" onAction="#saveJournal"/>
+        </HBox>
+    </VBox>
+
+    <HBox spacing="20">
+        <VBox styleClass="card" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Entrées ce mois" styleClass="subtitle-label"/>
+            <Label fx:id="monthEntriesLabel" text="0" styleClass="title-label"/>
+        </VBox>
+        <VBox styleClass="card" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Humeur moyenne" styleClass="subtitle-label"/>
+            <HBox fx:id="avgHumeurContainer" alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="avgHumeurLabel" text="--" styleClass="title-label"/>
+            </HBox>
+        </VBox>
+        <VBox styleClass="card" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Dernière entrée" styleClass="subtitle-label"/>
+            <Label fx:id="lastEntryLabel" text="--" styleClass="title-label"/>
+        </VBox>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+        <VBox fx:id="journalContainer" spacing="15">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+        </VBox>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false" VBox.vgrow="ALWAYS">
+        <Label text="📔" style="-fx-font-size: 60px;"/>
+        <Label text="Votre journal est vide" styleClass="empty-state-text"/>
+        <Label text="Commencez à écrire pour suivre votre bien-être" styleClass="subtitle-label"/>
+        <Button text="Écrire ma première entrée" styleClass="btn-primary" onAction="#showAddForm"/>
+    </VBox>
+
+</VBox>

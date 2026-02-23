@@ -4,189 +4,122 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
-    </list>
+    <list default="true" id="dc051558-8452-4b47-ae5a-aa11a90f83eb" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/aziz/Downloads/JAVAFX-etude/Harmonie" value="39MGmw7BVCyrb9CpqzbPJORB2L5" />
+      <entry key="_/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie" value="39iYp0NApWiOerw0ZYPvnYLYSEL" />
+    </persistenceIdMap>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
-  </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Saaaiiif&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Saaaiiif/UpNextJavaFX.git&quot;,
-    &quot;accountId&quot;: &quot;6306e46e-bcd8-453f-a989-6487e05e8022&quot;
-  }
-}</component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 6
+  &quot;associatedIndex&quot;: 0
 }</component>
-  <component name="ProjectId" id="2yHHwto3B1xpInEqr6CwoiGhtCd" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectId" id="39MGmw7BVCyrb9CpqzbPJORB2L5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MainPage.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources/com/example/harmony",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.aziz.executor&quot;: &quot;Run&quot;,
+    &quot;Application.harmonie.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
-    </key>
-  </component>
+}</component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="Template01" />
+    <configuration name="harmonie" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="test.MainFX" />
+      <module name="demo1" />
+      <option name="VM_PARAMETERS" value="--module-path $PROJECT_DIR$/../../../javafx-sdk-17.0.14/lib --add-modules javafx.controls,javafx.fxml" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="Template01" />
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.18" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.18" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="" />
-      <created>1749484820719</created>
+      <changelist id="dc051558-8452-4b47-ae5a-aa11a90f83eb" name="Changes" comment="" />
+      <created>1770498688641</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1749484820719</updated>
-      <workItem from="1749484821926" duration="262000" />
-      <workItem from="1749656781903" duration="218000" />
-      <workItem from="1750012609412" duration="9000" />
-      <workItem from="1761163945280" duration="223000" />
-      <workItem from="1762251978822" duration="704000" />
-      <workItem from="1762252776440" duration="17000" />
-      <workItem from="1768932909211" duration="179000" />
-      <workItem from="1769018038326" duration="2254000" />
-      <workItem from="1769887237863" duration="8772000" />
-      <workItem from="1770064861873" duration="934000" />
-      <workItem from="1770490651844" duration="297000" />
-      <workItem from="1770627233519" duration="3921000" />
-      <workItem from="1770639277418" duration="9303000" />
+      <updated>1770498688641</updated>
+      <workItem from="1770498689677" duration="1280000" />
+      <workItem from="1770500070728" duration="705000" />
+      <workItem from="1770555397024" duration="12000" />
+      <workItem from="1770555415811" duration="101000" />
+      <workItem from="1770578881787" duration="822000" />
+      <workItem from="1770760466835" duration="83000" />
+      <workItem from="1770984342301" duration="180000" />
+      <workItem from="1771013222080" duration="70000" />
+      <workItem from="1771022792191" duration="68000" />
+      <workItem from="1771173902761" duration="614000" />
+      <workItem from="1771180537655" duration="426000" />
+      <workItem from="1771182112319" duration="145000" />
+      <workItem from="1771191575822" duration="2561000" />
+      <workItem from="1771199818716" duration="1292000" />
+      <workItem from="1771702705355" duration="346000" />
+      <workItem from="1771709315313" duration="610000" />
+      <workItem from="1771818789615" duration="724000" />
     </task>
-    <task id="LOCAL-00001" summary="Background">
-      <option name="closed" value="true" />
-      <created>1770491931172</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1770491931173</updated>
-    </task>
-    <task id="LOCAL-00002" summary="UI update 1.0">
-      <option name="closed" value="true" />
-      <created>1770493324947</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1770493324947</updated>
-    </task>
-    <task id="LOCAL-00003" summary="UI update 1.1 (Sidebar animation)">
-      <option name="closed" value="true" />
-      <created>1770494682600</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1770494682600</updated>
-    </task>
-    <task id="LOCAL-00004" summary="UI update 1.2 (Sidebar animation)">
-      <option name="closed" value="true" />
-      <created>1770627906335</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1770627906335</updated>
-    </task>
-    <task id="LOCAL-00005" summary="UI update 1.2 (Sidebar animation)">
-      <option name="closed" value="true" />
-      <created>1770628090692</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1770628090692</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Background" />
-    <MESSAGE value="UI update 1.0" />
-    <MESSAGE value="UI update 1.1 (Sidebar animation)" />
-    <MESSAGE value="UI update 1.2 (Sidebar animation)" />
-    <option name="LAST_COMMIT_MESSAGE" value="UI update 1.2 (Sidebar animation)" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
