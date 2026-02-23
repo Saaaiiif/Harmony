@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" styleClass="main-gradient-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.JournalSommeilController">
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1080.0" styleClass="glass-app-bar" style="-fx-background-color: #6a1b9a;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <Label text="Harmony" textFill="WHITE">
+                    <font><Font name="System Bold" size="20.0" /></font>
+                </Label>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <HBox alignment="CENTER" spacing="15.0">
+                    <Button onAction="#goToAccueil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Accueil" />
+                    <Button onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Aliments" />
+                    <Button onAction="#goToExercices" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Exercices" />
+                    <Button onAction="#goToSommeil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Sommeil" />
+                </HBox>
+            </children>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="30.0">
+                    <padding> <Insets bottom="40.0" left="50.0" right="50.0" top="30.0" /> </padding>
+                    <children>
+
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Label text="🌙 Tracker de Sommeil" textFill="#e1bee7">
+                                <font> <Font name="System Bold" size="32.0" /> </font>
+                                <effect> <Glow level="0.4" /> </effect>
+                            </Label>
+                            <Label style="-fx-text-fill: #ce93d8; -fx-font-size: 15px;" text="Analysez la qualité de vos nuits dans un environnement apaisant." />
+                        </VBox>
+
+                        <HBox spacing="30" alignment="TOP_CENTER" prefHeight="580.0">
+
+                            <VBox spacing="25.0" styleClass="glass-card" prefWidth="420.0">
+                                <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+                                <Label text="Nouvelle Nuit" styleClass="card-title" />
+
+                                <VBox spacing="12">
+                                    <Label text="🛌 Coucher" styleClass="section-label"/>
+                                    <DatePicker fx:id="dateCoucherPicker" promptText="Date du coucher" prefWidth="350" styleClass="modern-datepicker" />
+                                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="time-selector-box">
+                                        <Spinner fx:id="spinnerCoucherH" prefWidth="90" editable="true" styleClass="modern-spinner" />
+                                        <Label text="H" styleClass="unit-label" />
+                                        <Spinner fx:id="spinnerCoucherM" prefWidth="90" editable="true" styleClass="modern-spinner" />
+                                        <Label text="Min" styleClass="unit-label" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="12">
+                                    <Label text="☀️ Réveil" styleClass="section-label"/>
+                                    <DatePicker fx:id="dateReveilPicker" promptText="Date du réveil" prefWidth="350" styleClass="modern-datepicker" />
+                                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="time-selector-box">
+                                        <Spinner fx:id="spinnerReveilH" prefWidth="90" editable="true" styleClass="modern-spinner" />
+                                        <Label text="H" styleClass="unit-label" />
+                                        <Spinner fx:id="spinnerReveilM" prefWidth="90" editable="true" styleClass="modern-spinner" />
+                                        <Label text="Min" styleClass="unit-label" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="15">
+                                    <Label text="Qualité &amp; Facteurs" styleClass="section-label" />
+                                    <ComboBox fx:id="qualiteCombo" promptText="Qualité du sommeil" prefWidth="350" styleClass="modern-combobox" />
+                                    <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+                                        <CheckBox fx:id="checkStress" text="Stress" styleClass="modern-switch" />
+                                        <CheckBox fx:id="checkCafeine" text="Caféine" styleClass="modern-switch" />
+                                        <CheckBox fx:id="checkBruit" text="Bruit" styleClass="modern-switch" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="15" alignment="CENTER" VBox.vgrow="ALWAYS">
+                                    <Label fx:id="erreurLabel" styleClass="error-label" wrapText="true" textAlignment="CENTER"/>
+                                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                                        <Button fx:id="btnEnregistrer" onAction="#enregistrerNuit" styleClass="btn-glow-mauve" text="Enregistrer Sommeil" prefWidth="250" />
+                                        <Button fx:id="btnSupprimer" onAction="#supprimerNuit" visible="false" styleClass="btn-glow-red" text="SUPPRIMER" />
+                                    </HBox>
+                                    <Button onAction="#reinitialiserFormulaire" styleClass="btn-text-only" text="Annuler / Nouvelle saisie" />
+                                </VBox>
+                            </VBox>
+
+                            <VBox spacing="15.0" styleClass="glass-card" HBox.hgrow="ALWAYS">
+                                <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Label text="📈 Votre Évolution Lumineuse" styleClass="card-title" />
+                                </HBox>
+                                <Label text="💡 Cliquez sur un point lumineux de la courbe pour interagir avec une nuit." styleClass="chart-subtitle"/>
+
+                                <AreaChart fx:id="sommeilChart" prefHeight="500.0" createSymbols="true" VBox.vgrow="ALWAYS" styleClass="modern-chart" legendVisible="false">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="xAxis" label="Périodes" animated="false" tickLabelFill="#e1bee7"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="yAxis" label="Durée (Heures)" autoRanging="true" lowerBound="0" tickUnit="1" tickLabelFill="#e1bee7"/>
+                                    </yAxis>
+                                </AreaChart>
+                            </VBox>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>
