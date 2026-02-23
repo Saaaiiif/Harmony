@@ -16,7 +16,5 @@ open module com.example.harmony {
     requires org.json;
     requires java.net.http;
 
-
-
     exports com.example.harmony;
 }
