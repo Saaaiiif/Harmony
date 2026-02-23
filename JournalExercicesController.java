@@ -261,7 +261,7 @@ public class JournalExercicesController {
     }
 
     // =========================================================================
-    // === CRUD ET DIALOGUES (MODIFIÉ POUR LA NOTE) ===
+    // === CRUD ET DIALOGUES ===
     // =========================================================================
 
     private void showEditDialog(Activite act, Exercice ex) {
@@ -327,37 +327,65 @@ public class JournalExercicesController {
         showOverlay(dialog);
     }
 
+    // --- ICI SE TROUVENT LES FENETRES MODIFIÉES POUR LA SUPPRESSION ---
+
     private void showDeleteActivityDialog(Activite act) {
-        VBox dialog = buildConfirmDialog("Suppression", "Voulez-vous retirer cet exercice de votre historique ?", () -> {
+        afficherFenetreConfirmation("Suppression", "Voulez-vous retirer cet exercice de votre historique ?", () -> {
             serviceActivite.supprimer(act.getId_activite());
-            closeDialog();
             chargerHistoriqueInnovant();
         });
-        showOverlay(dialog);
     }
 
     private void showDeleteSeanceDialog(LocalDate date, List<Activite> activites) {
-        VBox dialog = buildConfirmDialog("Supprimer la journée", "Effacer toute la séance du " + date + " ?", () -> {
+        afficherFenetreConfirmation("Supprimer la journée", "Effacer toute la séance du " + date + " ?", () -> {
             for (Activite a : activites) serviceActivite.supprimer(a.getId_activite());
-            closeDialog();
             chargerHistoriqueInnovant();
         });
-        showOverlay(dialog);
     }
 
-    private VBox buildConfirmDialog(String titleText, String descText, Runnable onConfirm) {
-        VBox dialog = new VBox(15);
-        dialog.setStyle("-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20;");
-        dialog.setAlignment(Pos.CENTER);
-        Label t = new Label(titleText); t.setStyle("-fx-font-weight: bold; -fx-text-fill: #ff4d4f; -fx-font-size: 16px;");
-        Label d = new Label(descText); d.setStyle("-fx-text-alignment: center;");
-        Button bC = new Button("Confirmer"); bC.setStyle("-fx-background-color: #ff4d4f; -fx-text-fill: white; -fx-background-radius: 10;"); bC.setOnAction(e -> onConfirm.run());
-        Button bA = new Button("Annuler"); bA.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 10;"); bA.setOnAction(e -> closeDialog());
-        HBox hb = new HBox(10, bA, bC); hb.setAlignment(Pos.CENTER);
-        dialog.getChildren().addAll(t, d, hb);
-        return dialog;
+    private void afficherFenetreConfirmation(String titleText, String descText, Runnable onConfirm) {
+        Stage dialogStage = new Stage();
+        dialogStage.initOwner(flowPaneHistorique.getScene().getWindow());
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.initStyle(StageStyle.TRANSPARENT);
+
+        VBox root = new VBox(15);
+        root.setStyle("-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-border-color: #ff4d4f; -fx-border-width: 2; -fx-border-radius: 20;");
+        root.setAlignment(Pos.CENTER);
+
+        Label t = new Label(titleText);
+        t.setStyle("-fx-font-weight: bold; -fx-text-fill: #ff4d4f; -fx-font-size: 16px;");
+
+        Label d = new Label(descText);
+        d.setStyle("-fx-text-alignment: center;");
+
+        Button bC = new Button("Confirmer");
+        bC.setStyle("-fx-background-color: #ff4d4f; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 8 15;");
+        bC.setOnAction(e -> {
+            onConfirm.run();
+            dialogStage.close();
+        });
+
+        Button bA = new Button("Annuler");
+        bA.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 8 15;");
+        bA.setOnAction(e -> dialogStage.close());
+
+        HBox hb = new HBox(15, bA, bC);
+        hb.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(t, d, hb);
+
+        Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+        dialogStage.setScene(scene);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(200), root);
+        ft.setFromValue(0); ft.setToValue(1); ft.play();
+
+        dialogStage.showAndWait();
     }
 
+    // L'overlay a été conservé car l'édition (showEditDialog) en a encore besoin
     private void showOverlay(VBox dialog) {
         overlayPane.getChildren().setAll(dialog);
         overlayPane.setVisible(true);
@@ -413,7 +441,7 @@ public class JournalExercicesController {
         try {
             int start = json.indexOf("\"text\": \"") + 9;
             int end = json.indexOf("\"", start);
-            return json.substring(start, end).replace("\\n", "\n");
+            return json.substring(start, end).replace("\\n", "\n").replace("\\\"", "\"");
         } catch (Exception e) { return "Erreur d'analyse."; }
     }
 }
