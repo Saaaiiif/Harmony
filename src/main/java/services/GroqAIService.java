@@ -8,9 +8,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class GroqAIService {
-
+// url api grok
     private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
+    // api key
     private static final String API_KEY = "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";
+    // ai model
     private static final String MODEL = "llama-3.3-70b-versatile";
 
     public String generateMeditationFromTheme(String theme) throws Exception {

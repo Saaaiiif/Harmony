@@ -1,23 +1,23 @@
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/MainController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/admin/AdminDashboardController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/admin/AdminJournalController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/admin/AdminMeditationController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/etudiant/EtudiantDashboardController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/etudiant/EtudiantJournalController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/etudiant/EtudiantMeditationController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/controllers/etudiant/EtudiantMeditationDetailController.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/Conseil.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/Humeur.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/JournalHumeur.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/Role.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/SessionMeditation.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/models/User.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/ConseilService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/GroqAIService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/IService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/JournalHumeurService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/SessionMeditationService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/services/UserService.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/test/MainFX.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/utils/MyDatabase.java
-/Users/aziz/Downloads/JAVAFX-etude/harmonie fix /Harmonie/src/main/java/utils/ValidationUtils.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\admin\AdminDashboardController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\admin\AdminJournalController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\admin\AdminMeditationController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\etudiant\EtudiantDashboardController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\etudiant\EtudiantJournalController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\etudiant\EtudiantMeditationController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\etudiant\EtudiantMeditationDetailController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\controllers\MainController.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\Conseil.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\Humeur.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\JournalHumeur.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\Role.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\SessionMeditation.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\models\User.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\ConseilService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\GroqAIService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\IService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\JournalHumeurService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\SessionMeditationService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\services\UserService.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\test\MainFX.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\utils\MyDatabase.java
+C:\Users\Brahmi Sarra\Desktop\Harmonie\src\main\java\utils\ValidationUtils.java
