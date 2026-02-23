@@ -12,6 +12,46 @@ public class ServicePost implements Services<Post> {
 
     Connection cnx = MyDataBase.getInstance().getCnx();
 
+    public List<Post> searchPosts(String keyword) {
+        List<Post> posts = new ArrayList<>();
+
+        String sql = "SELECT p.*, c.nom_categorie AS categorie_nom " +
+                "FROM post p " +
+                "JOIN categorie c ON p.categorie_id = c.id " +
+                "WHERE LOWER(p.titre) LIKE ? " +
+                "OR LOWER(p.contenu) LIKE ? " +
+                "OR LOWER(c.nom_categorie) LIKE ?";
+
+        try (
+             PreparedStatement pst = cnx.prepareStatement(sql)) {
+
+            String searchKeyword = "%" + keyword.toLowerCase() + "%";
+
+            pst.setString(1, searchKeyword);
+            pst.setString(2, searchKeyword);
+            pst.setString(3, searchKeyword);
+
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Post p = new Post();
+                p.setIdPost(rs.getInt("id"));
+                p.setTitre(rs.getString("titre"));
+                p.setContenu(rs.getString("contenu"));
+                p.setImagePath(rs.getString("image"));
+                p.setNomCategorie(rs.getString("categorie_nom"));
+
+                posts.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return posts;
+    }
+
+
     @Override
     public void add(Post post) {
 
@@ -99,7 +139,7 @@ public class ServicePost implements Services<Post> {
         String req = "SELECT p.*, c.nom_categorie, e.nom, e.prenom " +
                 "FROM post p " +
                 "JOIN categorie c ON p.id_categorie = c.id_categorie " +
-                "JOIN etudiant e ON p.id_etudiant = e.id_etudiant";
+                "JOIN etudiant e ON p.id_etudiant = e.id_etudiant" ;
 
         try {
 
@@ -141,7 +181,11 @@ public class ServicePost implements Services<Post> {
 
         List<Post> posts = new ArrayList<>();
 
-        String req = "SELECT * FROM post WHERE id_categorie = ? ORDER BY date_creation DESC";
+        String req = "SELECT p.*, e.nom, e.prenom " +
+                "FROM post p " +
+                "JOIN etudiant e ON p.id_etudiant = e.id_etudiant " +
+                "WHERE p.id_categorie = ? " +
+                "ORDER BY p.date_creation DESC";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
@@ -158,11 +202,16 @@ public class ServicePost implements Services<Post> {
                 p.setIdCategorie(rs.getInt("id_categorie"));
                 p.setImagePath(rs.getString("image_path"));
 
+                p.setIdEtudiant(rs.getInt("id_etudiant"));
+
+                String nomComplet = rs.getString("prenom") + " " + rs.getString("nom");
+                p.setNomEtudiant(nomComplet);
 
                 Timestamp ts = rs.getTimestamp("date_creation");
                 if (ts != null) {
                     p.setDateCreation(ts.toLocalDateTime());
                 }
+
 
                 posts.add(p);
             }

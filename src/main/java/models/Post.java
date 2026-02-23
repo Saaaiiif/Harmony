@@ -13,6 +13,10 @@ public class Post {
     private String nomCategorie;  // pour affichage
     private String imagePath;
 
+    private String prenomEtudiant;
+
+
+
 
     public String getImagePath() {
         return imagePath;
