@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
+<?import javafx.scene.layout.VBox?>
 <BorderPane fx:id="root"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.harmony.FrontLayoutController"
@@ -36,19 +37,16 @@
     <center>
         <StackPane fx:id="contentArea"/>
     </center>
+    <left>
+        <VBox fx:id="sidebar" prefWidth="220" styleClass="sidebar">
 
-    <bottom>
-        <!-- Bottom region is not pickable; only wheelZone triggers hover -->
-        <StackPane pickOnBounds="false" styleClass="nav-wheel-bottom-wrap">
-            <!-- This is the ONLY hover zone -->
-            <StackPane fx:id="wheelZone"
-                       prefWidth="200"
-                       maxWidth="200"
-                       prefHeight="120"
-                       styleClass="nav-wheel-host">
-                <StackPane fx:id="navWheelContainer" prefHeight="160"/>
-            </StackPane>
-        </StackPane>
-    </bottom>
+            <Label text="Navigation" styleClass="sidebar-title"/>
+
+            <Button text="Home" onAction="#goHome" styleClass="sidebar-btn"/>
+            <Button text="Forum" onAction="#openForumHome" styleClass="sidebar-btn"/>
+            <Button text="Back Office" onAction="#openBackOffice" styleClass="sidebar-btn"/>
+
+        </VBox>
+    </left>
 
 </BorderPane>

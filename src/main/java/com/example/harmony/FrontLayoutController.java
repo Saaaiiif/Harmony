@@ -30,7 +30,7 @@ import javafx.scene.layout.VBox;
 
 public class FrontLayoutController {
 
-    @FXML private StackPane wheelZone;
+//    @FXML private StackPane wheelZone;
     @FXML private HBox titleBar;
     @FXML private ImageView logoImage;
     @FXML private Button themeToggleButton;
@@ -38,7 +38,7 @@ public class FrontLayoutController {
     @FXML private Button closeButton;
     @FXML private BorderPane root;
     @FXML private StackPane contentArea;
-    @FXML private StackPane navWheelContainer;
+//    @FXML private StackPane navWheelContainer;
 
     private Stage stage;
     private double xOffset = 0;
@@ -152,11 +152,11 @@ public class FrontLayoutController {
 
 
         updateThemeButtonText();
-        buildNavWheel();
+//        buildNavWheel();
         Platform.runLater(() -> {
             animatedCenter.set(currentIndex);
-            layoutSlots(animatedCenter.get());
-            installWheelHoverBehavior();
+            //layoutSlots(animatedCenter.get());
+            //installWheelHoverBehavior();
         });
 
 
@@ -180,14 +180,14 @@ public class FrontLayoutController {
 
         // Apply initial theme to actual scene root
         applyTheme();
-        rebuildWheel();
+        //rebuildWheel();
     }
 
     private void toggleTheme() {
         isDarkMode = !isDarkMode;
         updateThemeButtonText();
         applyTheme();     // <-- change here
-        layoutSlots(animatedCenter.get());
+       // layoutSlots(animatedCenter.get());
     }
 
     private void updateThemeButtonText() {
@@ -220,45 +220,45 @@ public class FrontLayoutController {
         }
     }
 
-    private void buildNavWheel() {
-        wheelPane = new Pane();
-        wheelPane.setPickOnBounds(false);
-        navWheelContainer.getChildren().add(wheelPane);
+//    private void buildNavWheel() {
+//        wheelPane = new Pane();
+//        wheelPane.setPickOnBounds(false);
+//        navWheelContainer.getChildren().add(wheelPane);
+//
+//        wheelPane.getChildren().clear();
+//        slots.clear();
+//
+//        for (int i = 0; i < VISIBLE_COUNT; i++) {
+//            ImageView iv = new ImageView();
+//            iv.setFitWidth(32);
+//            iv.setFitHeight(32);
+//            iv.setPreserveRatio(true);
+//            iv.getStyleClass().add("nav-wheel-icon");
+//
+//            Label lbl = new Label();
+//            lbl.getStyleClass().add("nav-wheel-label");
+//
+//            VBox box = new VBox(iv, lbl);
+//            box.getStyleClass().add("nav-wheel-item");
+//
+//            WheelSlot s = new WheelSlot(box, iv, lbl);
+//            slots.add(s);
+//            wheelPane.getChildren().add(box);
+//
+//            // click uses the current mapped itemIndex
+//            box.setOnMouseClicked(e -> onSlotClicked(s));
+//
+//        }
+//
+//        navWheelContainer.widthProperty().addListener((obs, o, n) -> layoutSlots(animatedCenter.get()));
+//        navWheelContainer.heightProperty().addListener((obs, o, n) -> layoutSlots(animatedCenter.get()));
+//
+//        Platform.runLater(() -> layoutSlots(animatedCenter.get()));
+//    }
 
-        wheelPane.getChildren().clear();
-        slots.clear();
-
-        for (int i = 0; i < VISIBLE_COUNT; i++) {
-            ImageView iv = new ImageView();
-            iv.setFitWidth(32);
-            iv.setFitHeight(32);
-            iv.setPreserveRatio(true);
-            iv.getStyleClass().add("nav-wheel-icon");
-
-            Label lbl = new Label();
-            lbl.getStyleClass().add("nav-wheel-label");
-
-            VBox box = new VBox(iv, lbl);
-            box.getStyleClass().add("nav-wheel-item");
-
-            WheelSlot s = new WheelSlot(box, iv, lbl);
-            slots.add(s);
-            wheelPane.getChildren().add(box);
-
-            // click uses the current mapped itemIndex
-            box.setOnMouseClicked(e -> onSlotClicked(s));
-
-        }
-
-        navWheelContainer.widthProperty().addListener((obs, o, n) -> layoutSlots(animatedCenter.get()));
-        navWheelContainer.heightProperty().addListener((obs, o, n) -> layoutSlots(animatedCenter.get()));
-
-        Platform.runLater(() -> layoutSlots(animatedCenter.get()));
-    }
-
-    private void rebuildWheel() {
-        layoutSlots(animatedCenter.get());
-    }
+//    private void rebuildWheel() {
+//        layoutSlots(animatedCenter.get());
+//    }
 
 
 
@@ -280,131 +280,131 @@ public class FrontLayoutController {
         }
     }
 
-    private void installWheelHoverBehavior() {
-        double hiddenY = 300;
-        double moveUp  = 35;
-
-        wheelZone.setTranslateY(hiddenY);
-        wheelZone.setOpacity(0.18);   // low when hidden
-
-        TranslateTransition slideUp = new TranslateTransition(Duration.millis(180), wheelZone);
-        slideUp.setToY(hiddenY - moveUp);
-
-        TranslateTransition slideDown = new TranslateTransition(Duration.millis(180), wheelZone);
-        slideDown.setToY(hiddenY);
-
-        wheelZone.setOnMouseEntered(e -> {
-            wheelZone.setOpacity(1.0);   // fully visible on hover
-            slideDown.stop();
-            slideUp.playFromStart();
-        });
-
-        wheelZone.setOnMouseExited(e -> {
-            wheelZone.setOpacity(0.18);  // fade again
-            slideUp.stop();
-            slideDown.playFromStart();
-        });
-    }
-
-
-
-
-    private void layoutSlots(double centerIndexFrac) {
-        double w = navWheelContainer.getWidth();
-        double h = navWheelContainer.getHeight();
-        if (w <= 0 || h <= 0) return;
-
-        double centerX = w / 2.0;
-        double centerY = h - CENTER_Y_PADDING - 10;
-
-        int n = navItems.size();
-        int half = VISIBLE_COUNT / 2;
-
-        double startAngle = Math.toRadians(ARC_START_DEG);
-        double endAngle   = Math.toRadians(ARC_END_DEG);
-        double stepAngle  = (VISIBLE_COUNT <= 1) ? 0 : (endAngle - startAngle) / (VISIBLE_COUNT - 1);
-
-        int base = (int) Math.floor(centerIndexFrac);
-        double frac = centerIndexFrac - base;
-
-        for (int slot = 0; slot < VISIBLE_COUNT; slot++) {
-            WheelSlot s = slots.get(slot);
-
-            // Increasing centerIndexFrac moves the wheel left (anti-clockwise)
-            double t = slot - frac;
-
-            // Hide when out of arc range (prevents endpoint overlap)
-            if (t < 0 || t > (VISIBLE_COUNT - 1)) {
-                s.box.setVisible(false);
-                s.box.setMouseTransparent(true);
-                continue;
-            }
-            s.box.setVisible(true);
-            s.box.setMouseTransparent(false);
-
-            double angle = startAngle + t * stepAngle;
-
-            double x = centerX + RADIUS * Math.sin(angle);
-            double y = centerY - RADIUS * Math.cos(angle);
-
-            int offset = slot - half;
-            s.offsetFromCenter = offset;
-
-            int itemIndex = mod(base + offset, n);
-            NavItem item = navItems.get(itemIndex);
-            s.itemIndex = itemIndex;
-
-            s.icon.setImage(getIcon(item.baseIconName, isDarkMode));
-            s.label.setText(item.label);
-
-            // Opacity: centered one is strongest
-            int dist = Math.abs(offset);
-            double opacity = (dist == 0) ? 1.0 : Math.max(0.45, 1.0 - dist * 0.12);
-            s.box.setOpacity(opacity);
-
-            // Optional: apply your existing active class (for icon scale/background)
-            s.box.getStyleClass().remove("nav-wheel-button-active");
-            if (offset == 0) {
-                s.box.getStyleClass().add("nav-wheel-button-active");
-            }
-
-            s.box.relocate(x - SLOT_W / 2.0, y - SLOT_H / 2.0);
-        }
-    }
+//    private void installWheelHoverBehavior() {
+//        double hiddenY = 300;
+//        double moveUp  = 35;
+//
+//        wheelZone.setTranslateY(hiddenY);
+//        wheelZone.setOpacity(0.18);   // low when hidden
+//
+//        TranslateTransition slideUp = new TranslateTransition(Duration.millis(180), wheelZone);
+//        slideUp.setToY(hiddenY - moveUp);
+//
+//        TranslateTransition slideDown = new TranslateTransition(Duration.millis(180), wheelZone);
+//        slideDown.setToY(hiddenY);
+//
+//        wheelZone.setOnMouseEntered(e -> {
+//            wheelZone.setOpacity(1.0);   // fully visible on hover
+//            slideDown.stop();
+//            slideUp.playFromStart();
+//        });
+//
+//        wheelZone.setOnMouseExited(e -> {
+//            wheelZone.setOpacity(0.18);  // fade again
+//            slideUp.stop();
+//            slideDown.playFromStart();
+//        });
+//    }
 
 
 
 
+//    private void layoutSlots(double centerIndexFrac) {
+//        double w = navWheelContainer.getWidth();
+//        double h = navWheelContainer.getHeight();
+//        if (w <= 0 || h <= 0) return;
+//
+//        double centerX = w / 2.0;
+//        double centerY = h - CENTER_Y_PADDING - 10;
+//
+//        int n = navItems.size();
+//        int half = VISIBLE_COUNT / 2;
+//
+//        double startAngle = Math.toRadians(ARC_START_DEG);
+//        double endAngle   = Math.toRadians(ARC_END_DEG);
+//        double stepAngle  = (VISIBLE_COUNT <= 1) ? 0 : (endAngle - startAngle) / (VISIBLE_COUNT - 1);
+//
+//        int base = (int) Math.floor(centerIndexFrac);
+//        double frac = centerIndexFrac - base;
+//
+//        for (int slot = 0; slot < VISIBLE_COUNT; slot++) {
+//            WheelSlot s = slots.get(slot);
+//
+//            // Increasing centerIndexFrac moves the wheel left (anti-clockwise)
+//            double t = slot - frac;
+//
+//            // Hide when out of arc range (prevents endpoint overlap)
+//            if (t < 0 || t > (VISIBLE_COUNT - 1)) {
+//                s.box.setVisible(false);
+//                s.box.setMouseTransparent(true);
+//                continue;
+//            }
+//            s.box.setVisible(true);
+//            s.box.setMouseTransparent(false);
+//
+//            double angle = startAngle + t * stepAngle;
+//
+//            double x = centerX + RADIUS * Math.sin(angle);
+//            double y = centerY - RADIUS * Math.cos(angle);
+//
+//            int offset = slot - half;
+//            s.offsetFromCenter = offset;
+//
+//            int itemIndex = mod(base + offset, n);
+//            NavItem item = navItems.get(itemIndex);
+//            s.itemIndex = itemIndex;
+//
+//            s.icon.setImage(getIcon(item.baseIconName, isDarkMode));
+//            s.label.setText(item.label);
+//
+//            // Opacity: centered one is strongest
+//            int dist = Math.abs(offset);
+//            double opacity = (dist == 0) ? 1.0 : Math.max(0.45, 1.0 - dist * 0.12);
+//            s.box.setOpacity(opacity);
+//
+//            // Optional: apply your existing active class (for icon scale/background)
+//            s.box.getStyleClass().remove("nav-wheel-button-active");
+//            if (offset == 0) {
+//                s.box.getStyleClass().add("nav-wheel-button-active");
+//            }
+//
+//            s.box.relocate(x - SLOT_W / 2.0, y - SLOT_H / 2.0);
+//        }
+//    }
 
-    private void startRoll(double from, double to) {
-        rollFrom = from;
-        rollTo = to;
-        rollStartNs = System.nanoTime();
 
-        if (rollTimer != null) rollTimer.stop();
-        rollTimer = new AnimationTimer() {
-            @Override public void handle(long now) {
-                double t = (now - rollStartNs) / 1_000_000_000.0;
-                double p = Math.min(1.0, t / rollDurationSec);
 
-                // ease-out
-                double eased = 1 - Math.pow(1 - p, 3);
 
-                double v = rollFrom + (rollTo - rollFrom) * eased;
-                animatedCenter.set(v);
-                layoutSlots(v);
 
-                if (p >= 1.0) {
-                    stop();
-                    int n = navItems.size();
-                    currentIndex = mod((int) Math.round(rollTo), n);
-                    animatedCenter.set(currentIndex);
-                    layoutSlots(currentIndex);
-                }
-            }
-        };
-        rollTimer.start();
-    }
+//    private void startRoll(double from, double to) {
+//        rollFrom = from;
+//        rollTo = to;
+//        rollStartNs = System.nanoTime();
+//
+//        if (rollTimer != null) rollTimer.stop();
+//        rollTimer = new AnimationTimer() {
+//            @Override public void handle(long now) {
+//                double t = (now - rollStartNs) / 1_000_000_000.0;
+//                double p = Math.min(1.0, t / rollDurationSec);
+//
+//                // ease-out
+//                double eased = 1 - Math.pow(1 - p, 3);
+//
+//                double v = rollFrom + (rollTo - rollFrom) * eased;
+//                animatedCenter.set(v);
+//                layoutSlots(v);
+//
+//                if (p >= 1.0) {
+//                    stop();
+//                    int n = navItems.size();
+//                    currentIndex = mod((int) Math.round(rollTo), n);
+//                    animatedCenter.set(currentIndex);
+//                    layoutSlots(currentIndex);
+//                }
+//            }
+//        };
+//        rollTimer.start();
+//    }
 
     private void onSlotClicked(WheelSlot s) {
 
@@ -436,7 +436,7 @@ public class FrontLayoutController {
         // Roll to an exact integer index so the final snap is always correct.
         double to = base + step;
 
-        startRoll(from, to);
+        //startRoll(from, to);
 
 
 
@@ -480,6 +480,10 @@ public class FrontLayoutController {
 public void goHome(){
     contentArea.getChildren().clear();
 }
+    @FXML
+    public void openBackOffice(){
+        loadPage("/Forum/ForumBackOffice/ForumBackDashboard.fxml");
+    }
 
 
 }
