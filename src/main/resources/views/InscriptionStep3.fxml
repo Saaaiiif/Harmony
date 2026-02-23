@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="931.0"
+            style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.InscriptionStep3Controller">
+
+    <ScrollPane fitToWidth="true" layoutX="180.0" layoutY="20.0"
+                prefHeight="660" prefWidth="580.0"
+                style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;">
+        <content>
+            <VBox alignment="TOP_CENTER" spacing="20"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 25, 0, 0, 10);">
+                <padding>
+                    <Insets bottom="35" left="45" right="45" top="35" />
+                </padding>
+
+                <!-- ── En-tête ── -->
+                <VBox alignment="CENTER" spacing="8">
+                    <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                           text="🔐 Vérification biométrique" />
+                    <Label style="-fx-font-size: 14; -fx-text-fill: #6B7280;" text="Étape 3 sur 3" />
+                    <Label wrapText="true" maxWidth="480"
+                           style="-fx-font-size: 13; -fx-text-fill: #9CA3AF; -fx-text-alignment: center;"
+                           text="Positionnez votre visage dans le cadre et cliquez sur &quot;Capturer&quot; pour l'enregistrer." />
+                </VBox>
+
+                <!-- ── Vue caméra ── -->
+                <VBox alignment="CENTER" spacing="10">
+
+                    <!-- Conteneur de la vidéo avec bordure violette -->
+                    <StackPane fx:id="cameraContainer"
+                               prefWidth="490" prefHeight="340"
+                               style="-fx-background-color: #1F2937; -fx-background-radius: 16;
+                                      -fx-border-color: #8B5CF6; -fx-border-width: 3;
+                                      -fx-border-radius: 16;
+                                      -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.35), 18, 0, 0, 6);">
+
+                        <!-- ImageView du stream webcam -->
+                        <ImageView fx:id="cameraView"
+                                   fitWidth="490" fitHeight="340"
+                                   preserveRatio="true"
+                                   style="-fx-background-radius: 14;" />
+
+                        <!-- Placeholder si caméra non démarrée -->
+                        <VBox fx:id="cameraPlaceholder" alignment="CENTER" spacing="10"
+                              style="-fx-background-color: #1F2937; -fx-background-radius: 14;">
+                            <Label style="-fx-font-size: 52;" text="📷" />
+                            <Label style="-fx-font-size: 14; -fx-text-fill: #9CA3AF;"
+                                   text="Caméra en cours de démarrage..." />
+                        </VBox>
+
+                        <!-- Overlay visage détecté -->
+                        <Label fx:id="faceDetectedOverlay"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: white;
+                                      -fx-background-color: rgba(16,185,129,0.85); -fx-padding: 6 14;
+                                      -fx-background-radius: 20; -fx-translate-y: 145;"
+                               text="✅  Visage détecté" visible="false" />
+                    </StackPane>
+
+                    <!-- Label de statut caméra -->
+                    <Label fx:id="statusLabel"
+                           style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8B5CF6;"
+                           text="🔍  Démarrage de la caméra..." />
+                </VBox>
+
+                <!-- ── Aperçu du visage capturé (caché par défaut) ── -->
+                <VBox fx:id="previewContainer" alignment="CENTER" spacing="10" visible="false" managed="false"
+                      style="-fx-background-color: #F0FDF4; -fx-border-color: #10B981; -fx-border-width: 2;
+                             -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 16;">
+                    <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #059669;"
+                           text="✅  Visage capturé avec succès" />
+                    <ImageView fx:id="capturedFaceView"
+                               fitWidth="100" fitHeight="100"
+                               preserveRatio="true"
+                               style="-fx-border-color: #10B981; -fx-border-width: 2; -fx-border-radius: 8;" />
+                    <Label style="-fx-font-size: 12; -fx-text-fill: #6B7280;"
+                           text="Votre visage sera utilisé pour sécuriser vos connexions futures." />
+                </VBox>
+
+                <!-- ── Boutons ── -->
+
+                <!-- État 1 : Capture (visible par défaut) -->
+                <VBox fx:id="captureButtons" alignment="CENTER" spacing="12">
+                    <Button fx:id="btnCapturer" onAction="#handleCapturer"
+                            prefHeight="50" prefWidth="300"
+                            style="-fx-background-color: linear-gradient(to right, #8B5CF6, #7C3AED);
+                                   -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;
+                                   -fx-background-radius: 12; -fx-cursor: hand;
+                                   -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.4), 12, 0, 0, 4);"
+                            text="📸  Capturer mon visage" disable="true" />
+                    <Button onAction="#handleRetour"
+                            prefHeight="42" prefWidth="200"
+                            style="-fx-background-color: #F3F4F6; -fx-text-fill: #374151;
+                                   -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10;
+                                   -fx-cursor: hand; -fx-border-color: #D1D5DB; -fx-border-width: 1.5;
+                                   -fx-border-radius: 10;"
+                            text="← Retour à l'étape 2" />
+                </VBox>
+
+                <!-- État 2 : Confirmation (caché par défaut) -->
+                <HBox fx:id="confirmButtons" alignment="CENTER" spacing="15"
+                      visible="false" managed="false">
+                    <Button onAction="#handleReprendre"
+                            prefHeight="48" prefWidth="180"
+                            style="-fx-background-color: #F3F4F6; -fx-text-fill: #374151;
+                                   -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12;
+                                   -fx-cursor: hand; -fx-border-color: #D1D5DB; -fx-border-width: 2;
+                                   -fx-border-radius: 12;"
+                            text="↩  Reprendre" />
+                    <Button fx:id="btnConfirmer" onAction="#handleConfirmer"
+                            prefHeight="48" prefWidth="220"
+                            style="-fx-background-color: linear-gradient(to right, #10B981, #059669);
+                                   -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;
+                                   -fx-background-radius: 12; -fx-cursor: hand;
+                                   -fx-effect: dropshadow(three-pass-box, rgba(16,185,129,0.4), 12, 0, 0, 4);"
+                            text="✓  Créer mon compte" />
+                </HBox>
+
+                <!-- Note de sécurité -->
+                <HBox alignment="CENTER_LEFT" spacing="8"
+                      style="-fx-background-color: #EDE9FE; -fx-padding: 12; -fx-background-radius: 8;">
+                    <Label style="-fx-font-size: 16;" text="🔒" />
+                    <Label prefWidth="440" wrapText="true"
+                           style="-fx-font-size: 11; -fx-text-fill: #6D28D9;"
+                           text="Votre biométrie est stockée localement et n'est jamais envoyée sur un serveur externe." />
+                </HBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>

@@ -20,7 +20,7 @@ public class EmailService {
     // ✅ MODIFIEZ UNIQUEMENT CES DEUX CONSTANTES
     // ====================================================================
     private static final String EMAIL_EXPEDITEUR = "omar.oueslati2009@gmail.com";
-    private static final String MOT_DE_PASSE_APP = "skif tjzp gskj facv"; // mot de passe d'application Gmail (16 caractères)
+    private static final String MOT_DE_PASSE_APP = "sunb orbq fmqy gvjj"; // mot de passe d'application Gmail (16 caractères)
     // ====================================================================
 
     /**

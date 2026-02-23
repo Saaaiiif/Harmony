@@ -17,8 +17,11 @@ public class user {
     private NiveauScolaire user_niveau_scolaire;
     private String user_etablissement_scolaire;
 
-    // IMAGE
+    // IMAGE DE PROFIL
     private String user_image_path;
+
+    // ✅ NOUVEAU : IMAGE DU VISAGE (reconnaissance faciale)
+    private String face_image_path;
 
     // ARCHIVAGE : true = actif, false = archivé
     private boolean is_active = true;
@@ -99,9 +102,13 @@ public class user {
     public String getUser_etablissement_scolaire() { return user_etablissement_scolaire; }
     public void setUser_etablissement_scolaire(String e) { this.user_etablissement_scolaire = e; }
 
-    // IMAGE
+    // IMAGE DE PROFIL
     public String getUser_image_path() { return user_image_path; }
     public void setUser_image_path(String user_image_path) { this.user_image_path = user_image_path; }
+
+    // ✅ IMAGE DU VISAGE
+    public String getFace_image_path() { return face_image_path; }
+    public void setFace_image_path(String face_image_path) { this.face_image_path = face_image_path; }
 
     // ARCHIVAGE
     public boolean isIs_active() { return is_active; }

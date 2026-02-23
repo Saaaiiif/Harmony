@@ -19,16 +19,16 @@ import java.util.UUID;
 public class serviceUser implements services<user> {
     private Connection cnx;
 
-    // Dossier de stockage des images (à la racine du projet)
     private static final String IMAGE_DIR = "user_images/";
+    private static final String FACE_DIR  = "face_data/";     // ✅ NOUVEAU
 
     public serviceUser() {
         this.cnx = MyDataBase.getInstance().getCnx();
-        // Créer le dossier images s'il n'existe pas
         new File(IMAGE_DIR).mkdirs();
+        new File(FACE_DIR).mkdirs();              // ✅ NOUVEAU : créer le dossier
     }
 
-    // ==================== GESTION IMAGE ====================
+    // ==================== GESTION IMAGE PROFIL ====================
 
     public String saveUserImage(String sourceImagePath) {
         if (sourceImagePath == null || sourceImagePath.isEmpty()) return null;
@@ -61,15 +61,26 @@ public class serviceUser implements services<user> {
     public void add(user user) { add(user, null); }
 
     public void add(user user, String sourceImagePath) {
-        String hashedPassword = PasswordUtils.hashPassword(user.getUser_password());
-        String savedImagePath = saveUserImage(sourceImagePath);
+        add(user, sourceImagePath, null);
+    }
+
+    /**
+     * ✅ NOUVEAU : Surcharge avec chemin du visage (face recognition).
+     */
+    public void add(user user, String sourceImagePath, String sourceFacePath) {
+        String hashedPassword  = PasswordUtils.hashPassword(user.getUser_password());
+        String savedImagePath  = saveUserImage(sourceImagePath);
+        // Le visage est déjà sauvegardé dans face_data/ par FaceRecognitionService
+        // On stocke simplement le chemin tel quel
+        String faceImagePath   = sourceFacePath;
 
         String req = "INSERT INTO `user`(" +
                 "`user_nom`, `user_prenom`, `user_email`, `user_password`, " +
                 "`user_date_de_naissance`, `date_inscription`, `type_utilisateur`, " +
                 "`user_sexe`, `user_poids`, `user_taille`, `user_niveau_activite_physique`, " +
-                "`user_niveau_scolaire`, `user_etablissement_scolaire`, `user_image_path`, `is_active`) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+                "`user_niveau_scolaire`, `user_etablissement_scolaire`, `user_image_path`, " +
+                "`face_image_path`, `is_active`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
 
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, user.getUser_nom());
@@ -88,6 +99,7 @@ public class serviceUser implements services<user> {
             pstm.setString(12, user.getUser_niveau_scolaire() != null ? user.getUser_niveau_scolaire().name() : null);
             pstm.setString(13, user.getUser_etablissement_scolaire());
             pstm.setString(14, savedImagePath);
+            pstm.setString(15, faceImagePath);     // ✅ NOUVEAU
 
             pstm.executeUpdate();
             System.out.println("Utilisateur ajouté avec succès !");
@@ -98,19 +110,12 @@ public class serviceUser implements services<user> {
         }
     }
 
-    // ==================== GET ALL (actifs uniquement) ====================
+    // ==================== GET ALL ====================
 
     @Override
-    public List<user> getAll() {
-        return getAllByStatus(true);
-    }
+    public List<user> getAll() { return getAllByStatus(true); }
 
-    /**
-     * Récupère les utilisateurs archivés (is_active = 0).
-     */
-    public List<user> getArchived() {
-        return getAllByStatus(false);
-    }
+    public List<user> getArchived() { return getAllByStatus(false); }
 
     private List<user> getAllByStatus(boolean activeStatus) {
         List<user> users = new ArrayList<>();
@@ -126,14 +131,9 @@ public class serviceUser implements services<user> {
         return users;
     }
 
-    // ==================== ARCHIVAGE (remplace deleteById) ====================
+    // ==================== ARCHIVAGE ====================
 
-    /**
-     * Archive un utilisateur (is_active = 0) sans le supprimer de la BDD.
-     * Supprime également sa session active pour le déconnecter immédiatement.
-     */
     public void archiveById(int id) {
-        // 1. Invalider les sessions actives de cet utilisateur
         String deleteSessionsReq = "DELETE FROM sessions WHERE user_id = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(deleteSessionsReq)) {
             pstm.setInt(1, id);
@@ -142,36 +142,25 @@ public class serviceUser implements services<user> {
             System.err.println("Erreur suppression sessions : " + e.getMessage());
         }
 
-        // 2. Archiver l'utilisateur
         String req = "UPDATE `user` SET `is_active` = 0 WHERE `user_id` = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            System.out.println("Utilisateur archivé avec succès (ID=" + id + ")");
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'archivage : " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Erreur archivage : " + e.getMessage());
         }
     }
 
-    /**
-     * Réactive un utilisateur archivé (is_active = 1).
-     */
     public void restoreById(int id) {
         String req = "UPDATE `user` SET `is_active` = 1 WHERE `user_id` = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            System.out.println("Utilisateur restauré avec succès (ID=" + id + ")");
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la restauration : " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Erreur restauration : " + e.getMessage());
         }
     }
 
-    /**
-     * Suppression définitive (réservé à l'admin pour cas extrêmes).
-     */
     @Override
     public void deleteById(int id) {
         user u = getOneById(id);
@@ -181,10 +170,8 @@ public class serviceUser implements services<user> {
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            System.out.println("Utilisateur supprimé définitivement (ID=" + id + ")");
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la suppression : " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Erreur suppression : " + e.getMessage());
         }
     }
 
@@ -206,7 +193,6 @@ public class serviceUser implements services<user> {
                            NiveauActivitePhysique niveauActivite, NiveauScolaire niveauScolaire,
                            String etablissement, String newImageSourcePath, boolean removeImage) {
 
-        // Gérer l'image
         user existing = getOneById(id);
         String oldImagePath = (existing != null) ? existing.getUser_image_path() : null;
         String finalImagePath;
@@ -247,9 +233,8 @@ public class serviceUser implements services<user> {
             pstm.setInt(14, id);
 
             pstm.executeUpdate();
-            System.out.println("Utilisateur mis à jour avec succès !");
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la mise à jour : " + e.getMessage());
+            System.err.println("Erreur mise à jour : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -258,7 +243,6 @@ public class serviceUser implements services<user> {
 
     @Override
     public user getOneById(int id) {
-        // Recherche dans tous les users (actifs ET archivés) pour les opérations internes
         String req = "SELECT * FROM `user` WHERE `user_id` = ?";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setInt(1, id);
@@ -266,15 +250,13 @@ public class serviceUser implements services<user> {
             if (rs.next()) return mapResultSetToUser(rs);
         } catch (SQLException e) {
             System.err.println("Erreur getOneById : " + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }
 
-    // ==================== LOGIN : vérifie actif + mot de passe ====================
+    // ==================== LOGIN ====================
 
     public user getByEmailAndPassword(String email, String plainPassword) {
-        // On sélectionne uniquement les utilisateurs ACTIFS
         String req = "SELECT * FROM `user` WHERE `user_email` = ? AND `is_active` = 1";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, email);
@@ -291,9 +273,6 @@ public class serviceUser implements services<user> {
         return null;
     }
 
-    /**
-     * Vérifie si un email existe mais est archivé (pour afficher un message adapté au login).
-     */
     public boolean isEmailArchived(String email) {
         String req = "SELECT COUNT(*) FROM `user` WHERE `user_email` = ? AND `is_active` = 0";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
@@ -304,6 +283,19 @@ public class serviceUser implements services<user> {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // ✅ NOUVEAU : Récupère le chemin du visage enregistré pour un email donné
+    public String getFaceImagePathByEmail(String email) {
+        String req = "SELECT `face_image_path` FROM `user` WHERE `user_email` = ? AND `is_active` = 1";
+        try (PreparedStatement pstm = cnx.prepareStatement(req)) {
+            pstm.setString(1, email);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) return rs.getString("face_image_path");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // ==================== MAPPING ResultSet -> user ====================
@@ -337,11 +329,17 @@ public class serviceUser implements services<user> {
         u.setUser_etablissement_scolaire(rs.getString("user_etablissement_scolaire"));
         u.setUser_image_path(rs.getString("user_image_path"));
 
-        // is_active : récupération robuste (colonne peut ne pas exister sur ancienne BDD)
+        // ✅ NOUVEAU : récupérer le chemin du visage
+        try {
+            u.setFace_image_path(rs.getString("face_image_path"));
+        } catch (SQLException e) {
+            u.setFace_image_path(null); // fallback si colonne absente (ancienne BDD)
+        }
+
         try {
             u.setIs_active(rs.getInt("is_active") == 1);
         } catch (SQLException e) {
-            u.setIs_active(true); // fallback sécurisé
+            u.setIs_active(true);
         }
 
         return u;

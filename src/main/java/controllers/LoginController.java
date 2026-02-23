@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Role;
 import models.user;
@@ -33,19 +34,20 @@ public class LoginController {
     @FXML private Hyperlink     linkForgotPassword;
     @FXML private CheckBox      rememberMe;
 
-    // ─── Champs CAPTCHA ───────────────────────────────────────────────────────
-    @FXML private Pane      captchaPane;        // conteneur du Canvas
-    @FXML private TextField captchaInput;       // saisie utilisateur
-    @FXML private Label     captchaErrorLabel;  // message d'erreur inline CAPTCHA
-    @FXML private Button    btnRefreshCaptcha;  // bouton ↻
+    // ─── CAPTCHA ─────────────────────────────────────────────────────────────
+    @FXML private Pane      captchaPane;
+    @FXML private TextField captchaInput;
+    @FXML private Label     captchaErrorLabel;
+    @FXML private Button    btnRefreshCaptcha;
 
     // ─── Services ────────────────────────────────────────────────────────────
-    private final serviceUser    service       = new serviceUser();
+    private final serviceUser    service        = new serviceUser();
     private final CaptchaService captchaService = new CaptchaService();
 
     // =========================================================================
     //  INITIALISATION
     // =========================================================================
+
     @FXML
     public void initialize() {
         errorLabel.setVisible(false);
@@ -54,7 +56,6 @@ public class LoginController {
         linkToRegister.setOnAction(e -> goToRegister());
         linkForgotPassword.setOnAction(e -> goToForgotPassword());
 
-        // ✅ Rendre le CAPTCHA dès l'ouverture de la page
         Platform.runLater(() -> {
             renderCaptcha();
             checkRememberMe();
@@ -62,12 +63,9 @@ public class LoginController {
     }
 
     // =========================================================================
-    //  CAPTCHA : rendu et rafraîchissement
+    //  CAPTCHA
     // =========================================================================
 
-    /**
-     * Génère un nouveau CAPTCHA et l'affiche dans le Pane.
-     */
     private void renderCaptcha() {
         Canvas canvas = captchaService.generateCaptchaCanvas();
         captchaPane.getChildren().setAll(canvas);
@@ -75,13 +73,9 @@ public class LoginController {
         captchaErrorLabel.setVisible(false);
     }
 
-    /**
-     * Bouton ↻ : rafraîchit le CAPTCHA.
-     */
     @FXML
     void handleRefreshCaptcha(ActionEvent event) {
         renderCaptcha();
-        // Animation subtile du bouton (rotation visuelle légère)
         javafx.animation.RotateTransition rt = new javafx.animation.RotateTransition(
                 javafx.util.Duration.millis(400), btnRefreshCaptcha);
         rt.setByAngle(360);
@@ -97,60 +91,112 @@ public class LoginController {
         String email = emailLogin.getText().trim();
         String pass  = passwordLogin.getText();
 
-        // 1. Validation des champs de base
+        // 1. Champs vides
         if (email.isEmpty() || pass.isEmpty()) {
             showError("Veuillez remplir tous les champs.");
             return;
         }
 
-        // 2. ✅ Validation CAPTCHA (prioritaire)
+        // 2. Validation CAPTCHA
         String captchaSaisie = captchaInput.getText().trim();
         if (captchaSaisie.isEmpty()) {
             showCaptchaError("Veuillez compléter la vérification de sécurité.");
             captchaInput.requestFocus();
             return;
         }
-
         if (!captchaService.validate(captchaSaisie)) {
             showCaptchaError("Code de vérification incorrect. Nouveau code généré.");
-            renderCaptcha();   // régénérer automatiquement après échec
+            renderCaptcha();
             captchaInput.requestFocus();
             return;
         }
-
-        // CAPTCHA validé : effacer l'erreur CAPTCHA si elle était visible
         captchaErrorLabel.setVisible(false);
 
-        // 3. Authentification en base
+        // 3. Authentification
         user utilisateur = service.getByEmailAndPassword(email, pass);
 
-        if (utilisateur != null) {
-            // Créer une session sécurisée
-            SecureRandom random = new SecureRandom();
-            byte[] bytes = new byte[32];
-            random.nextBytes(bytes);
-            String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-            LocalDateTime expiresAt = LocalDateTime.now().plusHours(2);
-
-            SessionDAO sessionDAO = new SessionDAO();
-            sessionDAO.deleteSessionsByUser(utilisateur.getUser_id());
-            sessionDAO.createSession(utilisateur.getUser_id(), token, expiresAt);
-            Session.getInstance().startSession(utilisateur, token, expiresAt);
-
-            if (rememberMe.isSelected()) saveRememberToken(token);
-
-            redirectAccordingToRole(utilisateur);
-
-        } else {
-            // Régénérer le CAPTCHA à chaque échec de connexion
+        if (utilisateur == null) {
             renderCaptcha();
+            if (service.isEmailArchived(email)) showArchivedError();
+            else showError("Email ou mot de passe incorrect.");
+            return;
+        }
 
-            if (service.isEmailArchived(email)) {
-                showArchivedError();
-            } else {
-                showError("Email ou mot de passe incorrect.");
+        // 4. ✅ Vérification biométrique (si un visage a été enregistré)
+        if (utilisateur.getFace_image_path() != null
+                && !utilisateur.getFace_image_path().isEmpty()) {
+
+            boolean faceOk = openFaceVerificationPopup(utilisateur.getFace_image_path());
+
+            if (!faceOk) {
+                renderCaptcha();
+                showError("❌ Vérification du visage échouée. Réessayez.");
+                return;
             }
         }
+
+        // 5. Créer la session et rediriger
+        createSessionAndRedirect(utilisateur);
+    }
+
+    // =========================================================================
+    //  POPUP DE VÉRIFICATION BIOMÉTRIQUE
+    // =========================================================================
+
+    /**
+     * Ouvre le popup de vérification biométrique de manière modale.
+     *
+     * @param storedFacePath Chemin du visage enregistré à l'inscription
+     * @return true si le visage a été reconnu, false sinon
+     */
+    private boolean openFaceVerificationPopup(String storedFacePath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/FaceVerification.fxml"));
+            Parent root = loader.load();
+
+            FaceVerificationController ctrl = loader.getController();
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Harmony — Vérification biométrique");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initOwner(emailLogin.getScene().getWindow());
+            popupStage.setResizable(false);
+
+            // ✅ Setup AVANT d'afficher la scène
+            ctrl.setup(storedFacePath, popupStage);
+
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait(); // Bloque jusqu'à fermeture du popup
+
+            return ctrl.isVerified();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En cas d'erreur de chargement du popup, on laisse passer (dégradé)
+            return true;
+        }
+    }
+
+    // =========================================================================
+    //  SESSION + REDIRECTION
+    // =========================================================================
+
+    private void createSessionAndRedirect(user utilisateur) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(2);
+
+        SessionDAO sessionDAO = new SessionDAO();
+        sessionDAO.deleteSessionsByUser(utilisateur.getUser_id());
+        sessionDAO.createSession(utilisateur.getUser_id(), token, expiresAt);
+        Session.getInstance().startSession(utilisateur, token, expiresAt);
+
+        if (rememberMe.isSelected()) saveRememberToken(token);
+
+        redirectAccordingToRole(utilisateur);
     }
 
     // =========================================================================
@@ -227,9 +273,8 @@ public class LoginController {
     }
 
     private void saveRememberToken(String token) {
-        try (FileWriter writer = new FileWriter("remember.dat")) {
-            writer.write(token);
-        } catch (IOException e) { e.printStackTrace(); }
+        try (FileWriter writer = new FileWriter("remember.dat")) { writer.write(token); }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
     private String loadRememberToken() {
@@ -258,18 +303,12 @@ public class LoginController {
         errorLabel.setVisible(true);
     }
 
-    /** Affiche une erreur directement sous le champ CAPTCHA. */
     private void showCaptchaError(String message) {
         captchaErrorLabel.setText("⚠  " + message);
         captchaErrorLabel.setVisible(true);
-        // Animation shake sur le champ de saisie pour attirer l'attention
         shakeNode(captchaInput);
     }
 
-    /**
-     * Animation "shake" horizontale sur un nœud — même effet que les erreurs
-     * dans certains formulaires web.
-     */
     private void shakeNode(javafx.scene.Node node) {
         javafx.animation.TranslateTransition shake =
                 new javafx.animation.TranslateTransition(javafx.util.Duration.millis(60), node);
@@ -281,3 +320,4 @@ public class LoginController {
         shake.play();
     }
 }
+
