@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Contenu Gestion Utilisateurs — chargé dans le StackPane contentArea de DashboardAdmin.fxml.
+    Pas de sidebar ici (la sidebar est dans DashboardAdmin.fxml).
+    Fond transparent : backgLIGHT.png est appliqué sur le StackPane parent.
+-->
+<AnchorPane prefHeight="700" prefWidth="940"
+            style="-fx-background-color: transparent;"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.GestionUsersController">
+
+    <VBox spacing="20" alignment="TOP_LEFT"
+          AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="10">
+
+        <!-- ── Titre ───────────────────────────────────────────────── -->
+        <VBox spacing="6">
+            <Label fx:id="lblCurrentView"
+                   style="-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                   text="Gestion des Utilisateurs" />
+            <Label style="-fx-font-size: 13; -fx-text-fill: #6B7280;"
+                   text="Gérez et organisez tous vos utilisateurs" />
+        </VBox>
+
+        <!-- ── Barre d'actions ─────────────────────────────────────── -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+
+            <!-- Recherche -->
+            <HBox alignment="CENTER_LEFT" prefWidth="340" spacing="10"
+                  style="-fx-background-color: rgba(255,255,255,0.88);
+                         -fx-background-radius: 12;
+                         -fx-padding: 11 16;
+                         -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.06),8,0,0,2);">
+                <Label style="-fx-font-size: 15;" text="🔍" />
+                <TextField fx:id="searchField" onKeyReleased="#handleSearch"
+                           prefHeight="28" prefWidth="296"
+                           promptText="Rechercher un utilisateur..."
+                           style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 13;" />
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Voir archivés / actifs -->
+            <Button fx:id="btnToggleArchived" onAction="#handleToggleArchived"
+                    prefHeight="43" prefWidth="165"
+                    style="-fx-background-color: #6B7280; -fx-text-fill: white; -fx-font-size: 13;
+                           -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;
+                           -fx-effect: dropshadow(three-pass-box,rgba(107,114,128,0.3),10,0,0,3);"
+                    text="🗃 Voir archivés" />
+
+            <!-- Trier par suspicion -->
+            <Button fx:id="btnSortSuspicion" onAction="#handleSortBySuspicion"
+                    prefHeight="43" prefWidth="190"
+                    style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 13;
+                           -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;
+                           -fx-effect: dropshadow(three-pass-box,rgba(245,158,11,0.3),10,0,0,3);"
+                    text="⚠ Trier par suspicion" />
+
+            <!-- Actualiser -->
+            <Button onAction="#refreshTable"
+                    prefHeight="43" prefWidth="125"
+                    style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 13;
+                           -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;
+                           -fx-effect: dropshadow(three-pass-box,rgba(139,92,246,0.3),10,0,0,3);"
+                    text="🔄 Actualiser" />
+        </HBox>
+
+        <!-- ── Grille des cards ────────────────────────────────────── -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;">
+            <VBox.margin>
+                <Insets top="6" />
+            </VBox.margin>
+            <FlowPane fx:id="cardsContainer" hgap="22" prefWrapLength="900"
+                      style="-fx-background-color: transparent; -fx-padding: 12;" vgap="22" />
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

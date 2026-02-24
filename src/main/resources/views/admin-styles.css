@@ -1,0 +1,123 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   HARMONY — Admin Styles
+   Sidebar collapse/expand matching reference project (RootLayoutController)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Content area background image ────────────────────────────────────── */
+.admin-content-area {
+    -fx-background-image: url("backgLIGHT.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════════════════════════ */
+.sidebar {
+    -fx-background-color: rgba(238, 237, 246, 0.93);
+    -fx-padding: 22 10 18 10;
+    -fx-spacing: 6;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 16, 0, 4, 0);
+}
+
+/* ── Section labels ───────────────────────────────────────────────────── */
+.sidebar-section-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9CA3AF;
+    -fx-padding: 10 0 4 12;
+    -fx-opacity: 1;
+    -fx-managed: true;
+}
+
+/* ── Nav buttons ──────────────────────────────────────────────────────── */
+.sidebar-item {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b6b6b;
+    -fx-background-radius: 10px;
+    -fx-padding: 9 14 9 14;
+    -fx-alignment: CENTER-LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 12;
+    -fx-max-width: Infinity;
+}
+
+.sidebar-item:hover {
+    -fx-background-color: #d9d6ec;
+    -fx-text-fill: #7C3AED;
+    -fx-background-radius: 10px;
+}
+
+/* Active page highlight */
+.sidebar-item-active {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7C3AED;
+    -fx-font-weight: bold;
+}
+
+/* Logout / danger style */
+.sidebar-item-danger {
+    -fx-text-fill: #9CA3AF;
+}
+.sidebar-item-danger:hover {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #EF4444;
+    -fx-background-radius: 10px;
+}
+
+/* ── Profile zone ─────────────────────────────────────────────────────── */
+.profile-row {
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-padding: 8 10 8 10;
+}
+.profile-row:hover {
+    -fx-background-color: #d9d6ec;
+    -fx-background-radius: 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COLLAPSED STATE — added/removed dynamically in Java
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Hide section titles */
+.sidebar.sidebar-collapsed .sidebar-section-title {
+    -fx-opacity: 0;
+    -fx-managed: false;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+}
+
+/* Show only icon, centered */
+.sidebar.sidebar-collapsed .sidebar-item {
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-alignment: CENTER;
+    -fx-padding: 10 8;
+    -fx-graphic-text-gap: 0;
+}
+
+/* Hide logo label text */
+.sidebar.sidebar-collapsed .sidebar-logo-text {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Hide profile name */
+.sidebar.sidebar-collapsed .profile-name-label {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Hide profile hint text */
+.sidebar.sidebar-collapsed .profile-hint-label {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Center profile row when collapsed */
+.sidebar.sidebar-collapsed .profile-row {
+    -fx-alignment: CENTER;
+}

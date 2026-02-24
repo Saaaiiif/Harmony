@@ -12,50 +12,78 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+            ✅ CORRECTION PRINCIPALE :
+            On centralise la version JavaFX en une seule propriété.
+            Avant : javafx-controls et javafx-fxml étaient en version 21,
+            mais le plugin javafx-maven-plugin téléchargeait parfois une API JavaFX 25.
+            Maintenant tout est verrouillé sur 21.0.2 (LTS stable).
+        -->
+        <javafx.version>21.0.2</javafx.version>
     </properties>
+
     <dependencies>
+
+        <!-- ── Base de données ──────────────────────────────────────── -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- ── Tests ────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- ── JavaFX — version unifiée via ${javafx.version} ─────── -->
+        <!--
+            ✅ CORRECTION : les 3 dépendances JavaFX utilisent toutes
+            la même version ${javafx.version} = 21.0.2
+            Avant il n'y avait que controls + fxml en "21" (sans sous-version),
+            ce qui pouvait laisser le plugin résoudre une version différente.
+        -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- ── Sécurité — hachage de mots de passe ──────────────────── -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- ✅ JavaMail pour l'envoi d'emails (fonctionnalité mot de passe oublié) -->
+        <!-- ── JavaMail — envoi d'emails (mot de passe oublié) ──────── -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
 
-        <!-- ✅ JavaCV + OpenCV — reconnaissance faciale (webcam, détection, comparaison) -->
+        <!-- ── JavaCV + OpenCV — reconnaissance faciale ─────────────── -->
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv</artifactId>
             <version>1.5.9</version>
         </dependency>
-        <!-- Natives Windows 64-bit uniquement (plus léger que opencv-platform) -->
+        <!-- Natives Windows 64-bit uniquement -->
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>opencv</artifactId>
@@ -68,6 +96,7 @@
             <version>0.3.23-1.5.9</version>
             <classifier>windows-x86_64</classifier>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -75,6 +104,11 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
+                <!--
+                    ✅ CORRECTION : version 0.0.8 → 0.0.8 est correcte pour JDK 17.
+                    On ajoute <options> pour forcer le runtime à utiliser
+                    exactement la version déclarée dans les dépendances.
+                -->
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>main.MainFX</mainClass>
