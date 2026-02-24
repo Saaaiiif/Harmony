@@ -19,6 +19,13 @@ import javafx.util.Duration;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
 
 import controllers.Forum.ForumHomeController;
 
@@ -483,6 +490,32 @@ public void goHome(){
     @FXML
     public void openBackOffice(){
         loadPage("/Forum/ForumBackOffice/ForumBackDashboard.fxml");
+    }
+
+ //--------------------------animation side barre ------------------------------
+ @FXML
+ private VBox sidebar;
+
+    private final double COLLAPSED_WIDTH = 60;
+    private final double EXPANDED_WIDTH = 220;
+
+    @FXML
+    private void expandSidebar() {
+        animateSidebar(EXPANDED_WIDTH);
+    }
+
+    @FXML
+    private void collapseSidebar() {
+        animateSidebar(COLLAPSED_WIDTH);
+    }
+
+    private void animateSidebar(double targetWidth) {
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(200),
+                        new KeyValue(sidebar.prefWidthProperty(), targetWidth)
+                )
+        );
+        timeline.play();
     }
 
 

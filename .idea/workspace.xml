@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="création d'une upper bar moderne dans le back">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="changement de l' UI. suppression de la StackPane bas et ajout de sidebar pour naviguer Front / Back">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" afterDir="false" />
@@ -164,7 +164,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="32470000" />
+      <workItem from="1771668340810" duration="34719000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -478,7 +478,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771844439659</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="changement de l' UI. suppression de la StackPane bas et ajout de sidebar pour naviguer Front / Back">
+      <option name="closed" value="true" />
+      <created>1771863275418</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1771863275418</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -496,7 +504,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="backend forum avec CRUD complet pour catégories, posts et commentaires" />
     <MESSAGE value="quelques rectifications de navigation" />
     <MESSAGE value="Suppression des TABLEVIEW , les fichiers CategoriesTable.fxml , PostsTable.fxml et  CommentairesTable.fxml et les remplacer par : CategoriesCards.fxml , PostsCards.fxml et CommentairesCards.fxml" />
     <MESSAGE value="Supprimer : CategoriesTableController , PostsTableController  et CommentairesTableController . créer : CategoriesCardController , PostsCardController et  CommentairesCardController" />
@@ -521,7 +528,8 @@
     <MESSAGE value="Création d'une upper bar moderne dand la liste des postes" />
     <MESSAGE value="en cours de création d'une upper bar moderne dand la liste des catégories ..." />
     <MESSAGE value="création d'une upper bar moderne dans le back" />
-    <option name="LAST_COMMIT_MESSAGE" value="création d'une upper bar moderne dans le back" />
+    <MESSAGE value="changement de l' UI. suppression de la StackPane bas et ajout de sidebar pour naviguer Front / Back" />
+    <option name="LAST_COMMIT_MESSAGE" value="changement de l' UI. suppression de la StackPane bas et ajout de sidebar pour naviguer Front / Back" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
