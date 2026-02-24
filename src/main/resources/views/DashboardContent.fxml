@@ -56,7 +56,7 @@
             <!-- Card Nouveaux (30j) -->
             <!-- ✅ CORRIGÉ -->
             <VBox alignment="CENTER" prefHeight="150" prefWidth="240" spacing="14"
-                  style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #10B981, #059669);
+                  style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);
                          -fx-background-radius: 18;
                          -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.18),14,0,0,6);
                          -fx-padding: 25;">
@@ -71,7 +71,7 @@
             <!-- Card Actifs -->
             <!-- ✅ CORRIGÉ -->
             <VBox alignment="CENTER" prefHeight="150" prefWidth="240" spacing="14"
-                  style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F59E0B, #D97706);
+                  style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);
                          -fx-background-radius: 18;
                          -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.18),14,0,0,6);
                          -fx-padding: 25;">

@@ -64,7 +64,7 @@
             <!-- Trier par suspicion -->
             <Button fx:id="btnSortSuspicion" onAction="#handleSortBySuspicion"
                     prefHeight="43" prefWidth="190"
-                    style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 13;
+                    style="-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-font-size: 13;
                            -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;
                            -fx-effect: dropshadow(three-pass-box,rgba(245,158,11,0.3),10,0,0,3);"
                     text="⚠ Trier par suspicion" />
