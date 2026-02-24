@@ -3,6 +3,7 @@ import java.sql.Timestamp;
 
 public class Consommation {
     private int id_consommation;
+    private int user_id = 1; // NOUVEAU
     private Timestamp date_consommation;
     private String type_repas;
     private int id_aliment;
@@ -28,6 +29,9 @@ public class Consommation {
         this.poids_grammes = poids_grammes;
     }
 
+    public int getUser_id() { return user_id; }
+    public void setUser_id(int user_id) { this.user_id = user_id; }
+
     public int getId_consommation() { return id_consommation; }
     public void setId_consommation(int id_consommation) { this.id_consommation = id_consommation; }
     public Timestamp getDate_consommation() { return date_consommation; }
@@ -40,9 +44,4 @@ public class Consommation {
     public void setQuantite_eau_ml(int quantite_eau_ml) { this.quantite_eau_ml = quantite_eau_ml; }
     public int getPoids_grammes() { return poids_grammes; }
     public void setPoids_grammes(int poids_grammes) { this.poids_grammes = poids_grammes; }
-
-    @Override
-    public String toString() {
-        return "Consommation{id=" + id_consommation + ", type='" + type_repas + "', eau=" + quantite_eau_ml + "ml}";
-    }
 }

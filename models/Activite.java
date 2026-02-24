@@ -1,8 +1,10 @@
 package models;
+
 import java.sql.Timestamp;
 
 public class Activite {
     private int id_activite;
+    private int user_id = 1; // NOUVEAU
     private Timestamp date_activite;
     private int id_exercice;
     private int duree_minutes;
@@ -10,7 +12,7 @@ public class Activite {
     private int nb_series;
     private int nb_repetitions;
     private float poids;
-    private String notes; // NOUVEAU CHAMP
+    private String notes;
 
     public Activite() {}
 
@@ -37,7 +39,9 @@ public class Activite {
         this.notes = notes;
     }
 
-    // --- GETTERS & SETTERS EXISTANTS ---
+    public int getUser_id() { return user_id; }
+    public void setUser_id(int user_id) { this.user_id = user_id; }
+
     public int getId_activite() { return id_activite; }
     public void setId_activite(int id_activite) { this.id_activite = id_activite; }
     public Timestamp getDate_activite() { return date_activite; }
@@ -54,8 +58,6 @@ public class Activite {
     public void setNb_repetitions(int nb_repetitions) { this.nb_repetitions = nb_repetitions; }
     public float getPoids() { return poids; }
     public void setPoids(float poids) { this.poids = poids; }
-
-    // --- NOUVEAUX GETTER/SETTER ---
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
 }

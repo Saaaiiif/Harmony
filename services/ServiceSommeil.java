@@ -14,6 +14,7 @@ public class ServiceSommeil {
     public boolean ajouter(Sommeil s) {
         String qry = "INSERT INTO `sommeil` (`date_coucher`, `date_reveil`, `qualite_sommeil`, `stress`, `cafeine`, `bruit`) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, s.getUser_id());
             pstm.setTimestamp(1, s.getDate_coucher());
             pstm.setTimestamp(2, s.getDate_reveil());
             pstm.setString(3, s.getQualite_sommeil());
@@ -33,15 +34,8 @@ public class ServiceSommeil {
         List<Sommeil> liste = new ArrayList<>();
         try (Statement stm = cnx.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM `sommeil`")) {
             while (rs.next()) {
-                Sommeil s = new Sommeil(
-                        rs.getInt("id_sommeil"),
-                        rs.getTimestamp("date_coucher"),
-                        rs.getTimestamp("date_reveil"),
-                        rs.getString("qualite_sommeil"),
-                        rs.getBoolean("stress"),
-                        rs.getBoolean("cafeine"),
-                        rs.getBoolean("bruit")
-                );
+                Sommeil s = new Sommeil(rs.getInt("id_sommeil"), rs.getTimestamp("date_coucher"), rs.getTimestamp("date_reveil"), rs.getString("qualite_sommeil"), rs.getBoolean("stress"), rs.getBoolean("cafeine"), rs.getBoolean("bruit"));
+                s.setUser_id(rs.getInt("user_id"));
                 liste.add(s);
             }
         } catch (SQLException e) { System.err.println("ERREUR AFFICHER SOMMEIL : " + e.getMessage()); }

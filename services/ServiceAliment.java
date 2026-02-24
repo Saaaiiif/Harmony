@@ -25,7 +25,9 @@ public class ServiceAliment implements services<Aliment> {
             pstm.setDouble(5, a.getLipides());
             pstm.executeUpdate();
             System.out.println("✅ Aliment ajouté avec macros !");
-        } catch (SQLException e) { System.err.println(e.getMessage()); }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur ajout aliment : " + e.getMessage());
+        }
     }
 
     @Override
@@ -43,7 +45,9 @@ public class ServiceAliment implements services<Aliment> {
                         rs.getDouble("lipides")
                 ));
             }
-        } catch (SQLException e) { System.err.println(e.getMessage()); }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur affichage aliments : " + e.getMessage());
+        }
         return liste;
     }
 
@@ -59,7 +63,9 @@ public class ServiceAliment implements services<Aliment> {
             pstm.setInt(6, a.getId_aliment());
             pstm.executeUpdate();
             System.out.println("✅ Aliment mis à jour avec ses macros !");
-        } catch (SQLException e) { System.err.println(e.getMessage()); }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur modification aliment : " + e.getMessage());
+        }
     }
 
     @Override
@@ -72,7 +78,9 @@ public class ServiceAliment implements services<Aliment> {
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            System.out.println("🗑️ Aliment supprimé !");
-        } catch (SQLException e) { System.err.println(e.getMessage()); }
+            System.out.println("✅ Aliment supprimé !");
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur suppression aliment : " + e.getMessage());
+        }
     }
 }

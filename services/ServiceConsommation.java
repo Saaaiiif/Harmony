@@ -12,22 +12,25 @@ public class ServiceConsommation {
     public ServiceConsommation() { this.cnx = MyDataBase.getInstance().getCnx(); }
 
     public void ajouter(Consommation c) {
-        String qry = "INSERT INTO `consommation` (`date_consommation`, `type_repas`, `id_aliment`, `quantite_eau_ml`, `poids_grammes`) VALUES (?, ?, ?, ?, ?)";
+        String qry = "INSERT INTO `consommation` (`user_id`, `date_consommation`, `type_repas`, `id_aliment`, `quantite_eau_ml`, `poids_grammes`) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
-            pstm.setTimestamp(1, c.getDate_consommation());
-            pstm.setString(2, c.getType_repas());
-            pstm.setInt(3, c.getId_aliment());
-            pstm.setInt(4, c.getQuantite_eau_ml());
-            pstm.setInt(5, c.getPoids_grammes());
+            pstm.setInt(1, c.getUser_id());
+            pstm.setTimestamp(2, c.getDate_consommation());
+            pstm.setString(3, c.getType_repas());
+            pstm.setInt(4, c.getId_aliment());
+            pstm.setInt(5, c.getQuantite_eau_ml());
+            pstm.setInt(6, c.getPoids_grammes());
             pstm.executeUpdate();
         } catch (SQLException e) { System.err.println(e.getMessage()); }
     }
 
     public List<Consommation> afficherTout() {
         List<Consommation> liste = new ArrayList<>();
-        try (Statement stm = cnx.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM `consommation`")) {
+        try (Statement stm = cnx.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM `consommation` WHERE user_id = 1")) {
             while (rs.next()) {
-                liste.add(new Consommation(rs.getInt("id_consommation"), rs.getTimestamp("date_consommation"), rs.getString("type_repas"), rs.getInt("id_aliment"), rs.getInt("quantite_eau_ml"), rs.getInt("poids_grammes")));
+                Consommation c = new Consommation(rs.getInt("id_consommation"), rs.getTimestamp("date_consommation"), rs.getString("type_repas"), rs.getInt("id_aliment"), rs.getInt("quantite_eau_ml"), rs.getInt("poids_grammes"));
+                c.setUser_id(rs.getInt("user_id"));
+                liste.add(c);
             }
         } catch (SQLException e) { System.err.println(e.getMessage()); }
         return liste;

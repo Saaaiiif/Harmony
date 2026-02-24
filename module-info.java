@@ -16,8 +16,11 @@ module harmony { // J'ai simplifié le nom du module
     requires org.json;
     requires java.net.http;
 
-    // 👇 NOUVELLE LIGNE AJOUTÉE POUR LE PDF 👇
+
     requires itextpdf;
+    requires com.google.zxing;
+    requires com.google.zxing.javase;
+    requires javafx.media;
 
     // 1. On autorise JavaFX à démarrer l'application depuis le package 'main'
     exports main;

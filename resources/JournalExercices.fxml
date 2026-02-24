@@ -11,7 +11,7 @@
         <Region fx:id="bgTint" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 
         <HBox fx:id="navbar" alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1080.0" style="-fx-background-color: #6a1b9a;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <padding><Insets left=\"20.0\" right=\"20.0\" /></padding>
+            <padding><Insets left="20.0" right="20.0" /></padding>
             <children>
                 <Label text="Harmony" textFill="WHITE"><font><Font name="System Bold" size="20.0" /></font></Label>
                 <Region HBox.hgrow="ALWAYS" />
@@ -28,17 +28,17 @@
             <content>
                 <VBox alignment="TOP_CENTER" spacing="30.0" style="-fx-padding: 30; -fx-background-color: transparent;">
 
-                    <VBox alignment="CENTER" spacing="15.0">
+                    <VBox alignment="CENTER" spacing="20.0">
                         <Label text="Journal Exercices" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #4a148c; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 3);" />
 
-                        <HBox style="-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5); -fx-padding: 5;" alignment="CENTER" maxWidth="350">
-                            <Button fx:id="btnFemme" text="👩 Section Femme" onAction="#setModeFemme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
-                            <Button fx:id="btnHomme" text="👨 Section Homme" onAction="#setModeHomme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
+                        <HBox style="-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 5); -fx-padding: 5;" alignment="CENTER" maxWidth="380">
+                            <Button fx:id="btnFemme" text="👩 Section Femme" onAction="#actionSetModeFemme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
+                            <Button fx:id="btnHomme" text="👨 Section Homme" onAction="#actionSetModeHomme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
                         </HBox>
 
                         <HBox alignment="CENTER" spacing="10">
                             <Label text="📅 Date :" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-                            <DatePicker fx:id="datePickerSeance" style="-fx-font-size: 14px; -fx-background-radius: 10; -fx-border-color: #6a1b9a; -fx-border-radius: 10;" />
+                            <DatePicker fx:id="datePickerSeance" style="-fx-font-size: 14px; -fx-background-radius: 10; -fx-border-color: #6a1b9a; -fx-border-radius: 10; -fx-cursor: hand;" />
                         </HBox>
                     </VBox>
 
@@ -72,7 +72,7 @@
                 <TextArea fx:id="chatArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 10;" />
                 <HBox spacing="10" alignment="CENTER" style="-fx-padding: 15 0 0 0;">
                     <TextField fx:id="chatInput" promptText="Posez votre question..." HBox.hgrow="ALWAYS" style="-fx-font-size: 14px; -fx-background-radius: 15; -fx-padding: 10;" />
-                    <Button text="Envoyer 🚀" onAction="#envoyerMessageCoach" style="-fx-background-color: #6a1b9a; -fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 10 20; -fx-font-weight: bold;" />
+                    <Button text="Envoyer 🚀" onAction="#envoyerMessageCoach" style="-fx-background-color: #6a1b9a; -fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;" />
                 </HBox>
             </VBox>
         </StackPane>

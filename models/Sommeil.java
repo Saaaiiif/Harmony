@@ -2,11 +2,10 @@ package models;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Sommeil {
     private int id_sommeil;
+    private int user_id = 1; // NOUVEAU
     private Timestamp date_coucher;
     private Timestamp date_reveil;
     private String qualite_sommeil;
@@ -26,7 +25,9 @@ public class Sommeil {
         this.bruit = bruit;
     }
 
-    // --- GETTERS ET SETTERS ---
+    public int getUser_id() { return user_id; }
+    public void setUser_id(int user_id) { this.user_id = user_id; }
+
     public int getId_sommeil() { return id_sommeil; }
     public void setId_sommeil(int id_sommeil) { this.id_sommeil = id_sommeil; }
     public Timestamp getDate_coucher() { return date_coucher; }
@@ -42,22 +43,12 @@ public class Sommeil {
     public boolean isBruit() { return bruit; }
     public void setBruit(boolean bruit) { this.bruit = bruit; }
 
-    // --- METHODES POUR L'AFFICHAGE JOLI DANS LE TABLEAU JAVAFX ---
     public String getCoucherAffichage() {
         if (date_coucher == null) return "";
         return new SimpleDateFormat("dd/MM/yyyy 'à' HH:mm").format(date_coucher);
     }
-
     public String getReveilAffichage() {
         if (date_reveil == null) return "";
         return new SimpleDateFormat("dd/MM/yyyy 'à' HH:mm").format(date_reveil);
-    }
-
-    public String getFacteurs() {
-        List<String> f = new ArrayList<>();
-        if (stress) f.add("Stress");
-        if (cafeine) f.add("Caféine");
-        if (bruit) f.add("Bruit");
-        return f.isEmpty() ? "Aucun" : String.join(", ", f);
     }
 }

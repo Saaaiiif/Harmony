@@ -1,333 +1,600 @@
 package controllers;
 
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.shape.SVGPath;
+import javafx.scene.paint.Color;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import models.Activite;
 import models.Exercice;
 import services.ServiceActivite;
 import services.ServiceExercice;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
+import java.awt.image.BufferedImage;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+
+// NOUVEAUX IMPORTS POUR LA SAUVEGARDE (Sans utiliser java.prefs)
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class JournalExercicesController {
 
+    @FXML private Region bgTint;
+    @FXML private Button btnFemme;
+    @FXML private Button btnHomme;
+    @FXML private DatePicker datePickerSeance;
+    @FXML private HBox hboxCategories;
+    @FXML private FlowPane flowPaneExercices;
     @FXML private FlowPane flowPaneHistorique;
+    @FXML private StackPane coachOverlayPane;
+    @FXML private TextArea chatArea;
+    @FXML private TextField chatInput;
 
     private ServiceActivite serviceActivite = new ServiceActivite();
     private ServiceExercice serviceExercice = new ServiceExercice();
     private Map<Integer, Exercice> cacheExercices = new HashMap<>();
 
-    // Chemins SVG
-    private static final String SVG_EDIT = "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
-    private static final String SVG_DELETE = "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
+    private boolean isModeFemme = true;
+    private String activeColor = "#e91e63";
+
+    // Fichier de sauvegarde local pour éviter l'erreur de module
+    private static final String PREF_FILE = "harmony_mode.txt";
 
     @FXML
     public void initialize() {
-        for (Exercice e : serviceExercice.afficherTout()) {
-            cacheExercices.put(e.getId_exercice(), e);
+        datePickerSeance.setValue(LocalDate.now());
+
+        // Sécurisation du chargement des exercices
+        for (Exercice ex : serviceExercice.afficherTout()) {
+            if (ex != null) cacheExercices.put(ex.getId_exercice(), ex);
         }
+
+        // Restaurer l'état sauvegardé depuis le fichier
+        isModeFemme = loadPreference();
+        if (isModeFemme) setModeFemmeUI(); else setModeHommeUI();
+
         chargerHistoriqueInnovant();
+    }
+
+    // =======================================================================
+    // NOUVEAU SYSTEME DE SAUVEGARDE (SANS ERREUR MODULE)
+    // =======================================================================
+    private void savePreference(boolean estFemme) {
+        try {
+            Files.writeString(Paths.get(PREF_FILE), String.valueOf(estFemme));
+        } catch (Exception e) {
+            System.err.println("Impossible de sauvegarder la préférence.");
+        }
+    }
+
+    private boolean loadPreference() {
+        try {
+            Path path = Paths.get(PREF_FILE);
+            if (Files.exists(path)) {
+                String content = Files.readString(path).trim();
+                return Boolean.parseBoolean(content);
+            }
+        } catch (Exception e) {
+            System.err.println("Impossible de lire la préférence.");
+        }
+        return true; // Femme par défaut
+    }
+
+    // --- Evénements de clics ---
+    @FXML void actionSetModeFemme(ActionEvent event) { setModeFemmeUI(); }
+    @FXML void actionSetModeHomme(ActionEvent event) { setModeHommeUI(); }
+
+    private void setModeFemmeUI() {
+        isModeFemme = true;
+        savePreference(true); // On sauvegarde
+        activeColor = "#e91e63";
+        bgTint.setStyle("-fx-background-color: rgba(233, 30, 99, 0.05);");
+        btnFemme.setStyle("-fx-background-color: " + activeColor + "; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(233, 30, 99, 0.4), 10, 0, 0, 4); -fx-cursor: hand;");
+        btnHomme.setStyle("-fx-background-color: transparent; -fx-text-fill: #999; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-cursor: hand;");
+        chargerCategoriesSport();
+    }
+
+    private void setModeHommeUI() {
+        isModeFemme = false;
+        savePreference(false); // On sauvegarde
+        activeColor = "#1e88e5";
+        bgTint.setStyle("-fx-background-color: rgba(30, 136, 229, 0.05);");
+        btnHomme.setStyle("-fx-background-color: " + activeColor + "; -fx-text-fill: white; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(30, 136, 229, 0.4), 10, 0, 0, 4); -fx-cursor: hand;");
+        btnFemme.setStyle("-fx-background-color: transparent; -fx-text-fill: #999; -fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-cursor: hand;");
+        chargerCategoriesSport();
+    }
+
+    private void chargerCategoriesSport() {
+        hboxCategories.getChildren().clear();
+        String[] categories = {"Force", "Cardio", "Souplesse", "Endurance", "Perte_Poids"};
+        String[] labels = {"Force", "Cardio", "Souplesse", "Endurance", "Perte de poids"};
+        String[] urls3D = {
+                "https://cdn-icons-png.flaticon.com/512/3043/3043888.png",
+                "https://cdn-icons-png.flaticon.com/512/8306/8306906.png",
+                "https://cdn-icons-png.flaticon.com/512/2964/2964514.png",
+                "https://cdn-icons-png.flaticon.com/512/3043/3043884.png",
+                "https://cdn-icons-png.flaticon.com/512/785/785116.png"
+        };
+
+        for (int i = 0; i < categories.length; i++) {
+            String catCode = categories[i];
+            Button btnCat = new Button();
+
+            btnCat.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 20; -fx-padding: 15 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
+
+            VBox conteneur = new VBox(8);
+            conteneur.setAlignment(Pos.CENTER);
+
+            ImageView icon3D = new ImageView();
+            try { icon3D.setImage(new Image(urls3D[i], true)); } catch(Exception e){}
+            icon3D.setFitWidth(55); icon3D.setFitHeight(55);
+
+            Label lbl = new Label(labels[i]);
+            lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #555;");
+
+            conteneur.getChildren().addAll(icon3D, lbl);
+            btnCat.setGraphic(conteneur);
+
+            // Animation fluide
+            btnCat.setOnMouseEntered(e -> { btnCat.setScaleX(1.08); btnCat.setScaleY(1.08); });
+            btnCat.setOnMouseExited(e -> { btnCat.setScaleX(1.0); btnCat.setScaleY(1.0); });
+
+            btnCat.setOnAction(e -> {
+                hboxCategories.getChildren().forEach(n -> n.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 20; -fx-padding: 15 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"));
+                btnCat.setStyle("-fx-background-color: white; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 17; -fx-background-radius: 20; -fx-padding: 15 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, " + activeColor.replace("#", "rgba(") + ", 0.4), 15, 0, 0, 5);");
+                chargerExercices3D(catCode);
+            });
+            hboxCategories.getChildren().add(btnCat);
+        }
+        if(!hboxCategories.getChildren().isEmpty()) ((Button)hboxCategories.getChildren().get(0)).fire();
+    }
+
+    private void chargerExercices3D(String typeBase) {
+        flowPaneExercices.getChildren().clear();
+        String typeRecherche = typeBase + (isModeFemme ? "_Femme" : "_Homme");
+
+        List<Exercice> exos = cacheExercices.values().stream()
+                .filter(e -> e.getType_exercice() != null && e.getType_exercice().equalsIgnoreCase(typeRecherche))
+                .collect(Collectors.toList());
+
+        for (Exercice ex : exos) {
+            VBox card = new VBox(10);
+            card.setAlignment(Pos.CENTER);
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-pref-width: 180; -fx-pref-height: 220; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5);");
+
+            card.setOnMouseEntered(e -> { card.setTranslateY(-5); card.setScaleX(1.02); card.setScaleY(1.02); });
+            card.setOnMouseExited(e -> { card.setTranslateY(0); card.setScaleX(1.0); card.setScaleY(1.0); });
+
+            HBox topRow = new HBox();
+            topRow.setAlignment(Pos.CENTER_RIGHT);
+            Button btnEye = new Button("⏯");
+            btnEye.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: " + activeColor + "; -fx-background-radius: 50; -fx-cursor: hand; -fx-font-size: 18px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);");
+            btnEye.setTooltip(new Tooltip("Voir la vidéo de l'exercice"));
+            btnEye.setOnAction(e -> showVideoPopup(ex));
+            topRow.getChildren().add(btnEye);
+
+            Label iconVideo = new Label("🎬");
+            iconVideo.setStyle("-fx-font-size: 50px;");
+
+            Label lblNom = new Label(ex.getNom_exercice());
+            lblNom.setStyle("-fx-font-weight: bold; -fx-text-alignment: center; -fx-text-fill: #333; -fx-font-size: 15px;");
+            lblNom.setWrapText(true); lblNom.setAlignment(Pos.CENTER);
+
+            Button btnAdd = new Button("➕ Ajouter");
+            btnAdd.setStyle("-fx-background-color: linear-gradient(to right, " + activeColor + ", " + activeColor + "dd); -fx-text-fill: white; -fx-background-radius: 15; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20;");
+            btnAdd.setOnAction(e -> showAddOrEditDialog(ex, null));
+
+            card.getChildren().addAll(topRow, iconVideo, lblNom, new Region(), btnAdd);
+            flowPaneExercices.getChildren().add(card);
+        }
+    }
+
+    private void showAddOrEditDialog(Exercice ex, Activite activiteExistante) {
+        Stage dialog = new Stage();
+        dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.TRANSPARENT);
+
+        boolean isEditMode = (activiteExistante != null);
+
+        VBox root = new VBox(20);
+        root.setStyle("-fx-background-color: white; -fx-padding: 35; -fx-background-radius: 25; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 20, 0, 0, 0);");
+        root.setAlignment(Pos.CENTER);
+
+        Label title = new Label(isEditMode ? "✏️ Modifier : " + ex.getNom_exercice() : "✨ Ajouter : " + ex.getNom_exercice());
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 22px; -fx-text-fill: " + activeColor + ";");
+
+        GridPane grid = new GridPane(); grid.setHgap(15); grid.setVgap(15); grid.setAlignment(Pos.CENTER);
+
+        TextField tf1 = new TextField(); tf1.setStyle("-fx-background-radius: 10; -fx-padding: 8; -fx-font-size: 14px;");
+        TextField tf2 = new TextField(); tf2.setStyle("-fx-background-radius: 10; -fx-padding: 8; -fx-font-size: 14px;");
+        TextField tf3 = new TextField(); tf3.setStyle("-fx-background-radius: 10; -fx-padding: 8; -fx-font-size: 14px;");
+        TextArea taNote = new TextArea(); taNote.setPromptText("Notes personnelles..."); taNote.setPrefRowCount(3);
+        taNote.setStyle("-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 5;");
+
+        boolean isCardio = false;
+        if (ex.getType_exercice() != null) {
+            isCardio = ex.getType_exercice().contains("Cardio") || ex.getType_exercice().contains("Perte");
+        }
+
+        if (isEditMode) {
+            taNote.setText(activiteExistante.getNotes() != null ? activiteExistante.getNotes() : "");
+            if (isCardio) {
+                tf1.setText(String.valueOf(activiteExistante.getDuree_minutes()));
+                tf2.setText(String.valueOf(activiteExistante.getCalories_brulees()));
+            } else {
+                tf1.setText(String.valueOf(activiteExistante.getNb_series()));
+                tf2.setText(String.valueOf(activiteExistante.getNb_repetitions()));
+                tf3.setText(String.valueOf(activiteExistante.getPoids()));
+            }
+        }
+
+        if (isCardio) {
+            grid.add(new Label("⏱ Durée (min):"), 0, 0); grid.add(tf1, 1, 0);
+            grid.add(new Label("🔥 Calories:"), 0, 1); grid.add(tf2, 1, 1);
+        } else {
+            grid.add(new Label("🔢 Séries:"), 0, 0); grid.add(tf1, 1, 0);
+            grid.add(new Label("🔁 Reps:"), 0, 1); grid.add(tf2, 1, 1);
+            grid.add(new Label("⚖️ Poids (kg):"), 0, 2); grid.add(tf3, 1, 2);
+        }
+
+        Label lblErreur = new Label(""); lblErreur.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+
+        Button btnSave = new Button(isEditMode ? "💾 Mettre à jour" : "➕ Valider");
+        btnSave.setStyle("-fx-background-color: " + activeColor + "; -fx-text-fill: white; -fx-background-radius: 15; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 10 30; -fx-cursor: hand;");
+
+        boolean finalIsCardio = isCardio;
+        btnSave.setOnAction(e -> {
+            boolean hasError = false;
+            tf1.setStyle("-fx-background-radius: 10; -fx-border-width: 0;");
+            tf2.setStyle("-fx-background-radius: 10; -fx-border-width: 0;");
+            tf3.setStyle("-fx-background-radius: 10; -fx-border-width: 0;");
+            lblErreur.setText("");
+
+            String val1 = tf1.getText().trim();
+            String val2 = tf2.getText().trim();
+            String val3 = tf3.getText().trim();
+
+            if (finalIsCardio) {
+                if (!val1.matches("\\d+")) { tf1.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+                if (!val2.matches("\\d+")) { tf2.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+            } else {
+                if (!val1.matches("\\d+")) { tf1.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+                if (!val2.matches("\\d+")) { tf2.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+                if (!val3.matches("\\d+(\\.\\d+)?")) { tf3.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+            }
+
+            if (hasError) {
+                lblErreur.setText("⚠️ Veuillez entrer des valeurs numériques valides.");
+                return;
+            }
+
+            Activite act = isEditMode ? activiteExistante : new Activite();
+            act.setId_exercice(ex.getId_exercice());
+            act.setNotes(taNote.getText());
+
+            if (!isEditMode) {
+                LocalDate date = datePickerSeance.getValue() != null ? datePickerSeance.getValue() : LocalDate.now();
+                act.setDate_activite(Timestamp.valueOf(date.atStartOfDay()));
+            }
+
+            if (finalIsCardio) {
+                act.setDuree_minutes(Integer.parseInt(val1)); act.setCalories_brulees(Integer.parseInt(val2));
+                act.setNb_series(0); act.setNb_repetitions(0); act.setPoids(0f);
+            } else {
+                act.setNb_series(Integer.parseInt(val1)); act.setNb_repetitions(Integer.parseInt(val2)); act.setPoids(Float.parseFloat(val3));
+                act.setDuree_minutes(0); act.setCalories_brulees(0);
+            }
+
+            if (isEditMode) serviceActivite.modifier(act);
+            else serviceActivite.ajouter(act);
+
+            dialog.close();
+            chargerHistoriqueInnovant();
+        });
+
+        Button btnCancel = new Button("Annuler");
+        btnCancel.setStyle("-fx-background-color: #f1f2f6; -fx-text-fill: #555; -fx-background-radius: 15; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 10 30; -fx-cursor: hand;");
+        btnCancel.setOnAction(e -> dialog.close());
+
+        root.getChildren().addAll(title, grid, taNote, lblErreur, new HBox(20, btnCancel, btnSave));
+
+        Scene scene = new Scene(root); scene.setFill(Color.TRANSPARENT); dialog.setScene(scene);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(300), root);
+        ft.setFromValue(0); ft.setToValue(1); ft.play();
+        dialog.showAndWait();
     }
 
     private void chargerHistoriqueInnovant() {
         flowPaneHistorique.getChildren().clear();
-        List<Activite> activites = serviceActivite.afficherTout();
 
-        if (activites.isEmpty()) {
-            afficherMessageVide();
-            return;
-        }
+        Map<LocalDate, List<Activite>> seancesParJour = serviceActivite.afficherTout().stream()
+                .filter(a -> a.getDate_activite() != null)
+                .collect(Collectors.groupingBy(a -> a.getDate_activite().toLocalDateTime().toLocalDate()));
 
-        activites.sort((a1, a2) -> a2.getDate_activite().compareTo(a1.getDate_activite()));
+        seancesParJour.entrySet().stream().sorted(Map.Entry.<LocalDate, List<Activite>>comparingByKey().reversed()).forEach(entry -> {
+            LocalDate date = entry.getKey();
+            List<Activite> activites = entry.getValue();
 
-        Map<LocalDate, List<Activite>> activitesParJour = new LinkedHashMap<>();
-        for (Activite a : activites) {
-            activitesParJour.computeIfAbsent(a.getDate_activite().toLocalDateTime().toLocalDate(), k -> new ArrayList<>()).add(a);
-        }
+            VBox card = new VBox(15);
+            card.setStyle("-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 5); -fx-border-color: " + activeColor + "33; -fx-border-width: 2; -fx-border-radius: 20;");
+            card.setPrefWidth(450);
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEEE dd MMMM", Locale.FRENCH);
+            HBox header = new HBox(15); header.setAlignment(Pos.CENTER_LEFT);
+            Label lblDate = new Label("📅 " + date.toString());
+            lblDate.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;");
+            Region sp = new Region(); HBox.setHgrow(sp, Priority.ALWAYS);
 
-        for (Map.Entry<LocalDate, List<Activite>> entry : activitesParJour.entrySet()) {
-            LocalDate dateSeance = entry.getKey();
-            List<Activite> exosDuJour = entry.getValue();
+            Button btnQR = new Button("📱 QR");
+            btnQR.setStyle("-fx-background-color: #4a148c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-cursor: hand;");
+            btnQR.setOnAction(e -> preparerEtAfficherQR(date, activites));
 
-            VBox sessionCard = new VBox(15);
-            sessionCard.getStyleClass().add("session-card-square");
-            sessionCard.setPrefSize(460, 460);
-            sessionCard.setMaxSize(460, 460);
+            Button btnDelSession = new Button("🗑️");
+            btnDelSession.setStyle("-fx-background-color: #ffebee; -fx-text-fill: #d32f2f; -fx-font-size: 14px; -fx-background-radius: 50; -fx-cursor: hand;");
+            btnDelSession.setTooltip(new Tooltip("Supprimer toute la séance"));
+            btnDelSession.setOnAction(e -> showDeleteConfirmation("cette séance complète", () -> {
+                for(Activite a : activites) serviceActivite.supprimer(a.getId_activite());
+                chargerHistoriqueInnovant();
+            }));
 
-            BorderPane header = new BorderPane();
-            header.getStyleClass().add("session-header");
+            header.getChildren().addAll(lblDate, sp, btnQR, btnDelSession);
+            card.getChildren().add(header);
+            card.getChildren().add(new Separator());
 
-            String dateStr = dateSeance.format(dtf);
-            Label lblDate = new Label("✨ " + dateStr.substring(0, 1).toUpperCase() + dateStr.substring(1));
-            lblDate.getStyleClass().add("session-date-label");
+            for (Activite act : activites) {
+                Exercice ex = cacheExercices.get(act.getId_exercice()); if (ex == null) continue;
 
-            Button btnDeleteSession = new Button("Supprimer Séance");
-            btnDeleteSession.getStyleClass().add("btn-delete-session");
-            btnDeleteSession.setOnAction(e -> supprimerTouteLaSeance(dateSeance, exosDuJour));
+                VBox rowContainer = new VBox(5);
+                rowContainer.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 15; -fx-background-radius: 15; -fx-border-color: #eee; -fx-border-radius: 15;");
 
-            header.setLeft(lblDate);
-            header.setRight(btnDeleteSession);
+                HBox row = new HBox(15); row.setAlignment(Pos.CENTER_LEFT);
+                Label icon = new Label("⚡"); icon.setStyle("-fx-font-size: 24px;");
 
-            VBox exercisesList = new VBox(12);
-            for (Activite a : exosDuJour) {
-                exercisesList.getChildren().add(creerLigneExerciceInnovante(a));
+                VBox info = new VBox(2);
+                Label name = new Label(ex.getNom_exercice()); name.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #222;");
+                String detail = (act.getDuree_minutes() > 0) ? "⏱ " + act.getDuree_minutes() + " min | 🔥 " + act.getCalories_brulees() + " kcal" : "🔢 " + act.getNb_series() + "x" + act.getNb_repetitions() + " | ⚖️ " + act.getPoids() + " kg";
+                Label lblDetail = new Label(detail); lblDetail.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
+                info.getChildren().addAll(name, lblDetail);
+
+                Region rsp = new Region(); HBox.setHgrow(rsp, Priority.ALWAYS);
+
+                Button bEdit = new Button("✏️");
+                bEdit.setStyle("-fx-background-color: #e3f2fd; -fx-text-fill: #1e88e5; -fx-background-radius: 50; -fx-cursor: hand;");
+                bEdit.setOnAction(e -> showAddOrEditDialog(ex, act));
+
+                Button bDel = new Button("❌");
+                bDel.setStyle("-fx-background-color: #ffebee; -fx-text-fill: #e53935; -fx-background-radius: 50; -fx-cursor: hand;");
+                bDel.setOnAction(e -> showDeleteConfirmation("cet exercice", () -> {
+                    serviceActivite.supprimer(act.getId_activite()); chargerHistoriqueInnovant();
+                }));
+
+                row.getChildren().addAll(icon, info, rsp, bEdit, bDel);
+                rowContainer.getChildren().add(row);
+
+                if (act.getNotes() != null && !act.getNotes().trim().isEmpty()) {
+                    Label lblNote = new Label("📝 Note: " + act.getNotes());
+                    lblNote.setStyle("-fx-text-fill: black; -fx-font-style: italic; -fx-font-size: 13px; -fx-padding: 5 0 0 10;");
+                    lblNote.setWrapText(true);
+                    rowContainer.getChildren().add(lblNote);
+                }
+
+                card.getChildren().add(rowContainer);
             }
-
-            ScrollPane scrollExercises = new ScrollPane(exercisesList);
-            scrollExercises.setFitToWidth(true);
-            scrollExercises.getStyleClass().add("scroll-invisible");
-            VBox.setVgrow(scrollExercises, Priority.ALWAYS);
-
-            sessionCard.getChildren().addAll(header, scrollExercises);
-            flowPaneHistorique.getChildren().add(sessionCard);
-        }
+            flowPaneHistorique.getChildren().add(card);
+        });
     }
 
-    private HBox creerLigneExerciceInnovante(Activite a) {
-        Exercice ex = cacheExercices.get(a.getId_exercice());
-        String type = ex != null ? ex.getType_exercice() : "AUTRE";
-        String nom = ex != null ? ex.getNom_exercice() : "Exercice inconnu";
-        boolean isCardio = "CARDIO".equalsIgnoreCase(type);
+    private void showDeleteConfirmation(String element, Runnable onConfirm) {
+        Stage dialog = new Stage();
+        dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.TRANSPARENT);
 
-        HBox row = new HBox(15);
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.getStyleClass().addAll("exercise-row-modern", isCardio ? "row-cardio" : "row-muscu");
+        VBox root = new VBox(20);
+        root.setStyle("-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 20; -fx-border-color: #ef4444; -fx-border-width: 3; -fx-border-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.4), 20, 0, 0, 0);");
+        root.setAlignment(Pos.CENTER);
 
-        VBox infoBox = new VBox(6);
-        HBox.setHgrow(infoBox, Priority.ALWAYS);
+        Label icon = new Label("⚠️"); icon.setStyle("-fx-font-size: 40px;");
+        Label title = new Label("Confirmation"); title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ef4444;");
+        Label desc = new Label("Êtes-vous sûr de vouloir supprimer " + element + " ?\nCette action est irréversible.");
+        desc.setStyle("-fx-text-alignment: center; -fx-font-size: 14px; -fx-text-fill: #333;");
+        desc.setWrapText(true);
 
-        // Correction de l'émoji ici aussi pour la muscu (🏋 au lieu de 🏋️)
-        Label lblNom = new Label((isCardio ? "🏃 " : "🏋 ") + nom);
-        lblNom.getStyleClass().add("exercise-name");
+        Button btnConf = new Button("Oui, supprimer");
+        btnConf.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 15; -fx-padding: 10 20; -fx-cursor: hand;");
+        btnConf.setOnAction(e -> { onConfirm.run(); dialog.close(); });
 
-        Label lblStats = new Label(isCardio ?
-                String.format("⏱ %d min   |   🔥 %d kcal", a.getDuree_minutes(), a.getCalories_brulees()) :
-                String.format("🔄 %d séries x %d reps   |   ⚖ %.1f kg", a.getNb_series(), a.getNb_repetitions(), a.getPoids()));
-        lblStats.getStyleClass().add("exercise-stats");
+        Button btnAnnuler = new Button("Annuler");
+        btnAnnuler.setStyle("-fx-background-color: #f1f2f6; -fx-text-fill: #555; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 15; -fx-padding: 10 20; -fx-cursor: hand;");
+        btnAnnuler.setOnAction(e -> dialog.close());
 
-        infoBox.getChildren().addAll(lblNom, lblStats);
+        root.getChildren().addAll(icon, title, desc, new HBox(15, btnAnnuler, btnConf));
+        Scene scene = new Scene(root); scene.setFill(Color.TRANSPARENT); dialog.setScene(scene);
 
-        if (a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
-            Label lblNote = new Label("« " + a.getNotes() + " »");
-            lblNote.getStyleClass().add("exercise-note");
-            infoBox.getChildren().add(lblNote);
-        }
-
-        StackPane btnEdit = creerBoutonIcone(SVG_EDIT, "icon-btn-edit", "icon-svg-edit");
-        btnEdit.setOnMouseClicked(e -> modifierActivite(a, ex));
-
-        StackPane btnDelete = creerBoutonIcone(SVG_DELETE, "icon-btn-delete", "icon-svg-delete");
-        btnDelete.setOnMouseClicked(e -> supprimerActivite(a));
-
-        row.getChildren().addAll(infoBox, btnEdit, btnDelete);
-        return row;
+        FadeTransition ft = new FadeTransition(Duration.millis(200), root);
+        ft.setFromValue(0); ft.setToValue(1); ft.play();
+        dialog.showAndWait();
     }
 
-    private StackPane creerBoutonIcone(String svgContent, String containerClass, String svgClass) {
-        SVGPath path = new SVGPath();
-        path.setContent(svgContent);
-        path.getStyleClass().add(svgClass);
-        path.setScaleX(1.1); path.setScaleY(1.1);
+    private void showVideoPopup(Exercice ex) {
+        Stage dialog = new Stage();
+        dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.TRANSPARENT);
 
-        StackPane container = new StackPane(path);
-        container.getStyleClass().addAll("icon-btn-modern", containerClass);
-        return container;
-    }
+        VBox root = new VBox(15);
+        root.setStyle("-fx-background-color: rgba(20, 20, 20, 0.95); -fx-padding: 20; -fx-background-radius: 15; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 0);");
+        root.setAlignment(Pos.CENTER);
 
-    private void afficherMessageVide() {
-        VBox emptyBox = new VBox(20);
-        emptyBox.setAlignment(Pos.CENTER);
-        emptyBox.setPadding(new Insets(50));
-        emptyBox.setPrefWidth(900);
-        Label title = new Label("Système en attente de données 🌌");
-        title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #9c27b0;");
-        Label subtitle = new Label("Initiez votre première séance d'entraînement pour activer le tableau de bord.");
-        subtitle.setStyle("-fx-font-size: 16px; -fx-text-fill: #ab47bc;");
-        emptyBox.getChildren().addAll(title, subtitle);
-        flowPaneHistorique.getChildren().add(emptyBox);
-    }
+        Label title = new Label("Vidéo : " + ex.getNom_exercice());
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 22px; -fx-text-fill: white;");
 
-    // ========================================================================
-    // 🌟 NOUVEAUX CADRES (MODALS) : DESIGN "IA" SANS BORDURES WINDOWS
-    // ========================================================================
+        MediaView mediaView = new MediaView();
+        MediaPlayer mediaPlayer = null;
 
-    private void modifierActivite(Activite a, Exercice ex) {
-        if(ex == null) return;
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initStyle(StageStyle.UNDECORATED);
-
-        DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialogPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #2a0845, #6441A5); " +
-                "-fx-background-radius: 20; -fx-border-radius: 20; " +
-                "-fx-border-color: #d500f9; -fx-border-width: 2; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(213, 0, 249, 0.5), 30, 0, 0, 10);");
-
-        VBox content = new VBox(20);
-        content.setPadding(new Insets(30));
-        content.setAlignment(Pos.CENTER_LEFT);
-
-        Label titleLabel = new Label("✨ Configuration : " + ex.getNom_exercice());
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, rgba(213, 0, 249, 0.8), 5, 0, 0, 0);");
-
-        String labelStyle = "-fx-text-fill: #e1bee7; -fx-font-weight: bold; -fx-font-size: 14px;";
-        String inputStyle = "-fx-background-color: rgba(255, 255, 255, 0.95); -fx-text-fill: #3a0a52; -fx-font-weight: bold; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #aa00ff; -fx-padding: 8;";
-
-        TextField txtNotes = new TextField(a.getNotes() != null ? a.getNotes() : "");
-        txtNotes.setPromptText("Vos sensations...");
-        txtNotes.setStyle(inputStyle + " -fx-pref-width: 350px;");
-
-        boolean isCardio = "CARDIO".equalsIgnoreCase(ex.getType_exercice());
-
-        Spinner<Integer> spinDuree = new Spinner<>(1, 300, a.getDuree_minutes() > 0 ? a.getDuree_minutes() : 30);
-        Spinner<Integer> spinCalories = new Spinner<>(0, 2000, a.getCalories_brulees());
-        Spinner<Integer> spinSeries = new Spinner<>(1, 20, a.getNb_series() > 0 ? a.getNb_series() : 3);
-        Spinner<Integer> spinReps = new Spinner<>(1, 100, a.getNb_repetitions() > 0 ? a.getNb_repetitions() : 10);
-        Spinner<Double> spinPoids = new Spinner<>(0.0, 500.0, a.getPoids(), 1.0);
-
-        spinDuree.setStyle(inputStyle); spinCalories.setStyle(inputStyle);
-        spinSeries.setStyle(inputStyle); spinReps.setStyle(inputStyle); spinPoids.setStyle(inputStyle);
-
-        if (isCardio) {
-            Label l1 = new Label("Durée de l'effort (min) :"); l1.setStyle(labelStyle);
-            Label l2 = new Label("Calories brûlées :"); l2.setStyle(labelStyle);
-            Label l3 = new Label("Notes personnelles :"); l3.setStyle(labelStyle);
-            content.getChildren().addAll(titleLabel, l1, spinDuree, l2, spinCalories, l3, txtNotes);
-        } else {
-            Label l1 = new Label("Nombre de Séries :"); l1.setStyle(labelStyle);
-            Label l2 = new Label("Répétitions par série :"); l2.setStyle(labelStyle);
-            Label l3 = new Label("Poids utilisé (kg) :"); l3.setStyle(labelStyle);
-            Label l4 = new Label("Notes personnelles :"); l4.setStyle(labelStyle);
-            content.getChildren().addAll(titleLabel, l1, spinSeries, l2, spinReps, l3, spinPoids, l4, txtNotes);
-        }
-
-        dialogPane.setContent(content);
-
-        Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
-        okButton.setText("Enregistrer les modifications");
-        okButton.setStyle("-fx-background-color: linear-gradient(to right, #aa00ff, #d500f9); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 30; -fx-padding: 10 20; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(213, 0, 249, 0.6), 15, 0, 0, 0);");
-
-        Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
-        cancelButton.setText("Annuler");
-        cancelButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #e1bee7; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-color: rgba(255, 255, 255, 0.3); -fx-border-radius: 30; -fx-padding: 10 20; -fx-cursor: hand;");
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (isCardio) {
-                a.setDuree_minutes(spinDuree.getValue());
-                a.setCalories_brulees(spinCalories.getValue());
-            } else {
-                a.setNb_series(spinSeries.getValue());
-                a.setNb_repetitions(spinReps.getValue());
-                a.setPoids(spinPoids.getValue().floatValue());
+        try {
+            String path = ex.getVideo_exercice();
+            if (path == null || path.trim().isEmpty()) throw new Exception("Aucune vidéo.");
+            Media media;
+            if (path.startsWith("http")) media = new Media(path);
+            else {
+                if (!path.toLowerCase().endsWith(".mp4")) path += ".mp4";
+                java.net.URL videoUrl = getClass().getResource("/videos/" + path);
+                if (videoUrl == null) throw new Exception("Introuvable.");
+                media = new Media(videoUrl.toExternalForm());
             }
-            a.setNotes(txtNotes.getText());
-            serviceActivite.modifier(a);
-            chargerHistoriqueInnovant();
+            mediaPlayer = new MediaPlayer(media);
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaView.setFitWidth(800); mediaView.setFitHeight(500); mediaView.setPreserveRatio(true);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            title.setText("Vidéo Introuvable ⚠️"); title.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 22px; -fx-font-weight: bold;");
         }
+
+        HBox controls = new HBox(20); controls.setAlignment(Pos.CENTER);
+        MediaPlayer finalMediaPlayer = mediaPlayer;
+
+        Button btnPlayPause = new Button("⏸ Pause");
+        btnPlayPause.setStyle("-fx-background-color: " + activeColor + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;");
+        Button btnReplay = new Button("🔄 Rejouer");
+        btnReplay.setStyle("-fx-background-color: #0288d1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;");
+
+        if (finalMediaPlayer != null) {
+            btnPlayPause.setOnAction(e -> {
+                if (finalMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) { finalMediaPlayer.pause(); btnPlayPause.setText("▶ Reprendre"); }
+                else { finalMediaPlayer.play(); btnPlayPause.setText("⏸ Pause"); }
+            });
+            btnReplay.setOnAction(e -> { finalMediaPlayer.seek(Duration.ZERO); finalMediaPlayer.play(); btnPlayPause.setText("⏸ Pause"); });
+        }
+
+        Button btnClose = new Button("❌ Fermer");
+        btnClose.setStyle("-fx-background-color: #e53935; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;");
+        btnClose.setOnAction(e -> { if (finalMediaPlayer != null) finalMediaPlayer.stop(); dialog.close(); });
+
+        controls.getChildren().addAll(btnPlayPause, btnReplay, btnClose);
+        root.getChildren().addAll(title, mediaView, controls);
+
+        Scene scene = new Scene(root); scene.setFill(Color.TRANSPARENT); dialog.setScene(scene);
+        dialog.showAndWait();
     }
 
-    private void supprimerActivite(Activite a) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initStyle(StageStyle.UNDECORATED);
-
-        DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
-        dialogPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #300018, #61042d); -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #ff1744; -fx-border-width: 2; -fx-effect: dropshadow(three-pass-box, rgba(255, 23, 68, 0.5), 30, 0, 0, 10);");
-
-        VBox content = new VBox(20);
-        content.setPadding(new Insets(30));
-        content.setAlignment(Pos.CENTER);
-
-        Label iconLabel = new Label("⚠️");
-        iconLabel.setStyle("-fx-font-size: 50px;");
-
-        Label titleLabel = new Label("Suppression Irréversible");
-        titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;");
-
-        Label descLabel = new Label("Cette donnée sera extraite définitivement de votre base de données athlétique.");
-        descLabel.setWrapText(true);
-        descLabel.setStyle("-fx-text-fill: #ffb3c6; -fx-font-size: 15px; -fx-text-alignment: center;");
-        descLabel.setPrefWidth(300);
-
-        content.getChildren().addAll(iconLabel, titleLabel, descLabel);
-        dialogPane.setContent(content);
-
-        Button yesButton = (Button) dialogPane.lookupButton(ButtonType.YES);
-        yesButton.setText("Confirmer la destruction");
-        yesButton.setStyle("-fx-background-color: linear-gradient(to right, #d50000, #ff1744); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 30; -fx-padding: 10 20; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(255, 23, 68, 0.6), 15, 0, 0, 0);");
-
-        Button noButton = (Button) dialogPane.lookupButton(ButtonType.NO);
-        noButton.setText("Annuler");
-        noButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffb3c6; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-color: rgba(255, 255, 255, 0.3); -fx-border-radius: 30; -fx-padding: 10 20; -fx-cursor: hand;");
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            serviceActivite.supprimer(a.getId_activite());
-            chargerHistoriqueInnovant();
-        }
-    }
-
-    private void supprimerTouteLaSeance(LocalDate date, List<Activite> exosDuJour) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initStyle(StageStyle.UNDECORATED);
-
-        DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
-        dialogPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #300018, #61042d); -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #ff1744; -fx-border-width: 2; -fx-effect: dropshadow(three-pass-box, rgba(255, 23, 68, 0.5), 30, 0, 0, 10);");
-
-        VBox content = new VBox(20);
-        content.setPadding(new Insets(30));
-        content.setAlignment(Pos.CENTER);
-
-        Label iconLabel = new Label("🔥");
-        iconLabel.setStyle("-fx-font-size: 50px;");
-
-        Label titleLabel = new Label("Purger toute la séance ?");
-        titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;");
-
-        Label descLabel = new Label("Vous allez effacer la séance complète du " + date.format(DateTimeFormatter.ofPattern("dd MMMM")) + " (" + exosDuJour.size() + " exercices).");
-        descLabel.setWrapText(true);
-        descLabel.setStyle("-fx-text-fill: #ffb3c6; -fx-font-size: 15px; -fx-text-alignment: center;");
-        descLabel.setPrefWidth(300);
-
-        content.getChildren().addAll(iconLabel, titleLabel, descLabel);
-        dialogPane.setContent(content);
-
-        Button yesButton = (Button) dialogPane.lookupButton(ButtonType.YES);
-        yesButton.setText("Oui, tout purger");
-        yesButton.setStyle("-fx-background-color: linear-gradient(to right, #d50000, #ff1744); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 30; -fx-padding: 10 20; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(255, 23, 68, 0.6), 15, 0, 0, 0);");
-
-        Button noButton = (Button) dialogPane.lookupButton(ButtonType.NO);
-        noButton.setText("Annuler");
-        noButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffb3c6; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-color: rgba(255, 255, 255, 0.3); -fx-border-radius: 30; -fx-padding: 10 20; -fx-cursor: hand;");
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            for(Activite a : exosDuJour) {
-                serviceActivite.supprimer(a.getId_activite());
+    private void preparerEtAfficherQR(LocalDate date, List<Activite> activites) {
+        StringBuilder sb = new StringBuilder("🏋️ Séance du : " + date.toString() + "\n\n");
+        for (Activite act : activites) {
+            Exercice ex = cacheExercices.get(act.getId_exercice());
+            if (ex != null) {
+                sb.append("✅ ").append(ex.getNom_exercice()).append("\n");
+                if (act.getDuree_minutes() > 0) {
+                    sb.append("   ⏱ ").append(act.getDuree_minutes()).append(" min | 🔥 ").append(act.getCalories_brulees()).append(" kcal\n");
+                } else {
+                    sb.append("   🔢 ").append(act.getNb_series()).append("x").append(act.getNb_repetitions()).append(" | ⚖️ ").append(act.getPoids()).append(" kg\n");
+                }
             }
-            chargerHistoriqueInnovant();
+        }
+
+        try {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            com.google.zxing.common.BitMatrix bitMatrix = qrCodeWriter.encode(sb.toString(), BarcodeFormat.QR_CODE, 300, 300);
+            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+            Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+
+            Stage dialog = new Stage();
+            dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initStyle(StageStyle.TRANSPARENT);
+
+            VBox vbox = new VBox(20);
+            vbox.setAlignment(Pos.CENTER);
+            vbox.setStyle("-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 20; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 0);");
+
+            Label title = new Label("📱 QR Code de la Séance");
+            title.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: " + activeColor + ";");
+
+            ImageView imageView = new ImageView(image);
+
+            Button btnClose = new Button("Fermer");
+            btnClose.setStyle("-fx-background-color: #f1f2f6; -fx-text-fill: #333; -fx-font-weight: bold; -fx-background-radius: 15; -fx-padding: 10 30; -fx-cursor: hand;");
+            btnClose.setOnAction(e -> dialog.close());
+
+            vbox.getChildren().addAll(title, imageView, new Label("Scannez ce code avec votre téléphone !"), btnClose);
+            Scene scene = new Scene(vbox); scene.setFill(Color.TRANSPARENT);
+            dialog.setScene(scene);
+
+            FadeTransition ft = new FadeTransition(Duration.millis(300), vbox);
+            ft.setFromValue(0); ft.setToValue(1); ft.play();
+            dialog.showAndWait();
+        } catch (Exception e) {
+            System.err.println("Erreur de génération QR Code: " + e.getMessage());
         }
     }
 
-    // --- NAVIGATION ---
-    @FXML void ajouterCardio(MouseEvent event) { FrontLayoutController.instance.loadPage("/AjouterExerciceCardio.fxml"); }
-    @FXML void ajouterMusculation(MouseEvent event) { FrontLayoutController.instance.loadPage("/AjouterExerciceMuscu.fxml"); }
-    @FXML void goToAccueil(ActionEvent event) { FrontLayoutController.instance.loadPage("/AccueilActivite.fxml"); }
-    @FXML void goToAliments(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalAlimentaire.fxml"); }
-    @FXML void goToExercices(ActionEvent event) { /* Déjà dessus */ }
-    @FXML void goToSommeil(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalSommeil.fxml"); }
+    @FXML void goToAccueil(ActionEvent event) { controllers.FrontLayoutController.instance.loadPage("/AccueilActivite.fxml"); }
+    @FXML void goToAliments(ActionEvent event) { controllers.FrontLayoutController.instance.loadPage("/JournalAlimentaire.fxml"); }
+    @FXML void goToSommeil(ActionEvent event) { controllers.FrontLayoutController.instance.loadPage("/JournalSommeil.fxml"); }
+
+    @FXML void ouvrirCoach(ActionEvent event) { coachOverlayPane.setVisible(true); }
+    @FXML void fermerCoach(ActionEvent event) { coachOverlayPane.setVisible(false); }
+
+    @FXML void envoyerMessageCoach(ActionEvent event) {
+        String q = chatInput.getText().trim();
+        if (q.isEmpty()) return;
+        chatArea.appendText("👤 Vous: " + q + "\n");
+        chatInput.clear();
+        new Thread(() -> appelerApiGemini(q)).start();
+    }
+
+    private void appelerApiGemini(String question) {
+        String API_KEY = "AIzaSyBtBKGk6TkcQKB5qvXV6pOg0S7GqZXkLes";
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+        String context = isModeFemme ? "Tu es une coach experte en fitness féminin." : "Tu es un coach expert en musculation masculine.";
+        String jsonBody = "{\"contents\": [{\"parts\":[{\"text\": \"" + context + " Réponds brièvement en français à la question suivante : " + question + "\"}]}]}";
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8)).build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String res = extraireTexteDeLaReponseGemini(response.body());
+            Platform.runLater(() -> chatArea.appendText("🤖 Coach: " + res + "\n\n"));
+        } catch (Exception e) {
+            Platform.runLater(() -> chatArea.appendText("⚠️ Erreur Coach IA.\n"));
+        }
+    }
+
+    private String extraireTexteDeLaReponseGemini(String json) {
+        try {
+            int start = json.indexOf("\"text\": \"") + 9;
+            int end = json.indexOf("\"", start);
+            return json.substring(start, end).replace("\\n", "\n").replace("\\\"", "\"");
+        } catch (Exception e) { return "Erreur d'analyse."; }
+    }
 }
