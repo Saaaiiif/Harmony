@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="✔Petit popup ✔ En haut à droite ✔ Moderne ✔ Propre">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="✔ Traduction parallèle ✔ Cache mémoire ✔ Ultra rapide ✔ Session only">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +162,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="45359000" />
+      <workItem from="1771668340810" duration="46780000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -532,7 +532,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771924934195</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="✔ Traduction parallèle ✔ Cache mémoire ✔ Ultra rapide ✔ Session only">
+      <option name="closed" value="true" />
+      <created>1771926303278</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1771926303278</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,7 +558,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="faire une vraie modification avec formulaire, pas juste ajouter &quot;(modifié)&quot;" />
     <MESSAGE value="Je vais créer une version plus professionnelle et propre avec des fichiers .fxml et  des controller pour chaque modification !" />
     <MESSAGE value="Modifier categorie (nom + description) fonctionne !!" />
     <MESSAGE value="Modifier post (titre + contenu) fonctionne !!" />
@@ -575,7 +582,8 @@
     <MESSAGE value="WIP: Popup plus moderne (pas Alert moche)" />
     <MESSAGE value="WIP: Traduire lente on change la méthode : Traduire en parallèle , Utiliser ExecutorService et  Ajouter cache mémoire." />
     <MESSAGE value="✔Petit popup ✔ En haut à droite ✔ Moderne ✔ Propre" />
-    <option name="LAST_COMMIT_MESSAGE" value="✔Petit popup ✔ En haut à droite ✔ Moderne ✔ Propre" />
+    <MESSAGE value="✔ Traduction parallèle ✔ Cache mémoire ✔ Ultra rapide ✔ Session only" />
+    <option name="LAST_COMMIT_MESSAGE" value="✔ Traduction parallèle ✔ Cache mémoire ✔ Ultra rapide ✔ Session only" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
