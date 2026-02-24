@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="WIP : API translate , j'ai testé sur un chmps ajouter post , et cela fonctionne bien !!">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="API translate sur le contenu de toute la page !!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +162,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="40939000" />
+      <workItem from="1771668340810" duration="41581000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -500,7 +500,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771914626133</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="API translate sur le contenu de toute la page !!">
+      <option name="closed" value="true" />
+      <created>1771922089767</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1771922089767</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -518,7 +526,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Supprimer : CategoriesTableController , PostsTableController  et CommentairesTableController . créer : CategoriesCardController , PostsCardController et  CommentairesCardController" />
     <MESSAGE value="Modification : Ne plus afficher les ID , dans la table post, afficher : nom catégorie, titre post, nom étudiant . (les modifications sont dans Post.java , ServicePost.java et PostsCardController.java )" />
     <MESSAGE value="Modification : Ne plus afficher les ID , dans la table commentaire , afficher : ntitre post, nom étudiant . (les modifications sont dans Commentaire.java , ServiceCommentaire.java et CommentaireCardController.java )" />
     <MESSAGE value="Il n'y a plus d'affichage d'ID dans mes 3 tables du back !" />
@@ -543,7 +550,8 @@
     <MESSAGE value="changement de l' UI. suppression de la StackPane bas et ajout de sidebar pour naviguer Front / Back" />
     <MESSAGE value="Animation  sidebar !!" />
     <MESSAGE value="WIP : API translate , j'ai testé sur un chmps ajouter post , et cela fonctionne bien !!" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP : API translate , j'ai testé sur un chmps ajouter post , et cela fonctionne bien !!" />
+    <MESSAGE value="API translate sur le contenu de toute la page !!" />
+    <option name="LAST_COMMIT_MESSAGE" value="API translate sur le contenu de toute la page !!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
