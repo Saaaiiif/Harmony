@@ -1,62 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.effect.DropShadow?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: linear-gradient(to bottom right, #fdfbfz, #f4eafa);" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.JournalExercicesController">
+<AnchorPane fx:id="mainContainer" prefHeight="720.0" prefWidth="1080.0" styleClass="main-root-light" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.JournalExercicesController">
     <children>
-        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1080.0" style="-fx-background-color: #4a148c;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <padding><Insets left="20.0" right="20.0" /></padding>
+        <Region fx:id="bgTint" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+
+        <HBox fx:id="navbar" alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1080.0" style="-fx-background-color: #6a1b9a;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding><Insets left=\"20.0\" right=\"20.0\" /></padding>
             <children>
                 <Label text="Harmony" textFill="WHITE"><font><Font name="System Bold" size="20.0" /></font></Label>
                 <Region HBox.hgrow="ALWAYS" />
                 <HBox alignment="CENTER" spacing="15.0">
                     <Button onAction="#goToAccueil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Accueil" />
-                    <Button onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Aliments" />
-                    <Button onAction="#goToExercices" style="-fx-background-color: rgba(255,255,255,0.25); -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Exercices" />
+                    <Button onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Nutrition" />
+                    <Button style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 20; -fx-padding: 5 15;" text="Exercices" />
                     <Button onAction="#goToSommeil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Sommeil" />
                 </HBox>
             </children>
         </HBox>
 
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
             <content>
-                <VBox spacing="40.0" alignment="TOP_CENTER" style="-fx-background-color: transparent;">
-                    <padding><Insets bottom="60.0" left="50.0" right="50.0" top="40.0" /></padding>
-                    <children>
+                <VBox alignment="TOP_CENTER" spacing="30.0" style="-fx-padding: 30; -fx-background-color: transparent;">
 
-                        <VBox alignment="CENTER" spacing="8">
-                            <Label text="Tableau de Bord Athlétique" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2c003e;" />
-                            <Label text="L'alliance de la force et de l'harmonie, sculptez votre progression." style="-fx-text-fill: #7b1fa2; -fx-font-size: 16px;" />
-                        </VBox>
+                    <VBox alignment="CENTER" spacing="15.0">
+                        <Label text="Journal Exercices" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #4a148c; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 3);" />
 
-                        <HBox styleClass="add-card-container" maxWidth="1000">
-                            <VBox styleClass="card-innovative, card-cardio" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" onMouseClicked="#ajouterCardio">
-                                <Label text="🏃" styleClass="card-icon" />
-                                <Label text="Nouvelle Séance Cardio" styleClass="card-title" />
-                                <Label text="Améliorez votre endurance et votre souffle." styleClass="card-desc" wrapText="true"/>
-                            </VBox>
-                            <VBox styleClass="card-innovative, card-muscu" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" onMouseClicked="#ajouterMusculation">
-                                <Label text="🏋" styleClass="card-icon" />
-                                <Label text="Nouvelle Séance Musculation" styleClass="card-title" />
-                                <Label text="Développez votre volume et votre puissance." styleClass="card-desc" wrapText="true"/>
-                            </VBox>
+                        <HBox style="-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5); -fx-padding: 5;" alignment="CENTER" maxWidth="350">
+                            <Button fx:id="btnFemme" text="👩 Section Femme" onAction="#setModeFemme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
+                            <Button fx:id="btnHomme" text="👨 Section Homme" onAction="#setModeHomme" style="-fx-background-radius: 25; -fx-padding: 12 30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" />
                         </HBox>
 
-                        <Separator maxWidth="1000" style="-fx-opacity: 0.2; -fx-background-color: #aa00ff;"/>
+                        <HBox alignment="CENTER" spacing="10">
+                            <Label text="📅 Date :" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <DatePicker fx:id="datePickerSeance" style="-fx-font-size: 14px; -fx-background-radius: 10; -fx-border-color: #6a1b9a; -fx-border-radius: 10;" />
+                        </HBox>
+                    </VBox>
 
-                        <VBox alignment="CENTER_LEFT" maxWidth="1000" spacing="15.0">
-                            <Label text="🗓️ Timeline de vos Entraînements" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #3a0a52;" />
-                            <Label text="Vos performances passées, affichées sous forme de modules d'intelligence." style="-fx-text-fill: #8e24aa; -fx-font-size: 15px;" />
+                    <VBox spacing="15" alignment="CENTER">
+                        <Label text="🎯 Objectif de la séance" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                        <ScrollPane vbarPolicy="NEVER" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 10;">
+                            <HBox fx:id="hboxCategories" spacing="25" alignment="CENTER" style="-fx-padding: 10;"/>
+                        </ScrollPane>
+                    </VBox>
 
-                            <FlowPane fx:id="flowPaneHistorique" hgap="35.0" vgap="35.0" alignment="TOP_LEFT" />
-                        </VBox>
+                    <VBox alignment="CENTER_LEFT" style="-fx-padding: 0 20 0 20;">
+                        <FlowPane fx:id="flowPaneExercices" hgap="25" vgap="25" alignment="CENTER" />
+                    </VBox>
 
-                    </children>
+                    <Separator style="-fx-padding: 20 0;" />
+
+                    <VBox spacing="20" alignment="CENTER">
+                        <Label text="🏆 Mon Historique &amp; Mes Séances" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #4a148c;" />
+                        <FlowPane fx:id="flowPaneHistorique" hgap="30.0" vgap="30.0" alignment="CENTER" />
+                    </VBox>
+
                 </VBox>
             </content>
         </ScrollPane>
+
+        <Button onAction="#ouvrirCoach" style="-fx-background-color: linear-gradient(to bottom right, #6a1b9a, #d500f9); -fx-text-fill: white; -fx-background-radius: 50; -fx-min-width: 65; -fx-min-height: 65; -fx-effect: dropshadow(three-pass-box, rgba(106, 27, 154, 0.5), 20, 0, 0, 8); -fx-cursor: hand;" text="🤖" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="30.0"><font><Font size="26.0" /></font></Button>
+        <StackPane fx:id="coachOverlayPane" visible="false" style="-fx-background-color: rgba(0,0,0,0.7); -fx-backdrop-filter: blur(5px);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox alignment="CENTER" maxWidth="500" maxHeight="600" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 0);">
+                <HBox alignment="CENTER_RIGHT"><Button onAction="#fermerCoach" style="-fx-background-color: #ff4d4f; -fx-text-fill: white; -fx-background-radius: 50; -fx-cursor: hand; -fx-font-weight: bold;" text="X" /></HBox>
+                <Label text="🤖 Coach Harmony" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;" />
+                <TextArea fx:id="chatArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 10;" />
+                <HBox spacing="10" alignment="CENTER" style="-fx-padding: 15 0 0 0;">
+                    <TextField fx:id="chatInput" promptText="Posez votre question..." HBox.hgrow="ALWAYS" style="-fx-font-size: 14px; -fx-background-radius: 15; -fx-padding: 10;" />
+                    <Button text="Envoyer 🚀" onAction="#envoyerMessageCoach" style="-fx-background-color: #6a1b9a; -fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 10 20; -fx-font-weight: bold;" />
+                </HBox>
+            </VBox>
+        </StackPane>
     </children>
 </AnchorPane>

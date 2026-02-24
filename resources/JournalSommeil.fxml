@@ -32,7 +32,7 @@
 
                 <HBox alignment="CENTER" spacing="15.0">
                     <Button onAction="#goToAccueil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Accueil" />
-                    <Button onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Aliment" />
+                    <Button onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Aliments" />
                     <Button onAction="#goToExercices" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Exercices" />
                     <Button onAction="#goToSommeil" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Sommeil" />
                 </HBox>
