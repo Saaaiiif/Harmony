@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="AI image generator UI plus moderne !">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="L'API HuggingFace : bloque les appels gratuits!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,15 +163,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="56473000" />
-    </task>
-    <task id="LOCAL-00005" summary="UI update 1.2 (Sidebar animation)">
-      <option name="closed" value="true" />
-      <created>1770628090692</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1770628090692</updated>
+      <workItem from="1771668340810" duration="57533000" />
     </task>
     <task id="LOCAL-00006" summary="crud + test catégorie , post et comment fonctionnelles">
       <option name="closed" value="true" />
@@ -556,7 +549,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771969964438</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="L'API HuggingFace : bloque les appels gratuits!!">
+      <option name="closed" value="true" />
+      <created>1771971073354</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1771971073354</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -574,7 +575,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Je commence a traviller sur le métier avancé Systéme de Like" />
     <MESSAGE value="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel" />
     <MESSAGE value="Je commence a traviller sur le métier avancé Upload Image !" />
     <MESSAGE value="le métier avancé Upload Image fonctionel !" />
@@ -599,7 +599,8 @@
     <MESSAGE value=" API correcteur d’orthographe en temps réel" />
     <MESSAGE value="WIP : AI image generator" />
     <MESSAGE value="AI image generator UI plus moderne !" />
-    <option name="LAST_COMMIT_MESSAGE" value="AI image generator UI plus moderne !" />
+    <MESSAGE value="L'API HuggingFace : bloque les appels gratuits!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="L'API HuggingFace : bloque les appels gratuits!!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
