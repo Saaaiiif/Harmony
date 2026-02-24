@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment=" API correcteur d’orthographe en temps réel: fonctionel sur ajout post" />
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -160,15 +162,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="48383000" />
-    </task>
-    <task id="LOCAL-00001" summary="Background">
-      <option name="closed" value="true" />
-      <created>1770491931172</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1770491931173</updated>
+      <workItem from="1771668340810" duration="50839000" />
     </task>
     <task id="LOCAL-00002" summary="UI update 1.0">
       <option name="closed" value="true" />
@@ -554,7 +548,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771929569756</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!">
+      <option name="closed" value="true" />
+      <created>1771929772599</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1771929772603</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -572,7 +574,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Modifier post (titre + contenu) fonctionne !!" />
     <MESSAGE value="Modifier commentaire (contenu) fonctionne !!" />
     <MESSAGE value="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire." />
     <MESSAGE value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
@@ -597,7 +598,8 @@
     <MESSAGE value="✔ Traduction parallèle ✔ Cache mémoire ✔ Ultra rapide ✔ Session only" />
     <MESSAGE value="WIP: API correcteur d’orthographe en temps réel (test dans ajout categorie )" />
     <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur ajout post" />
-    <option name="LAST_COMMIT_MESSAGE" value=" API correcteur d’orthographe en temps réel: fonctionel sur ajout post" />
+    <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!" />
+    <option name="LAST_COMMIT_MESSAGE" value=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
