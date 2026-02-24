@@ -12,7 +12,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MainPage extends Application {
+public class  MainPage extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {

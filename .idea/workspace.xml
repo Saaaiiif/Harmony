@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment=" API correcteur d’orthographe en temps réel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,9 +18,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="FxmlFile" />
         <option value="CSS File" />
         <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
@@ -101,11 +104,11 @@
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mayss\Desktop\Nouveau dossier\src\main\resources\Forum" />
       <recent name="C:\Users\mayss\Desktop\Nouveau dossier\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\mayss\Desktop\Nouveau dossier\src\main\resources\Forum\BackOffice" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -162,15 +165,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="50839000" />
-    </task>
-    <task id="LOCAL-00002" summary="UI update 1.0">
-      <option name="closed" value="true" />
-      <created>1770493324947</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1770493324947</updated>
+      <workItem from="1771668340810" duration="55087000" />
     </task>
     <task id="LOCAL-00003" summary="UI update 1.1 (Sidebar animation)">
       <option name="closed" value="true" />
@@ -556,7 +551,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771929772603</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary=" API correcteur d’orthographe en temps réel">
+      <option name="closed" value="true" />
+      <created>1771952614172</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1771952614172</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -574,7 +577,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Modifier commentaire (contenu) fonctionne !!" />
     <MESSAGE value="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire." />
     <MESSAGE value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
     <MESSAGE value="Je commence a traviller sur le métier avancé Systéme de Like" />
@@ -599,7 +601,8 @@
     <MESSAGE value="WIP: API correcteur d’orthographe en temps réel (test dans ajout categorie )" />
     <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur ajout post" />
     <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!" />
-    <option name="LAST_COMMIT_MESSAGE" value=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!" />
+    <MESSAGE value=" API correcteur d’orthographe en temps réel" />
+    <option name="LAST_COMMIT_MESSAGE" value=" API correcteur d’orthographe en temps réel" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

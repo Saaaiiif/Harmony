@@ -52,6 +52,7 @@
             <Button text="Home" onAction="#goHome" styleClass="top-btn"/>
             <Button text="Forum" onAction="#openForumHome" styleClass="top-btn"/>
             <Button text="Back Office" onAction="#openBackOffice" styleClass="top-btn"/>
+            <Button text="AI Image Generator" onAction="#openImageGenerator"/>
 
         </VBox>
     </left>

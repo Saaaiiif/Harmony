@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,6 +30,7 @@ import javafx.util.Duration;
 
 import controllers.Forum.ForumHomeController;
 
+import java.io.IOException;
 import java.util.*;
 
 import javafx.scene.control.Label;
@@ -36,6 +38,23 @@ import javafx.scene.layout.VBox;
 
 
 public class FrontLayoutController {
+
+    @FXML
+    private void openImageGenerator() {
+
+        try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/Forum/ImageGenerator.fxml"));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("AI Image Generator");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 //    @FXML private StackPane wheelZone;
     @FXML private HBox titleBar;
