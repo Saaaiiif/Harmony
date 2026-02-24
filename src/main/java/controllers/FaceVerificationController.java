@@ -18,11 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Controller du popup de vérification biométrique lors de la connexion.
  *
  * Flux automatique :
- *   1. La caméra démarre
- *   2. Toutes les 3 secondes, si un visage est détecté,
+ *   1. setup() est appelé par LoginController AVANT showAndWait()
+ *      → storedFacePath et popupStage sont affectés
+ *      → la caméra démarre à ce moment (plus de risque de null)
+ *   2. Toutes les AUTO_CHECK_DELAY secondes, si un visage est détecté,
  *      on tente une comparaison automatique avec le visage stocké
  *   3. Si identique → isVerified = true, popup se ferme
- *   4. Après MAX_AUTO_ATTEMPTS tentatives échouées → message d'aide
+ *   4. Après MAX_AUTO_ATTEMPTS tentatives échouées → popup se ferme (échec)
  *   5. L'utilisateur peut aussi cliquer "Vérifier maintenant" manuellement
  */
 public class FaceVerificationController {
@@ -40,24 +42,38 @@ public class FaceVerificationController {
     private final FaceRecognitionService faceService = new FaceRecognitionService();
 
     // ── Configuration ────────────────────────────────────────────────────────
-    private static final int    MAX_AUTO_ATTEMPTS = 5;
-    private static final int    AUTO_CHECK_DELAY  = 3; // secondes entre tentatives auto
+    private static final int MAX_AUTO_ATTEMPTS = 5;
+    private static final int AUTO_CHECK_DELAY  = 3; // secondes entre tentatives auto
 
     // ── État ──────────────────────────────────────────────────────────────────
-    private String                     storedFacePath;      // chemin du visage en BDD
-    private Stage                      popupStage;          // stage de ce popup
-    private boolean                    verified      = false;
-    private boolean                    faceAvailable = false; // visage actuellement détecté
-    private final AtomicInteger        autoAttempts  = new AtomicInteger(0);
-    private ScheduledExecutorService   autoCheckExecutor;
+    private String                   storedFacePath;      // chemin du visage en BDD
+    private Stage                    popupStage;          // stage de ce popup
+    private boolean                  verified      = false;
+    private boolean                  faceAvailable = false; // visage actuellement détecté
+    private final AtomicInteger      autoAttempts  = new AtomicInteger(0);
+    private ScheduledExecutorService autoCheckExecutor;
 
     // =========================================================================
-    //  INITIALISATION (appelé par LoginController avant showAndWait)
+    //  INITIALISATION
     // =========================================================================
+
+    @FXML
+    public void initialize() {
+        // On initialise seulement les valeurs UI de base.
+        // La caméra sera démarrée dans setup() APRÈS que storedFacePath
+        // et popupStage aient été affectés par LoginController.
+        progressBar.setProgress(0);
+        overlayResult.setVisible(false);
+        statusLabel.setText("🔍  Initialisation...");
+        statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #8B5CF6;");
+    }
 
     /**
      * Configure le popup avec le chemin du visage stocké et le Stage parent.
      * Doit être appelé AVANT showAndWait().
+     *
+     * ✅ CORRECTION : c'est ici (et non dans initialize()) que la caméra démarre,
+     * garantissant que storedFacePath et popupStage sont non-null au démarrage.
      */
     public void setup(String storedFacePath, Stage stage) {
         this.storedFacePath = storedFacePath;
@@ -68,11 +84,8 @@ public class FaceVerificationController {
             verified = false;
             stopAllResources();
         });
-    }
 
-    @FXML
-    public void initialize() {
-        progressBar.setProgress(0);
+        // ✅ Démarrage caméra ici, après affectation des champs critiques
         Platform.runLater(this::startCameraAndAutoCheck);
     }
 
@@ -114,9 +127,12 @@ public class FaceVerificationController {
             }, AUTO_CHECK_DELAY, AUTO_CHECK_DELAY, TimeUnit.SECONDS);
 
         } catch (Exception e) {
-            statusLabel.setText("❌  Impossible d'accéder à la caméra.");
-            statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #EF4444;");
-            btnVerifier.setDisable(true);
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                statusLabel.setText("❌  Impossible d'accéder à la caméra.");
+                statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #EF4444;");
+                btnVerifier.setDisable(true);
+            });
         }
     }
 
@@ -143,7 +159,7 @@ public class FaceVerificationController {
     void handleAnnuler() {
         verified = false;
         stopAllResources();
-        popupStage.close();
+        if (popupStage != null) popupStage.close();
     }
 
     // =========================================================================
@@ -181,7 +197,7 @@ public class FaceVerificationController {
                         new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
                 pause.setOnFinished(e -> {
                     stopAllResources();
-                    popupStage.close();
+                    if (popupStage != null) popupStage.close();
                 });
                 pause.play();
 
@@ -195,7 +211,7 @@ public class FaceVerificationController {
                         new javafx.animation.PauseTransition(javafx.util.Duration.seconds(2.0));
                 pause.setOnFinished(e -> {
                     stopAllResources();
-                    popupStage.close();
+                    if (popupStage != null) popupStage.close();
                 });
                 pause.play();
             } else {

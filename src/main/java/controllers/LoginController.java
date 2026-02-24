@@ -146,6 +146,10 @@ public class LoginController {
     /**
      * Ouvre le popup de vérification biométrique de manière modale.
      *
+     * ✅ CORRECTION : setup() est appelé AVANT setScene() et showAndWait()
+     * pour garantir que storedFacePath et popupStage sont initialisés
+     * avant que la caméra démarre dans FaceVerificationController.
+     *
      * @param storedFacePath Chemin du visage enregistré à l'inscription
      * @return true si le visage a été reconnu, false sinon
      */
@@ -163,17 +167,24 @@ public class LoginController {
             popupStage.initOwner(emailLogin.getScene().getWindow());
             popupStage.setResizable(false);
 
-            // ✅ Setup AVANT d'afficher la scène
+            // ✅ ORDRE CORRIGÉ :
+            // 1. On affecte la scène au stage
+            popupStage.setScene(new Scene(root));
+
+            // 2. On appelle setup() → affecte storedFacePath + popupStage
+            //    → déclenche Platform.runLater(startCameraAndAutoCheck)
+            //    Le runLater sera exécuté après showAndWait() a affiché la fenêtre,
+            //    donc popupStage et storedFacePath sont garantis non-null.
             ctrl.setup(storedFacePath, popupStage);
 
-            popupStage.setScene(new Scene(root));
-            popupStage.showAndWait(); // Bloque jusqu'à fermeture du popup
+            // 3. Affichage bloquant
+            popupStage.showAndWait();
 
             return ctrl.isVerified();
 
         } catch (Exception e) {
             e.printStackTrace();
-            // En cas d'erreur de chargement du popup, on laisse passer (dégradé)
+            // En cas d'erreur de chargement du popup, on laisse passer (mode dégradé)
             return true;
         }
     }
@@ -320,4 +331,3 @@ public class LoginController {
         shake.play();
     }
 }
-
