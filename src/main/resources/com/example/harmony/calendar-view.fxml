@@ -14,10 +14,9 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.harmony.CalendarViewController"
       styleClass="calendar-view"
-      spacing="16"
-      prefWidth="1100" prefHeight="600">
+      spacing="16">
 
-    <TabPane fx:id="mainTabPane" styleClass="calendar-tab-pane">
+    <TabPane fx:id="mainTabPane" styleClass="calendar-tab-pane" VBox.vgrow="ALWAYS" maxWidth="Infinity" maxHeight="Infinity">
         <!-- Onglet Calendrier (vue mois type Journal) -->
         <Tab text="Calendrier" closable="false">
             <VBox fx:id="calendrierTabContent" spacing="0" VBox.vgrow="ALWAYS">
@@ -31,36 +30,7 @@
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button text="Exporter (JSON)" styleClass="btn-calendar btn-export" onAction="#onExportEvenementsJson"/>
                 </HBox>
-                <VBox fx:id="calendarMonthBox" VBox.vgrow="ALWAYS" styleClass="calendar-month-grid"/>
-            </VBox>
-        </Tab>
-
-        <!-- Onglet Événements -->
-        <Tab text="Événements" closable="false">
-            <VBox spacing="14">
-                <HBox fx:id="eventsHeader" alignment="CENTER_LEFT" styleClass="calendar-header toolbar-header">
-                    <Label text="Événements" styleClass="calendar-title"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <HBox fx:id="eventsActionBar" spacing="6" alignment="CENTER_RIGHT" styleClass="toolbar-actions">
-                        <Button text="+" styleClass="icon-btn btn-add" onAction="#onAjouter"/>
-                        <Button text="✎" styleClass="icon-btn btn-edit" onAction="#onModifier"/>
-                        <Button text="✕" styleClass="icon-btn btn-delete" onAction="#onSupprimer"/>
-                    </HBox>
-                </HBox>
-                <Label text="Pour réserver une salle Esprit : indiquez &quot;Esprit&quot; dans Lieu puis choisissez la salle." styleClass="calendar-hint"/>
-                <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS" styleClass="events-table">
-                    <columns>
-                        <TableColumn fx:id="colId" text="Id" prefWidth="42"/>
-                        <TableColumn fx:id="colTitre" text="Titre" prefWidth="130"/>
-                        <TableColumn fx:id="colDateDebut" text="Début" prefWidth="115"/>
-                        <TableColumn fx:id="colDateFin" text="Fin" prefWidth="115"/>
-                        <TableColumn fx:id="colLieu" text="Lieu" prefWidth="90"/>
-                        <TableColumn fx:id="colSalle" text="Salle" prefWidth="85"/>
-                        <TableColumn fx:id="colStatutDemande" text="Statut" prefWidth="95"/>
-                        <TableColumn fx:id="colType" text="Type" prefWidth="80"/>
-                        <TableColumn fx:id="colActions" text="" prefWidth="110"/>
-                    </columns>
-                </TableView>
+                <VBox fx:id="calendarMonthBox" VBox.vgrow="ALWAYS" styleClass="calendar-month-grid" maxWidth="Infinity"/>
             </VBox>
         </Tab>
 
@@ -78,10 +48,9 @@
                 </HBox>
                 <TableView fx:id="tacheTable" VBox.vgrow="ALWAYS" styleClass="events-table">
                     <columns>
-                        <TableColumn fx:id="colTacheId" text="Id" prefWidth="42"/>
-                        <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="220"/>
-                        <TableColumn fx:id="colTacheDeadline" text="Deadline" prefWidth="110"/>
-                        <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="95"/>
+                        <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="260"/>
+                        <TableColumn fx:id="colTacheDeadline" text="Deadline" prefWidth="130"/>
+                        <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="110"/>
                         <TableColumn fx:id="colTacheActions" text="" prefWidth="110"/>
                     </columns>
                 </TableView>

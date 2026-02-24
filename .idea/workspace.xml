@@ -6,11 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="UI update 1.2 (Sidebar animation)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/AdminBackofficeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/AdminBackofficeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/api/AdminNotificationApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/api/AdminNotificationApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/api/HolidaysApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/api/HolidaysApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/api/WeatherApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/api/WeatherApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/api/WorldTimeApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/api/WorldTimeApiService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/CalendarViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/KanbanViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/KanbanViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/admin-backoffice.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/admin-backoffice.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/EventFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/EventFormController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/calendar-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/calendar-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/event-form.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/event-form.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/kanban-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/kanban-view.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
@@ -151,6 +154,8 @@
       <workItem from="1771176067847" duration="21106000" />
       <workItem from="1771534016573" duration="2954000" />
       <workItem from="1771617506598" duration="7726000" />
+      <workItem from="1771834170261" duration="3791000" />
+      <workItem from="1771876831233" duration="7088000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />

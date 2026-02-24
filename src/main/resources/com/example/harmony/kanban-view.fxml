@@ -18,7 +18,7 @@
 
     <HBox alignment="CENTER_LEFT" spacing="24" styleClass="kanban-api-bar">
         <Label fx:id="labelAdvice" text="Conseil du jour : chargement…" wrapText="true" maxWidth="400" styleClass="kanban-advice-label"/>
-        <Label fx:id="labelWorldTime" text="Heure Paris : --:--" styleClass="kanban-time-label"/>
+        <Label fx:id="labelWorldTime" text="Heure Tunis : --:--" styleClass="kanban-time-label"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Exporter (JSON)" styleClass="btn-kanban-export" onAction="#onExportTachesJson"/>
     </HBox>

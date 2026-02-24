@@ -1203,6 +1203,15 @@
     -fx-border-color: rgba(255, 152, 0, 0.5);
 }
 
+.calendar-day-holiday-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #f59e0b;
+}
+
+.light-mode .calendar-day-holiday-label {
+    -fx-text-fill: #b45309;
+}
+
 .btn-export {
     -fx-font-size: 12px;
 }

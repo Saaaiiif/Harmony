@@ -20,12 +20,13 @@ public class WeatherApiService {
 
     /** Récupère la météo pour une date (Paris par défaut). */
     public CompletableFuture<WeatherInfo> getWeatherForDate(LocalDate date) {
-        String url = BASE + "?latitude=48.8566&longitude=2.3522&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe/Paris&start_date="
+        // Tunis, Tunisie
+        String url = BASE + "?latitude=36.8065&longitude=10.1815&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Africa/Tunis&start_date="
                 + date + "&end_date=" + date;
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(r -> parseWeather(r.body(), date))
-                .exceptionally(ex -> new WeatherInfo(date, null, null, "—", ex.getMessage()));
+                .exceptionally(ex -> new WeatherInfo(date, null, null, "Données météo indisponibles", ex.getMessage()));
     }
 
     private WeatherInfo parseWeather(String json, LocalDate date) {

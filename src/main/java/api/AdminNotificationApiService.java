@@ -8,27 +8,48 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service d'envoi de notification (webhook) pour le module Admin.
- * Peut être branché sur un webhook réel (Discord, Slack, Zapier, etc.).
+ * Service d'envoi de notification Discord (Webhook)
  */
 public class AdminNotificationApiService {
 
-    private static final String WEBHOOK_PLACEHOLDER = "https://webhook.site/unique-id"; // Remplacer par une URL réelle si besoin
-    private final HttpClient client = HttpClient.newBuilder().build();
+    // ⚠️ Remplace par ton NOUVEAU webhook Discord
+    private static final String WEBHOOK_URL =
+            "https://webhook.site/f40e82c6-6254-40c9-917e-f4df6e0cc29b";
 
-    /** Envoie une notification (POST JSON) lorsqu'une demande de salle est traitée. */
-    public CompletableFuture<Boolean> notifyDemandProcessed(String eventTitle, String salleName, boolean accepted) {
-        String body = String.format("{\"event\":\"%s\",\"salle\":\"%s\",\"action\":\"%s\"}",
-                eventTitle != null ? eventTitle.replace("\"", "'") : "",
-                salleName != null ? salleName.replace("\"", "'") : "",
-                accepted ? "accepted" : "rejected");
+    private final HttpClient client = HttpClient.newHttpClient();
+
+    /**
+     * Envoie une notification lorsqu'une demande est acceptée ou refusée
+     */
+    public CompletableFuture<Boolean> notifyDemandProcessed(
+            String eventTitle,
+            String salleName,
+            boolean accepted
+    ) {
+
+        // Message simple compatible Discord
+        String body = String.format(
+                "{ \"content\": \"📢 **Demande de salle %s**\\n📌 Événement: %s\\n🏢 Salle: %s\" }",
+                accepted ? "ACCEPTÉE" : "REFUSÉE",
+                eventTitle,
+                salleName
+        );
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(WEBHOOK_PLACEHOLDER))
+                .uri(URI.create(WEBHOOK_URL))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
                 .build();
+
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(r -> r.statusCode() >= 200 && r.statusCode() < 300)
-                .exceptionally(ex -> false);
+                .thenApply(response -> {
+                    System.out.println("Status Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+                    return response.statusCode() >= 200 && response.statusCode() < 300;
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return false;
+                });
     }
 }

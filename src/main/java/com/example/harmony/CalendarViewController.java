@@ -74,13 +74,16 @@ public class CalendarViewController implements Initializable {
     private final EvenementService evenementService = new EvenementService();
     private final WeatherApiService weatherApiService = new WeatherApiService();
     private final HolidaysApiService holidaysApiService = new HolidaysApiService();
-    private Set<LocalDate> holidaysForYear = new HashSet<>();
+    /** Date -> nom du jour férié en Tunisie. */
+    private Map<LocalDate, String> holidaysForYear = new HashMap<>();
     private int lastHolidaysYear = -1;
     private final TacheService tacheService = new TacheService();
     private final SalleService salleService = new SalleService();
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("dd/MM/yyyy");
     private YearMonth currentMonth = YearMonth.now();
+    /** Date à pré-remplir pour la création d'événement depuis le calendrier. */
+    private LocalDate defaultDateForNewEvent = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -283,6 +286,29 @@ public class CalendarViewController implements Initializable {
         }
     }
 
+    /** Création d'un événement à partir d'une date cliquée dans le calendrier. */
+    private void ajouterEvenementDepuisCalendrier(LocalDate date) {
+        try {
+            defaultDateForNewEvent = date;
+            Dialog<Evenement> dialog = creerDialogEvenement("Nouvel événement", null);
+            // la date par défaut sera appliquée dans creerDialogEvenement via defaultDateForNewEvent
+            if (dialog == null) return;
+            dialog.showAndWait().filter(e -> e != null).ifPresent(e -> {
+                try {
+                    evenementService.add(e);
+                    chargerEvenements();
+                    buildCalendarMonth();
+                    showInfo("Événement créé.");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlertErreur(getDialogOwner(), ex);
+                }
+            });
+        } finally {
+            defaultDateForNewEvent = null;
+        }
+    }
+
     private void supprimerTache(Tache t) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmer la suppression");
@@ -326,8 +352,8 @@ public class CalendarViewController implements Initializable {
     private void loadHolidaysThenBuildCalendar() {
         int year = currentMonth.getYear();
         lastHolidaysYear = year;
-        holidaysApiService.getHolidaysForYear(year).thenAccept(set -> {
-            holidaysForYear = set != null ? set : new HashSet<>();
+        holidaysApiService.getHolidaysForYear(year).thenAccept(map -> {
+            holidaysForYear = map != null ? map : new HashMap<>();
             Platform.runLater(this::buildCalendarMonth);
         });
     }
@@ -395,11 +421,31 @@ public class CalendarViewController implements Initializable {
         String[] jours = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
         GridPane grid = new GridPane();
         grid.getStyleClass().add("calendar-grid");
+        grid.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        // Étaler la grille sur tout l'espace dispo du conteneur
+        try {
+            grid.prefWidthProperty().bind(calendarMonthBox.widthProperty());
+            grid.prefHeightProperty().bind(calendarMonthBox.heightProperty());
+        } catch (Exception ignored) { }
+
         grid.setHgap(4);
         grid.setVgap(4);
+
+        // 7 colonnes qui prennent chacune 1/7 de la largeur
+        grid.getColumnConstraints().clear();
+        for (int i = 0; i < 7; i++) {
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setPercentWidth(100.0 / 7.0);
+            cc.setHgrow(Priority.ALWAYS);
+            cc.setFillWidth(true);
+            grid.getColumnConstraints().add(cc);
+        }
+
         for (int i = 0; i < 7; i++) {
             Label h = new Label(jours[i]);
             h.getStyleClass().add("calendar-weekday");
+            h.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setHgrow(h, Priority.ALWAYS);
             grid.add(h, i, 0);
         }
         LocalDate first = currentMonth.atDay(1);
@@ -410,13 +456,25 @@ public class CalendarViewController implements Initializable {
             LocalDate date = currentMonth.atDay(day);
             VBox cell = new VBox(4);
             cell.getStyleClass().add("calendar-day-cell");
-            if (holidaysForYear.contains(date)) cell.getStyleClass().add("calendar-day-holiday");
-            cell.setMinSize(100, 70);
-            cell.setPrefSize(120, 85);
+            cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            String holidayName = holidaysForYear.get(date);
+            boolean isHoliday = holidayName != null;
+            if (isHoliday) cell.getStyleClass().add("calendar-day-holiday");
+            // Tailles un peu plus compactes pour que le mois complet tienne mieux
+            cell.setMinSize(80, 60);
+            cell.setPrefSize(100, 75);
             Label num = new Label(String.valueOf(day));
             num.getStyleClass().add("calendar-day-num");
             cell.getChildren().add(num);
+
+            // Petit libellé pour indiquer clairement le jour férié
+            if (isHoliday) {
+                Label holidayLabel = new Label(holidayName);
+                holidayLabel.getStyleClass().add("calendar-day-holiday-label");
+                cell.getChildren().add(holidayLabel);
+            }
             List<Evenement> dayEvents = byDay.getOrDefault(date, Collections.emptyList());
+            List<Evenement> dayEventsCopy = new ArrayList<>(dayEvents);
             for (Evenement ev : dayEvents.stream().limit(3).collect(Collectors.toList())) {
                 Label el = new Label(ev.getTitre() != null ? (ev.getTitre().length() > 18 ? ev.getTitre().substring(0, 17) + "…" : ev.getTitre()) : "");
                 el.getStyleClass().add("calendar-day-event");
@@ -443,7 +501,33 @@ public class CalendarViewController implements Initializable {
                 more.getStyleClass().add("calendar-day-more");
                 cell.getChildren().add(more);
             }
+
+            // Clic sur la case du jour : ajout / menu pour modifier-supprimer
+            cell.setOnMouseClicked(me -> {
+                if (dayEventsCopy.isEmpty()) {
+                    // Jour vide : créer directement un nouvel événement pré-rempli avec cette date
+                    ajouterEvenementDepuisCalendrier(date);
+                } else {
+                    ContextMenu menu = new ContextMenu();
+                    MenuItem miAjouter = new MenuItem("Ajouter un événement ce jour");
+                    miAjouter.setOnAction(e -> ajouterEvenementDepuisCalendrier(date));
+                    menu.getItems().add(miAjouter);
+
+                    for (Evenement ev : dayEventsCopy) {
+                        String titre = ev.getTitre() != null ? ev.getTitre() : "(sans titre)";
+                        MenuItem miMod = new MenuItem("Modifier : " + titre);
+                        MenuItem miSup = new MenuItem("Supprimer : " + titre);
+                        miMod.setOnAction(e -> modifierEvenementDepuisCalendrier(ev));
+                        miSup.setOnAction(e -> supprimerEvenement(ev));
+                        menu.getItems().addAll(miMod, miSup);
+                    }
+                    menu.show(cell, me.getScreenX(), me.getScreenY());
+                }
+            });
+
             grid.add(cell, col, row);
+            GridPane.setHgrow(cell, Priority.ALWAYS);
+            GridPane.setVgrow(cell, Priority.ALWAYS);
             col++;
             if (col == 7) { col = 0; row++; }
         }
@@ -530,7 +614,11 @@ public class CalendarViewController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/harmony/event-form.fxml"));
             Parent form = loader.load();
             EventFormController formCtrl = loader.getController();
-            if (initial != null) formCtrl.initFrom(initial);
+            if (initial != null) {
+                formCtrl.initFrom(initial);
+            } else if (defaultDateForNewEvent != null) {
+                formCtrl.initForDate(defaultDateForNewEvent);
+            }
             dialog.getDialogPane().setContent(form);
             URL cssUrl = getClass().getResource("/com/example/harmony/styles.css");
             if (cssUrl != null) dialog.getDialogPane().getStylesheets().add(cssUrl.toExternalForm());

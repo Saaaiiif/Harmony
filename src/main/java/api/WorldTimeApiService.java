@@ -17,8 +17,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class WorldTimeApiService {
 
+    // Fuseau horaire Tunis
     private static final String URL =
-            "https://worldtimeapi.org/api/timezone/Europe/Paris";
+            "https://worldtimeapi.org/api/timezone/Africa/Tunis";
 
     private final HttpClient client = HttpClient.newBuilder().build();
 
@@ -46,11 +47,11 @@ public class WorldTimeApiService {
             Instant instant = Instant.parse(datetime.substring(0, 19) + "Z");
 
             String time = DateTimeFormatter.ofPattern("HH:mm")
-                    .withZone(ZoneId.of("Europe/Paris"))
+                    .withZone(ZoneId.of("Africa/Tunis"))
                     .format(instant);
 
             String dateTime = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-                    .withZone(ZoneId.of("Europe/Paris"))
+                    .withZone(ZoneId.of("Africa/Tunis"))
                     .format(instant);
 
             return new WorldTimeInfo(time, dateTime, null);

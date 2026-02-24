@@ -64,6 +64,10 @@
 
     <Label text="Lieu" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
     <VBox fx:id="lieuContainer" GridPane.columnIndex="1" GridPane.rowIndex="4" spacing="10">
+        <HBox spacing="10">
+            <ComboBox fx:id="fieldMode" promptText="Mode" prefWidth="160" styleClass="form-combo"/>
+            <Label text="Présentiel / En ligne" styleClass="form-sublabel"/>
+        </HBox>
         <TextField fx:id="fieldLieu" promptText="Ex: Esprit, Amphithéâtre, Salle 101..." styleClass="form-field"/>
         <VBox fx:id="salleChoiceBox" visible="false" managed="false" spacing="8" styleClass="salle-choice-box">
             <Label text="Dans quelle salle ?" styleClass="form-sublabel"/>

@@ -27,6 +27,7 @@ public class EventFormController implements Initializable {
     @FXML private Spinner<Integer> fieldHeureFin;
     @FXML private Spinner<Integer> fieldMinuteFin;
     @FXML private TextField fieldLieu;
+    @FXML private ComboBox<String> fieldMode;
     @FXML private VBox salleChoiceBox;
     @FXML private ComboBox<Salle> fieldSalle;
     @FXML private Label salleEmptyLabel;
@@ -46,6 +47,11 @@ public class EventFormController implements Initializable {
             if (!fieldType.getItems().isEmpty()) {
                 fieldType.getSelectionModel().selectFirst();
             }
+        }
+        if (fieldMode != null) {
+            fieldMode.getItems().setAll("Présentiel", "En ligne");
+            fieldMode.getSelectionModel().selectFirst();
+            fieldMode.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> majVisibiliteSalle());
         }
         if (fieldHeureDebut != null) {
             fieldHeureDebut.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
@@ -85,7 +91,10 @@ public class EventFormController implements Initializable {
     private void majVisibiliteSalle() {
         if (fieldLieu == null || salleChoiceBox == null) return;
         String lieu = fieldLieu.getText() != null ? fieldLieu.getText().trim().toLowerCase() : "";
-        boolean show = lieu.contains("esprit");
+        boolean isPresentiel = fieldMode == null || !"en ligne".equalsIgnoreCase(
+                fieldMode.getSelectionModel().getSelectedItem() != null ? fieldMode.getSelectionModel().getSelectedItem() : ""
+        );
+        boolean show = isPresentiel && lieu.contains("esprit");
         salleChoiceBox.setVisible(show);
         salleChoiceBox.setManaged(show);
         if (!show) {
@@ -121,6 +130,14 @@ public class EventFormController implements Initializable {
             if (fieldMinuteFin != null) fieldMinuteFin.getValueFactory().setValue(ldt.getMinute());
         }
         if (fieldLieu != null) fieldLieu.setText(e.getLieu() != null ? e.getLieu() : "");
+        if (fieldMode != null) {
+            // Si une salle est associée, on considère que c'est du présentiel
+            if (e.getSalleId() != null) {
+                fieldMode.getSelectionModel().select("Présentiel");
+            } else {
+                fieldMode.getSelectionModel().select("En ligne");
+            }
+        }
         if (fieldPriorite != null) fieldPriorite.getValueFactory().setValue(Math.max(1, Math.min(10, e.getPriorite())));
         if (fieldRappelActif != null) fieldRappelActif.setSelected(e.isRappelActif());
         if (fieldType != null && e.getType() != null) fieldType.getSelectionModel().select(e.getType().name());
@@ -131,6 +148,13 @@ public class EventFormController implements Initializable {
             }
         }
         majVisibiliteSalle();
+    }
+
+    /** Pré-remplit uniquement les dates de début et fin à partir d'un clic dans le calendrier. */
+    public void initForDate(LocalDate date) {
+        if (date == null) return;
+        if (fieldDateDebut != null) fieldDateDebut.setValue(date);
+        if (fieldDateFin != null) fieldDateFin.setValue(date);
     }
 
     public Evenement buildEvenement(int id) {
@@ -154,7 +178,10 @@ public class EventFormController implements Initializable {
 
         Integer salleId = null;
         StatutDemandeSalle statut = null;
-        if (lieu.toLowerCase().contains("esprit") && fieldSalle != null) {
+        boolean isPresentiel = fieldMode == null || !"en ligne".equalsIgnoreCase(
+                fieldMode.getSelectionModel().getSelectedItem() != null ? fieldMode.getSelectionModel().getSelectedItem() : ""
+        );
+        if (isPresentiel && lieu.toLowerCase().contains("esprit") && fieldSalle != null) {
             Salle s = fieldSalle.getSelectionModel().getSelectedItem();
             if (s != null) {
                 salleId = s.getId();
@@ -193,7 +220,10 @@ public class EventFormController implements Initializable {
             }
         }
         String lieu = fieldLieu != null && fieldLieu.getText() != null ? fieldLieu.getText().trim().toLowerCase() : "";
-        if (lieu.contains("esprit")) {
+        boolean isPresentiel = fieldMode == null || !"en ligne".equalsIgnoreCase(
+                fieldMode.getSelectionModel().getSelectedItem() != null ? fieldMode.getSelectionModel().getSelectedItem() : ""
+        );
+        if (isPresentiel && lieu.contains("esprit")) {
             if (fieldSalle == null || fieldSalle.getItems().isEmpty()) {
                 showError("Aucune salle disponible. L'administrateur doit d'abord ajouter des salles dans le backoffice (onglet Gestion des Salles).");
                 return false;
