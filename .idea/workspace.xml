@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment=" API correcteur d’orthographe en temps réel">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" afterDir="false" />
-    </list>
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="WIP : AI image generator" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -165,15 +160,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="55087000" />
-    </task>
-    <task id="LOCAL-00003" summary="UI update 1.1 (Sidebar animation)">
-      <option name="closed" value="true" />
-      <created>1770494682600</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1770494682600</updated>
+      <workItem from="1771668340810" duration="55455000" />
     </task>
     <task id="LOCAL-00004" summary="UI update 1.2 (Sidebar animation)">
       <option name="closed" value="true" />
@@ -559,7 +546,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771952614172</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="WIP : AI image generator">
+      <option name="closed" value="true" />
+      <created>1771969626628</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1771969626628</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -577,7 +572,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="WIP : suppression et mise à jour en cascade entre catégorie, post et commentaire." />
     <MESSAGE value="suppression et mise à jour en cascade entre catégorie, post et commentaire fonctionel !!" />
     <MESSAGE value="Je commence a traviller sur le métier avancé Systéme de Like" />
     <MESSAGE value="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel" />
@@ -602,7 +596,8 @@
     <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur ajout post" />
     <MESSAGE value=" API correcteur d’orthographe en temps réel: fonctionel sur tout les ajout !!  :  categorie + post + commentaie !!!" />
     <MESSAGE value=" API correcteur d’orthographe en temps réel" />
-    <option name="LAST_COMMIT_MESSAGE" value=" API correcteur d’orthographe en temps réel" />
+    <MESSAGE value="WIP : AI image generator" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP : AI image generator" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
