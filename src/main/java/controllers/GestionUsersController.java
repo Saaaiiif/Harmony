@@ -33,22 +33,29 @@ import java.util.List;
 
 public class GestionUsersController {
 
-    @FXML private FlowPane cardsContainer;
+    @FXML private FlowPane  cardsContainer;
     @FXML private TextField searchField;
-    @FXML private Button btnSortSuspicion;
-    @FXML private Button btnToggleArchived;
-    @FXML private Label lblCurrentView;
+    @FXML private Button    btnSortSuspicion;
+    @FXML private Button    btnToggleArchived;
+    @FXML private Label     lblCurrentView;
+
+    // ✅ NOUVEAU : Controller de la sidebar partagée (injecté via fx:include)
+    @FXML private AdminSidebarController sidebarController;
 
     private final serviceUser service = new serviceUser();
     private ObservableList<user> observableList;
     private boolean sortedBySuspicion = false;
-    private boolean showingArchived = false; // false = actifs, true = archivés
+    private boolean showingArchived   = false;
 
     @FXML
     public void initialize() {
         if (!checkSession()) {
             switchToLogin();
             return;
+        }
+        // ✅ Activer le bouton "Gestion Users" dans la sidebar
+        if (sidebarController != null) {
+            sidebarController.setActiveButton("gestionUsers");
         }
         observableList = FXCollections.observableArrayList(service.getAll());
         displayUserCards();
@@ -100,7 +107,6 @@ public class GestionUsersController {
         card.setAlignment(Pos.TOP_LEFT);
         card.setPadding(new Insets(20));
 
-        // Style différent pour les archivés (grisé)
         String cardBg = showingArchived ? "#F9FAFB" : "white";
         String defaultStyle = "-fx-background-color: " + cardBg + ";" +
                 "-fx-background-radius: 20;" +
@@ -109,7 +115,6 @@ public class GestionUsersController {
                 "-fx-border-width: 3;" +
                 "-fx-border-radius: 20;" +
                 (showingArchived ? "-fx-opacity: 0.8;" : "");
-
         card.setStyle(defaultStyle);
 
         card.setOnMouseEntered(e -> {
@@ -149,20 +154,11 @@ public class GestionUsersController {
                     imageView.setPreserveRatio(false);
                     Circle clip = new Circle(25, 25, 25);
                     imageView.setClip(clip);
-                    // Griser l'image si archivé
-                    if (showingArchived) {
-                        imageView.setStyle("-fx-effect: grayscale(100%);");
-                    }
+                    if (showingArchived) imageView.setStyle("-fx-effect: grayscale(100%);");
                     avatarBox.getChildren().add(imageView);
-                } catch (Exception e) {
-                    addAvatarInitial(avatarBox, u);
-                }
-            } else {
-                addAvatarInitial(avatarBox, u);
-            }
-        } else {
-            addAvatarInitial(avatarBox, u);
-        }
+                } catch (Exception e) { addAvatarInitial(avatarBox, u); }
+            } else { addAvatarInitial(avatarBox, u); }
+        } else { addAvatarInitial(avatarBox, u); }
 
         VBox nameBox = new VBox(2);
         String nameColor = showingArchived ? "#9CA3AF" : "#1F2937";
@@ -177,26 +173,21 @@ public class GestionUsersController {
 
         Label statusBadge = new Label(suspicionLabel);
         String badgeBg = showingArchived ? "#6B7280" : suspicionColor;
-        statusBadge.setStyle("-fx-background-color: " + badgeBg + ";" +
-                "-fx-text-fill: white;" +
-                "-fx-padding: 5 12 5 12;" +
-                "-fx-background-radius: 12;" +
-                "-fx-font-size: 11;" +
-                "-fx-font-weight: bold;");
+        statusBadge.setStyle("-fx-background-color: " + badgeBg + "; -fx-text-fill: white;" +
+                "-fx-padding: 5 12 5 12; -fx-background-radius: 12;" +
+                "-fx-font-size: 11; -fx-font-weight: bold;");
 
         header.getChildren().addAll(avatarBox, nameBox, spacer, statusBadge);
 
         // ---- INFOS ----
         FlowPane infoBox = new FlowPane(8, 8);
         infoBox.setStyle("-fx-padding: 10 0 10 0;");
-
         int age = calculateAge(u.getUser_date_de_naissance());
         String sexeStr = u.getUser_sexe() != null ? u.getUser_sexe().getDisplayName() : "N/A";
         String niveauStr = u.getUser_niveau_scolaire() != null ? u.getUser_niveau_scolaire().getDisplayName() : "N/A";
         String etablissementStr = u.getUser_etablissement_scolaire() != null ? u.getUser_etablissement_scolaire() : "N/A";
         String santeStr = (u.getUser_poids() != null ? u.getUser_poids() + "kg" : "-") + " / " +
                 (u.getUser_taille() != null ? u.getUser_taille() + "cm" : "-");
-
         infoBox.getChildren().addAll(
                 createChip("🎂 " + age + " ans", "#F3E8FF", "#6B21A8"),
                 createChip("🚻 " + sexeStr, "#E0F2FE", "#0369A1"),
@@ -215,7 +206,6 @@ public class GestionUsersController {
         menuButton.setStyle("-fx-background-color: #F3F4F6; -fx-background-radius: 12; -fx-text-fill: #4B5563; -fx-font-size: 16; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 2 12 2 12;");
 
         if (!showingArchived) {
-            // Vue "Actifs" : modifier, archiver, suspicion
             MenuItem editItem = new MenuItem("✏️ Modifier");
             editItem.setStyle("-fx-font-size: 14; -fx-text-fill: #374151;");
             editItem.setOnAction(e -> editUser(u));
@@ -232,7 +222,6 @@ public class GestionUsersController {
 
             menuButton.getItems().addAll(editItem, archiveItem, new SeparatorMenuItem(), suspicionItem);
         } else {
-            // Vue "Archivés" : restaurer, supprimer définitivement
             MenuItem restoreItem = new MenuItem("♻️ Restaurer");
             restoreItem.setStyle("-fx-font-size: 14; -fx-text-fill: #10B981; -fx-font-weight: bold;");
             restoreItem.setOnAction(e -> restoreUser(u));
@@ -266,19 +255,15 @@ public class GestionUsersController {
 
     private Label createChip(String text, String bgColor, String textColor) {
         Label chip = new Label(text);
-        chip.setStyle("-fx-background-color: " + bgColor + "; " +
-                "-fx-text-fill: " + textColor + "; " +
-                "-fx-padding: 6 12 6 12; " +
-                "-fx-background-radius: 15; " +
-                "-fx-font-size: 12; " +
-                "-fx-font-weight: bold;");
+        chip.setStyle("-fx-background-color: " + bgColor + "; -fx-text-fill: " + textColor + ";" +
+                "-fx-padding: 6 12 6 12; -fx-background-radius: 15;" +
+                "-fx-font-size: 12; -fx-font-weight: bold;");
         return chip;
     }
 
     private int calculateAge(String birthDateStr) {
-        try {
-            return Period.between(LocalDate.parse(birthDateStr), LocalDate.now()).getYears();
-        } catch (Exception e) { return 0; }
+        try { return Period.between(LocalDate.parse(birthDateStr), LocalDate.now()).getYears(); }
+        catch (Exception e) { return 0; }
     }
 
     private String hexToRgba(String hex, double opacity) {
@@ -296,7 +281,6 @@ public class GestionUsersController {
     void handleToggleArchived() {
         showingArchived = !showingArchived;
         sortedBySuspicion = false;
-
         if (showingArchived) {
             observableList = FXCollections.observableArrayList(service.getArchived());
             btnToggleArchived.setText("👥 Voir actifs");
@@ -324,25 +308,19 @@ public class GestionUsersController {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Archiver l'utilisateur");
         confirm.setHeaderText("Archiver " + u.getUser_prenom() + " " + u.getUser_nom() + " ?");
-        confirm.setContentText(
-                "Le compte sera désactivé et l'utilisateur ne pourra plus se connecter.\n" +
-                "Vous pourrez le restaurer à tout moment depuis la vue 'Archivés'."
-        );
-
+        confirm.setContentText("Le compte sera désactivé.\nVous pourrez le restaurer depuis la vue 'Archivés'.");
         ButtonType btnArchive = new ButtonType("🗃️ Archiver", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType btnCancel  = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirm.getButtonTypes().setAll(btnArchive, btnCancel);
-
         confirm.showAndWait().ifPresent(result -> {
             if (result == btnArchive) {
                 service.archiveById(u.getUser_id());
                 observableList.remove(u);
                 displayUserCards();
-
                 Alert info = new Alert(Alert.AlertType.INFORMATION);
                 info.setTitle("Archivé");
                 info.setHeaderText(null);
-                info.setContentText("✅ " + u.getUser_prenom() + " " + u.getUser_nom() + " a été archivé avec succès.");
+                info.setContentText("✅ " + u.getUser_prenom() + " " + u.getUser_nom() + " archivé.");
                 info.showAndWait();
             }
         });
@@ -355,22 +333,19 @@ public class GestionUsersController {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Restaurer l'utilisateur");
         confirm.setHeaderText("Restaurer " + u.getUser_prenom() + " " + u.getUser_nom() + " ?");
-        confirm.setContentText("Le compte sera réactivé et l'utilisateur pourra à nouveau se connecter.");
-
+        confirm.setContentText("Le compte sera réactivé.");
         ButtonType btnRestore = new ButtonType("♻️ Restaurer", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType btnCancel  = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirm.getButtonTypes().setAll(btnRestore, btnCancel);
-
         confirm.showAndWait().ifPresent(result -> {
             if (result == btnRestore) {
                 service.restoreById(u.getUser_id());
                 observableList.remove(u);
                 displayUserCards();
-
                 Alert info = new Alert(Alert.AlertType.INFORMATION);
                 info.setTitle("Restauré");
                 info.setHeaderText(null);
-                info.setContentText("✅ " + u.getUser_prenom() + " " + u.getUser_nom() + " a été restauré avec succès.");
+                info.setContentText("✅ " + u.getUser_prenom() + " " + u.getUser_nom() + " restauré.");
                 info.showAndWait();
             }
         });
@@ -383,16 +358,10 @@ public class GestionUsersController {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("⚠️ Suppression définitive");
         confirm.setHeaderText("Supprimer définitivement " + u.getUser_prenom() + " " + u.getUser_nom() + " ?");
-        confirm.setContentText(
-                "⚠️ ATTENTION : Cette action est IRRÉVERSIBLE !\n\n" +
-                "Toutes les données de cet utilisateur seront définitivement supprimées.\n" +
-                "Préférez l'archivage si vous souhaitez pouvoir le restaurer."
-        );
-
-        ButtonType btnDelete = new ButtonType("🗑️ Supprimer définitivement", ButtonBar.ButtonData.OK_DONE);
+        confirm.setContentText("⚠️ ATTENTION : Cette action est IRRÉVERSIBLE !");
+        ButtonType btnDelete = new ButtonType("🗑️ Supprimer", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirm.getButtonTypes().setAll(btnDelete, btnCancel);
-
         confirm.showAndWait().ifPresent(result -> {
             if (result == btnDelete) {
                 service.deleteById(u.getUser_id());
@@ -406,7 +375,7 @@ public class GestionUsersController {
 
     @FXML
     void handleSortBySuspicion() {
-        if (showingArchived) return; // Pas de tri suspicion sur les archivés
+        if (showingArchived) return;
         if (!sortedBySuspicion) {
             observableList.sort((u1, u2) -> {
                 int s1 = FakeAccountDetector.calculateSuspicionScore(u1, observableList);
@@ -414,12 +383,12 @@ public class GestionUsersController {
                 return Integer.compare(s2, s1);
             });
             btnSortSuspicion.setText("🔄 Réinitialiser tri");
-            btnSortSuspicion.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.3), 10, 0, 0, 3);");
+            btnSortSuspicion.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(239,68,68,0.3), 10, 0, 0, 3);");
             sortedBySuspicion = true;
         } else {
             observableList.setAll(service.getAll());
             btnSortSuspicion.setText("⚠️ Trier par suspicion");
-            btnSortSuspicion.setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.3), 10, 0, 0, 3);");
+            btnSortSuspicion.setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245,158,11,0.3), 10, 0, 0, 3);");
             sortedBySuspicion = false;
         }
         displayUserCards();
@@ -431,16 +400,13 @@ public class GestionUsersController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Analyse de suspicion");
         alert.setHeaderText("Compte : " + u.getUser_prenom() + " " + u.getUser_nom());
-
         String levelLabel = FakeAccountDetector.getSuspicionLabel(score);
         StringBuilder content = new StringBuilder();
         content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n");
         content.append("Score de suspicion : ").append(score).append(" / 20 pts\n");
         content.append("Niveau : ").append(levelLabel).append("\n");
-        content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-        content.append("Signaux détectés :\n\n");
+        content.append("━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSignaux détectés :\n\n");
         boolean hasSignals = false;
-
         String nomLower = u.getUser_nom().toLowerCase();
         if (nomLower.contains("test") || nomLower.contains("user") || nomLower.contains("aaa") || nomLower.matches(".*\\d{2,}.*")) {
             content.append("⚠️ Nom suspect : \"").append(u.getUser_nom()).append("\"\n"); hasSignals = true;
@@ -449,9 +415,7 @@ public class GestionUsersController {
         if (prenomLower.contains("test") || prenomLower.contains("user") || prenomLower.contains("aaa") || prenomLower.matches(".*\\d{2,}.*")) {
             content.append("⚠️ Prénom suspect : \"").append(u.getUser_prenom()).append("\"\n"); hasSignals = true;
         }
-        if (u.getUser_email().matches(".*\\d{3,}.*")) {
-            content.append("⚠️ Email contient beaucoup de chiffres\n"); hasSignals = true;
-        }
+        if (u.getUser_email().matches(".*\\d{3,}.*")) { content.append("⚠️ Email contient beaucoup de chiffres\n"); hasSignals = true; }
         String emailLower = u.getUser_email().toLowerCase();
         if (emailLower.contains("temp") || emailLower.contains("test") || emailLower.contains("yopmail") || emailLower.contains("fake")) {
             content.append("⚠️ Email temporaire/suspect détecté\n"); hasSignals = true;
@@ -465,8 +429,7 @@ public class GestionUsersController {
         if (u.getUser_date_de_naissance() != null && u.getUser_niveau_activite_physique() != null) {
             try {
                 int age = Period.between(LocalDate.parse(u.getUser_date_de_naissance()), LocalDate.now()).getYears();
-                String niveauActivite = u.getUser_niveau_activite_physique().name();
-                if ((age < 15 || age > 70) && niveauActivite.equals("TRES_INTENSE")) {
+                if ((age < 15 || age > 70) && u.getUser_niveau_activite_physique().name().equals("TRES_INTENSE")) {
                     content.append("⚠️ Activité physique incohérente avec l'âge\n"); hasSignals = true;
                 }
             } catch (Exception ignored) {}
@@ -477,9 +440,8 @@ public class GestionUsersController {
                 content.append("⚠️ Établissement suspect : \"").append(u.getUser_etablissement_scolaire()).append("\"\n"); hasSignals = true;
             }
         }
-        if (!hasSignals) {
-            content.append("✅ Aucun signal majeur détecté\n\nCe compte semble fiable !\n");
-        } else {
+        if (!hasSignals) content.append("✅ Aucun signal majeur détecté\n\nCe compte semble fiable !\n");
+        else {
             content.append("\n━━━━━━━━━━━━━━━━━━━━━━━━━\nRecommandation :\n");
             if (score <= 2) content.append("✅ Compte fiable - Aucune action requise\n");
             else if (score <= 5) content.append("⚠️ Compte suspect - Surveillance recommandée\n");
@@ -550,15 +512,5 @@ public class GestionUsersController {
                 cardsContainer.getChildren().add(createUserCard(u));
             }
         }
-    }
-
-    @FXML
-    void handleLogout(ActionEvent event) {
-        Session session = Session.getInstance();
-        SessionDAO dao = new SessionDAO();
-        if (session.getToken() != null) dao.deleteSession(session.getToken());
-        session.clearSession();
-        new File("remember.dat").delete();
-        switchToLogin(event);
     }
 }

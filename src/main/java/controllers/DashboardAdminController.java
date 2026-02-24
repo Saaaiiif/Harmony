@@ -11,22 +11,28 @@ import models.Role;
 import models.user;
 import services.SessionDAO;
 
-import java.io.File;
 import java.io.IOException;
 
 public class DashboardAdminController {
+
+    // ✅ NOUVEAU : Controller de la sidebar partagée (injecté via fx:include)
+    @FXML private AdminSidebarController sidebarController;
 
     @FXML
     public void initialize() {
         if (!checkSession()) {
             switchToLogin();
+            return;
+        }
+        // ✅ Activer le bouton "Dashboard" dans la sidebar
+        if (sidebarController != null) {
+            sidebarController.setActiveButton("dashboard");
         }
     }
 
     private boolean checkSession() {
         Session session = Session.getInstance();
         if (!session.isLoggedIn()) return false;
-
         SessionDAO dao = new SessionDAO();
         boolean valid = dao.isTokenValid(session.getToken());
         if (valid) {
@@ -36,6 +42,7 @@ public class DashboardAdminController {
         return false;
     }
 
+    // Bouton "Ouvrir →" dans la zone principale du dashboard
     @FXML
     void openGestionUsers(ActionEvent event) {
         try {
@@ -48,46 +55,15 @@ public class DashboardAdminController {
         }
     }
 
-    @FXML
-    void handleLogout(ActionEvent event) {
-        // Logique de session (inchangée comme demandé)
-        Session session = Session.getInstance();
-        SessionDAO dao = new SessionDAO();
-        if (session.getToken() != null) {
-            dao.deleteSession(session.getToken());
-        }
-        session.clearSession();
-        deleteRememberFile();
-
-        // Fermeture propre + passage au Login dans la même fenêtre
-        switchToLogin(event);
-    }
-
     private void switchToLogin() {
-        switchToLogin(null);
-    }
-
-    private void switchToLogin(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
-
-            Stage currentStage;
-            if (event != null) {
-                currentStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            } else {
-                currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
-            }
-
+            Stage currentStage = (Stage) javafx.stage.Window.getWindows().get(0);
             currentStage.setScene(new Scene(root));
             currentStage.setTitle("Harmony - Connexion");
             currentStage.centerOnScreen();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void deleteRememberFile() {
-        new File("remember.dat").delete();
     }
 }
