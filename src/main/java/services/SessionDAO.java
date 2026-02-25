@@ -45,8 +45,17 @@ public class SessionDAO {
         return false;
     }
 
+    /**
+     * Récupère l'utilisateur associé à un token de session valide.
+     *
+     * ✅ CORRECTION : ajout de user_image_path et face_image_path
+     * qui étaient manquants et causaient la disparition de l'image
+     * lors de la reconnexion automatique (remember-me).
+     */
     public Optional<user> getUserByToken(String token) {
-        String req = "SELECT u.* FROM user u JOIN sessions s ON u.user_id = s.user_id WHERE s.token = ? AND s.expires_at > NOW()";
+        String req = "SELECT u.* FROM user u " +
+                     "JOIN sessions s ON u.user_id = s.user_id " +
+                     "WHERE s.token = ? AND s.expires_at > NOW()";
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, token);
             ResultSet rs = pstm.executeQuery();
@@ -56,20 +65,52 @@ public class SessionDAO {
                 u.setUser_nom(rs.getString("user_nom"));
                 u.setUser_prenom(rs.getString("user_prenom"));
                 u.setUser_email(rs.getString("user_email"));
-                u.setUser_password(rs.getString("user_password")); // Hashé, ne pas utiliser
+                u.setUser_password(rs.getString("user_password"));
                 u.setUser_date_de_naissance(rs.getString("user_date_de_naissance"));
                 u.setDate_inscription(rs.getString("date_inscription"));
                 u.setType_utilisateur(Role.valueOf(rs.getString("type_utilisateur")));
-                // Ajoutez les autres champs (sexe, poids, etc.) comme dans serviceUser
+
                 String sexeStr = rs.getString("user_sexe");
-                if (sexeStr != null) u.setUser_sexe(Sexe.valueOf(sexeStr));
-                u.setUser_poids(rs.getDouble("user_poids"));
-                u.setUser_taille(rs.getInt("user_taille"));
+                if (sexeStr != null && !sexeStr.isEmpty()) {
+                    try { u.setUser_sexe(Sexe.valueOf(sexeStr)); } catch (IllegalArgumentException ignored) {}
+                }
+
+                // Poids / Taille avec null-check (évite NPE si colonne vide)
+                Object poidsObj = rs.getObject("user_poids");
+                if (poidsObj != null) u.setUser_poids(rs.getDouble("user_poids"));
+
+                Object tailleObj = rs.getObject("user_taille");
+                if (tailleObj != null) u.setUser_taille(rs.getInt("user_taille"));
+
                 String activiteStr = rs.getString("user_niveau_activite_physique");
-                if (activiteStr != null) u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr));
+                if (activiteStr != null && !activiteStr.isEmpty()) {
+                    try { u.setUser_niveau_activite_physique(NiveauActivitePhysique.valueOf(activiteStr)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+
                 String scolaireStr = rs.getString("user_niveau_scolaire");
-                if (scolaireStr != null) u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr));
+                if (scolaireStr != null && !scolaireStr.isEmpty()) {
+                    try { u.setUser_niveau_scolaire(NiveauScolaire.valueOf(scolaireStr)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+
                 u.setUser_etablissement_scolaire(rs.getString("user_etablissement_scolaire"));
+
+                // ✅ CORRECTION PRINCIPALE : ces deux champs étaient absents
+                u.setUser_image_path(rs.getString("user_image_path"));
+
+                try {
+                    u.setFace_image_path(rs.getString("face_image_path"));
+                } catch (SQLException e) {
+                    u.setFace_image_path(null); // fallback si colonne absente
+                }
+
+                try {
+                    u.setIs_active(rs.getInt("is_active") == 1);
+                } catch (SQLException e) {
+                    u.setIs_active(true);
+                }
+
                 return Optional.of(u);
             }
         } catch (SQLException e) {
