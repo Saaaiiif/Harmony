@@ -1,22 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="650" prefWidth="1000" style="-fx-background-color: #E6E0F0;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<!--
+    Accueil.fxml — Page d'accueil Étudiant
+    Navbar horizontale en haut (6 boutons gestion + profil rond à droite)
+    Zone contentArea au centre pour charger les sous-pages des collègues
+-->
+<BorderPane fx:id="root"
+            prefWidth="1200" prefHeight="720"
+            styleClass="front-root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AccueilController">
 
-    <Label layoutX="400" layoutY="200" text="Accueil Étudiant - Harmony"
-           style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #6A5ACD;"/>
+    <!-- ✅ Lien vers le fichier CSS unique du projet -->
+    <stylesheets>/views/admin-styles.css</stylesheets>
 
-    <Label layoutX="400" layoutY="280" text="Bienvenue dans votre espace étudiant !"
-           style="-fx-font-size: 18; -fx-text-fill: #555;"/>
+    <!-- ══════════════════════════════════════════════════════════════
+         TOP : NAVBAR PRINCIPALE
+    ══════════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox fx:id="navBar" alignment="CENTER_LEFT" spacing="4"
+              styleClass="accueil-navbar">
 
-    <!-- Sidebar placeholder (comme ton collègue) -->
-    <VBox layoutX="0" prefHeight="650" prefWidth="220" style="-fx-background-color: #F0E6FF;">
-        <Label text="Harmony" style="-fx-font-size: 24; -fx-padding: 20; -fx-text-fill: #6A5ACD; -fx-font-weight: bold;"/>
-        <Button text="Accueil" prefWidth="220" style="-fx-background-color: transparent; -fx-text-fill: #6A5ACD;"/>
-        <Button text="Planning" prefWidth="220" style="-fx-background-color: transparent; -fx-text-fill: #555;"/>
-        <Button text="Santé Mentale" prefWidth="220" style="-fx-background-color: transparent; -fx-text-fill: #555;"/>
-    </VBox>
+            <!-- Logo + Titre -->
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <HBox.margin><Insets left="20" right="16"/></HBox.margin>
+                <ImageView fx:id="logoImage" fitHeight="28" fitWidth="28" preserveRatio="true"/>
+                <Label text="Harmony" styleClass="accueil-navbar-brand"/>
+            </HBox>
 
-</AnchorPane>
+            <!-- Séparateur visuel -->
+            <Separator orientation="VERTICAL" styleClass="accueil-nav-sep"/>
+
+            <!-- ── 6 Boutons de navigation ── -->
+            <Button fx:id="btnActivites"
+                    text="🏋  Activités"
+                    styleClass="accueil-nav-btn, accueil-nav-btn-active"
+                    onAction="#handleActivites"/>
+
+            <Button fx:id="btnForum"
+                    text="💬  Forum"
+                    styleClass="accueil-nav-btn"
+                    onAction="#handleForum"/>
+
+            <Button fx:id="btnRessources"
+                    text="📚  Ressources"
+                    styleClass="accueil-nav-btn"
+                    onAction="#handleRessources"/>
+
+            <Button fx:id="btnEvents"
+                    text="📅  Events"
+                    styleClass="accueil-nav-btn"
+                    onAction="#handleEvents"/>
+
+            <Button fx:id="btnMentale"
+                    text="🧠  Mentale"
+                    styleClass="accueil-nav-btn"
+                    onAction="#handleMentale"/>
+
+            <Button fx:id="btnNutrition"
+                    text="🥗  Nutrition"
+                    styleClass="accueil-nav-btn"
+                    onAction="#handleNutrition"/>
+
+            <!-- Spacer pour pousser le profil à droite -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- ── Zone Profil (bouton rond + tooltip survol + popup dbl-clic) ── -->
+            <StackPane fx:id="profileZone"
+                       onMouseEntered="#handleProfileHover"
+                       onMouseExited="#handleProfileHoverEnd"
+                       onMouseClicked="#handleProfileClick"
+                       styleClass="accueil-profile-zone">
+                <HBox.margin><Insets right="20"/></HBox.margin>
+
+                <!-- Avatar circulaire -->
+                <StackPane fx:id="avatarContainer" styleClass="accueil-avatar-container">
+                    <!-- Initiale fallback -->
+                    <Label fx:id="avatarInitial"
+                           styleClass="accueil-avatar-initial"
+                           text="E"/>
+                    <!-- Image profil -->
+                    <ImageView fx:id="avatarImage"
+                               fitWidth="44" fitHeight="44"
+                               preserveRatio="false"
+                               visible="false">
+                        <clip><Circle centerX="22" centerY="22" radius="22"/></clip>
+                    </ImageView>
+                    <!-- Indicateur "double-clic pour modifier" -->
+                    <Label text="✎"
+                           styleClass="accueil-avatar-badge"
+                           visible="false" fx:id="editBadge"/>
+                </StackPane>
+
+                <!-- Tooltip affiché au survol (positionné en dessous de la navbar) -->
+                <VBox fx:id="profileTooltip"
+                      styleClass="accueil-profile-tooltip"
+                      visible="false" managed="false"
+                      spacing="4"
+                      alignment="CENTER_LEFT">
+                    <StackPane.margin><Insets top="60"/></StackPane.margin>
+
+                    <Label fx:id="tooltipNom"
+                           styleClass="accueil-tooltip-name"
+                           text="Étudiant"/>
+                    <Label fx:id="tooltipEmail"
+                           styleClass="accueil-tooltip-email"
+                           text="email@exemple.com"/>
+                    <Label styleClass="accueil-tooltip-hint"
+                           text="Double-clic pour modifier"/>
+                </VBox>
+
+            </StackPane>
+
+        </HBox>
+    </top>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CENTER : ZONE DE CONTENU (les pages des collègues se chargent ici)
+    ══════════════════════════════════════════════════════════════ -->
+    <center>
+        <StackPane fx:id="contentArea"
+                   styleClass="accueil-content-area"
+                   style="-fx-background-image: url('/views/backgLIGHT.png');
+                          -fx-background-size: cover;
+                          -fx-background-position: center center;"/>
+    </center>
+
+</BorderPane>

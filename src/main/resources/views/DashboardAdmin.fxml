@@ -74,6 +74,57 @@
                 </graphic>
             </Button>
 
+
+            <Button fx:id="btnActivities"
+                    styleClass="sidebar-item"
+                    prefWidth="240" prefHeight="42"
+                    text="  Gestion Activitées">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="📊" />
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnForum"
+                    styleClass="sidebar-item"
+                    prefWidth="240" prefHeight="42"
+                    text="  Gestion Forum">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="💬" />
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnRessources"
+                    styleClass="sidebar-item"
+                    prefWidth="240" prefHeight="42"
+                    text="  Gestion Ressources">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="📚" />
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnEevents"
+                    styleClass="sidebar-item"
+                    prefWidth="240" prefHeight="42"
+                    text="  Gestion Evenements">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="🎉" />
+                </graphic>
+            </Button>
+
+
+            <Button fx:id="btMentale"
+                    styleClass="sidebar-item"
+                    prefWidth="240" prefHeight="42"
+                    text="  Gestion Mentale">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="🧘‍♂️" />
+                </graphic>
+            </Button>
+
+
+
+
+
             <!-- ── Spacer ────────────────────────────────────────────── -->
             <Region VBox.vgrow="ALWAYS" />
 
