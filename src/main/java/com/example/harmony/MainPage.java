@@ -26,28 +26,15 @@ public class MainPage extends Application {
 
         stage.initStyle(StageStyle.UNDECORATED);
 
-        // IMPORTANT: absolute path
-        FXMLLoader loader = new FXMLLoader(MainPage.class.getResource("/com/example/harmony/front-layout.fxml"));
+        // Start with the shared login screen (from omar resources)
+        FXMLLoader loader = new FXMLLoader(MainPage.class.getResource("/views/Login.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 1280, 720);
-        scene.setFill(javafx.scene.paint.Color.WHITE);
-
-        scene.getStylesheets().add(Objects.requireNonNull(
-                MainPage.class.getResource("/com/example/harmony/styles.css")
-        ).toExternalForm());
-
-        // Default light
-        root.getStyleClass().add("light-mode");
+        Scene scene = new Scene(root, 1000, 650);
 
         stage.setTitle("Harmony");
         stage.setScene(scene);
         stage.show();
-
-        FrontLayoutController controller = loader.getController();
-        if (controller != null) {
-            controller.setStage(stage);
-        }
     }
 
     public static void main(String[] args) {

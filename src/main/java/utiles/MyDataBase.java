@@ -8,15 +8,28 @@ public class MyDataBase {
 
     private static MyDataBase instance;
 
-    private final String URL = "jdbc:mysql://localhost:3306/projet";
-    private final String USERNAME = "root";
-    private final String PASSWORD = "";
+    private static final String[] URLS = {
+            "jdbc:mysql://localhost:3306/integration_pi",
+            "jdbc:mysql://localhost:4306/integration_pi"
+    };
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "";
 
     private Connection cnx;
 
     private MyDataBase() {
         try {
-            cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            SQLException last = null;
+            for (String url : URLS) {
+                try {
+                    cnx = DriverManager.getConnection(url, USERNAME, PASSWORD);
+                    last = null;
+                    break;
+                } catch (SQLException e) {
+                    last = e;
+                }
+            }
+            if (last != null) throw last;
             System.out.println("connected...");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
