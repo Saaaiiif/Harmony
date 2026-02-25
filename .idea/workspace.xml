@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="L'API HuggingFace : bloque les appels gratuits!!">
+    <list default="true" id="cdd0d68b-5d12-4b33-b695-6b46ca270fb4" name="Changes" comment="Les API Pollinations et DeepAI sont payant">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,15 +163,7 @@
       <workItem from="1771093461873" duration="10735000" />
       <workItem from="1771183526235" duration="18620000" />
       <workItem from="1771511806772" duration="15526000" />
-      <workItem from="1771668340810" duration="57533000" />
-    </task>
-    <task id="LOCAL-00006" summary="crud + test catégorie , post et comment fonctionnelles">
-      <option name="closed" value="true" />
-      <created>1770977366248</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1770977366248</updated>
+      <workItem from="1771668340810" duration="60062000" />
     </task>
     <task id="LOCAL-00007" summary="crud + test catégorie , post et comment fonctionnelles">
       <option name="closed" value="true" />
@@ -557,7 +549,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771971073354</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Les API Pollinations et DeepAI sont payant">
+      <option name="closed" value="true" />
+      <created>1771971944082</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1771971944082</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -575,7 +575,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="le métier avancé Systéme de Like Post fonctionel ! : ❤️ Bouton dynamique+ + Compteur en temps réel" />
     <MESSAGE value="Je commence a traviller sur le métier avancé Upload Image !" />
     <MESSAGE value="le métier avancé Upload Image fonctionel !" />
     <MESSAGE value="Quelques modifications dans  Upload Image" />
@@ -600,7 +599,8 @@
     <MESSAGE value="WIP : AI image generator" />
     <MESSAGE value="AI image generator UI plus moderne !" />
     <MESSAGE value="L'API HuggingFace : bloque les appels gratuits!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="L'API HuggingFace : bloque les appels gratuits!!" />
+    <MESSAGE value="Les API Pollinations et DeepAI sont payant" />
+    <option name="LAST_COMMIT_MESSAGE" value="Les API Pollinations et DeepAI sont payant" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

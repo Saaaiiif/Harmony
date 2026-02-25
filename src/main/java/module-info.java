@@ -15,6 +15,7 @@ open module com.example.harmony {
     requires java.desktop;
     requires org.json;
     requires java.net.http;
+    requires com.fasterxml.jackson.databind;
 
     exports com.example.harmony;
 }
