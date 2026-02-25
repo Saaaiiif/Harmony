@@ -1,0 +1,101 @@
+package services;
+
+import models.Commentaire;
+import utils.MyDataBase;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServiceCommentaire {
+
+    private final Connection cnx = MyDataBase.getInstance().getCnx();
+
+    public void add(Commentaire commentaire) {
+        String req = "INSERT INTO commentaire (contenu, date_commentaire, id_post, id_etudiant) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setString(1, commentaire.getContenu());
+            ps.setTimestamp(2, Timestamp.valueOf(commentaire.getDateCommentaire()));
+            ps.setInt(3, commentaire.getIdPost());
+            ps.setInt(4, commentaire.getIdEtudiant());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public List<Commentaire> getCommentairesByPost(int idPost){
+        List<Commentaire> commentaires = new ArrayList<>();
+        String req = "SELECT * FROM commentaire WHERE id_post = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setInt(1, idPost);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Commentaire c = new Commentaire();
+                c.setIdCommentaire(rs.getInt("id_commentaire"));
+                c.setContenu(rs.getString("contenu"));
+                c.setIdPost(rs.getInt("id_post"));
+                c.setIdEtudiant(rs.getInt("id_etudiant"));
+                Timestamp ts = rs.getTimestamp("date_commentaire");
+                if(ts != null){
+                    c.setDateCommentaire(ts.toLocalDateTime());
+                }
+                commentaires.add(c);
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return commentaires;
+    }
+
+    public void update(Commentaire commentaire) {
+        String req = "UPDATE commentaire SET contenu=? WHERE id_commentaire=?";
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setString(1, commentaire.getContenu());
+            ps.setInt(2, commentaire.getIdCommentaire());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void delete(Commentaire commentaire) {
+        String req = "DELETE FROM commentaire WHERE id_commentaire=?";
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setInt(1, commentaire.getIdCommentaire());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public List<Commentaire> getAll() {
+        List<Commentaire> commentaires = new ArrayList<>();
+        String req = "SELECT c.*, p.titre, e.nom, e.prenom " +
+                "FROM commentaire c " +
+                "JOIN post p ON c.id_post = p.id_post " +
+                "JOIN etudiant e ON c.id_etudiant = e.id_etudiant";
+        try (Statement stm = cnx.createStatement();
+             ResultSet rs = stm.executeQuery(req)) {
+            while (rs.next()) {
+                Commentaire c = new Commentaire();
+                c.setIdCommentaire(rs.getInt("id_commentaire"));
+                c.setContenu(rs.getString("contenu"));
+                c.setIdEtudiant(rs.getInt("id_etudiant"));
+                c.setIdPost(rs.getInt("id_post"));
+                c.setTitrePost(rs.getString("titre"));
+                String nomComplet = rs.getString("nom") + " " + rs.getString("prenom");
+                c.setNomEtudiant(nomComplet);
+                Timestamp ts = rs.getTimestamp("date_commentaire");
+                if (ts != null) {
+                    c.setDateCommentaire(ts.toLocalDateTime());
+                }
+                commentaires.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return commentaires;
+    }
+}
+
