@@ -22,6 +22,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import javafx.application.Platform;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -59,6 +66,99 @@ public class AccueilActiviteController {
     @FXML void goToAliments(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalAlimentaire.fxml"); }
     @FXML void goToExercices(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalExercices.fxml"); }
     @FXML void goToSommeil(ActionEvent event) { FrontLayoutController.instance.loadPage("/JournalSommeil.fxml"); }
+    // Variables pour la citation
+    @FXML private Label lblQuoteText;
+    @FXML private Label lblQuoteAuthor;
+    // Se lance à l'ouverture de la fenêtre
+    @FXML
+    public void initialize() {
+        chargerCitation();
+    }
+    // =========================================================================
+    // LOGIQUE API : ZENQUOTES + TRADUCTION MYMEMORY
+    // =========================================================================
+
+    // Méthode liée au bouton "🔄 Changer de citation"
+    @FXML
+    void changerCitation(ActionEvent event) {
+        lblQuoteText.setText("Recherche d'une nouvelle inspiration...");
+        lblQuoteAuthor.setText("...");
+        chargerCitation();
+    }
+
+    private void chargerCitation() {
+        new Thread(() -> {
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+
+                // 1. Récupération de la citation (en anglais)
+                HttpRequest reqZen = HttpRequest.newBuilder()
+                        .uri(URI.create("https://zenquotes.io/api/random"))
+                        .build();
+                HttpResponse<String> resZen = client.send(reqZen, HttpResponse.BodyHandlers.ofString());
+
+                if (resZen.statusCode() == 200) {
+                    String jsonZen = resZen.body();
+                    String quoteEn = extraireStringJSON(jsonZen, "\"q\":\"");
+                    String author = extraireStringJSON(jsonZen, "\"a\":\"");
+
+                    // 2. Traduction de la citation en français
+                    String encodedQuote = URLEncoder.encode(quoteEn, StandardCharsets.UTF_8);
+                    HttpRequest reqTrad = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.mymemory.translated.net/get?q=" + encodedQuote + "&langpair=en|fr"))
+                            .build();
+                    HttpResponse<String> resTrad = client.send(reqTrad, HttpResponse.BodyHandlers.ofString());
+
+                    String quoteFr = quoteEn; // Sécurité : on garde l'anglais si la traduction plante
+                    if (resTrad.statusCode() == 200) {
+                        String jsonTrad = resTrad.body();
+                        String translated = extraireStringJSON(jsonTrad, "\"translatedText\":\"");
+                        if (!translated.isEmpty() && !translated.contains("MYMEMORY WARNING")) {
+                            quoteFr = translated;
+                        }
+                    }
+
+                    // Nettoyage et affichage sur l'interface (FX Thread)
+                    final String finalQuote = nettoyerTexte(quoteFr);
+                    final String finalAuthor = nettoyerTexte(author);
+
+                    Platform.runLater(() -> {
+                        lblQuoteText.setText("\"" + finalQuote + "\"");
+                        lblQuoteAuthor.setText("- " + finalAuthor);
+                    });
+                }
+            } catch (Exception e) {
+                // Citation par défaut si pas d'internet
+                Platform.runLater(() -> {
+                    lblQuoteText.setText("\"Prenez soin de votre corps. C'est le seul endroit où vous êtes obligé de vivre.\"");
+                    lblQuoteAuthor.setText("- Jim Rohn");
+                });
+            }
+        }).start();
+    }
+
+    // Outil manuel pour éviter d'installer des librairies externes (Jackson/Gson)
+    private String extraireStringJSON(String json, String key) {
+        try {
+            int index = json.indexOf(key);
+            if (index == -1) return "";
+            index += key.length();
+            int endIndex = index;
+            while (endIndex < json.length()) {
+                if (json.charAt(endIndex) == '"' && json.charAt(endIndex - 1) != '\\') break;
+                endIndex++;
+            }
+            return json.substring(index, endIndex).replace("\\\"", "\"");
+        } catch (Exception e) { return ""; }
+    }
+
+    private String nettoyerTexte(String text) {
+        if (text == null) return "";
+        return text.replace("\\u00e9", "é").replace("\\u00e8", "è").replace("\\u00ea", "ê")
+                .replace("\\u00e0", "à").replace("\\u00e2", "â").replace("\\u00ee", "î")
+                .replace("\\u00f4", "ô").replace("\\u00fb", "û").replace("\\u00e7", "ç")
+                .replace("\\u2019", "'").replace("\\u0027", "'").replace("\\n", " ");
+    }
 
     @FXML
     void goToBackOffice(ActionEvent event) {
