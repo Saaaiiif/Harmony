@@ -63,18 +63,5 @@
                 </VBox>
             </content>
         </ScrollPane>
-
-        <Button onAction="#ouvrirCoach" style="-fx-background-color: linear-gradient(to bottom right, #6a1b9a, #d500f9); -fx-text-fill: white; -fx-background-radius: 50; -fx-min-width: 65; -fx-min-height: 65; -fx-effect: dropshadow(three-pass-box, rgba(106, 27, 154, 0.5), 20, 0, 0, 8); -fx-cursor: hand;" text="🤖" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="30.0"><font><Font size="26.0" /></font></Button>
-        <StackPane fx:id="coachOverlayPane" visible="false" style="-fx-background-color: rgba(0,0,0,0.7); -fx-backdrop-filter: blur(5px);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <VBox alignment="CENTER" maxWidth="500" maxHeight="600" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 0);">
-                <HBox alignment="CENTER_RIGHT"><Button onAction="#fermerCoach" style="-fx-background-color: #ff4d4f; -fx-text-fill: white; -fx-background-radius: 50; -fx-cursor: hand; -fx-font-weight: bold;" text="X" /></HBox>
-                <Label text="🤖 Coach Harmony" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;" />
-                <TextArea fx:id="chatArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 10;" />
-                <HBox spacing="10" alignment="CENTER" style="-fx-padding: 15 0 0 0;">
-                    <TextField fx:id="chatInput" promptText="Posez votre question..." HBox.hgrow="ALWAYS" style="-fx-font-size: 14px; -fx-background-radius: 15; -fx-padding: 10;" />
-                    <Button text="Envoyer 🚀" onAction="#envoyerMessageCoach" style="-fx-background-color: #6a1b9a; -fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;" />
-                </HBox>
-            </VBox>
-        </StackPane>
     </children>
 </AnchorPane>
