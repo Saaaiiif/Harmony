@@ -3,7 +3,7 @@
     import com.example.harmony.interfaces.WheelCyclable;
     import com.example.harmony.services.CourseService;
     import com.example.harmony.interfaces.ThemeAware;
-    import com.example.harmony.services.StabilityAIService;
+    import com.example.harmony.services.ImageGenerationService;
     import com.example.harmony.util.UiPopups;
     import javafx.animation.AnimationTimer;
     import javafx.animation.TranslateTransition;
@@ -67,7 +67,8 @@
     
         private int currentIndex = 5;
         private Pane wheelPane;
-        private final StabilityAIService stabilityAIService = new StabilityAIService();
+        private final ImageGenerationService imageGenerationService = new ImageGenerationService();
+
 
 
         private static class NavItem {
@@ -180,7 +181,8 @@
             imageNameLabel.setStyle("-fx-opacity: 0.6; -fx-font-size: 12px;");
 
             ToggleButton autoGenToggle = new ToggleButton("✨ Auto generate");
-            autoGenToggle.getStyleClass().add("action-button");
+            autoGenToggle.getStyleClass().add("auto-gen-toggle");
+
 
             pickImageBtn.disableProperty().bind(autoGenToggle.selectedProperty());
 
@@ -336,7 +338,7 @@
                         try {
                             String prompt = "Minimalist modern logo for a course called \"" + title +
                                     "\" about " + subjectText + ", flat design, clean, professional, no text";
-                            byte[] imageBytes = stabilityAIService.generateImage(prompt);
+                            byte[] imageBytes = imageGenerationService.generateCourseImage(title, subjectText);
                             if (imageBytes != null) {
                                 java.nio.file.Path coversDir = java.nio.file.Paths.get("C:/wamp64/www/covers");
                                 java.nio.file.Files.createDirectories(coversDir);
@@ -501,12 +503,12 @@
                         SceneTransitionUtil.TransitionType.FADE,
                         CourseDetailsController.class
                 );
+                c.setOrigin(CourseDetailsController.Origin.COURSES);
                 c.setCourse(courseId, title, subjectName);
             } catch (IOException ex) {
                 ex.printStackTrace();
+                System.out.println("Open course: " + title + " subject: " + subjectName);
             }
-            System.out.println("Open course: " + title + " subject=" + subjectName);
-    
         }
     
     

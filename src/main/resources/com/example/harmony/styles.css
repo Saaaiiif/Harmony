@@ -1232,29 +1232,58 @@
     -fx-text-fill: rgba(30, 30, 30, 0.88);
 }
 
-.toggle-button:selected {
-    -fx-background-color: rgba(205, 157, 241, 0.25);
-    -fx-border-color: #cd9df1;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-text-fill: #cd9df1;
-    -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 0.6), 10, 0.4, 0, 0);
+.auto-gen-toggle {
+    -fx-background-color: rgba(122, 122, 122, 0.35);
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "SF Pro Text";
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
 }
 
-.toggle-button:selected:hover {
+.auto-gen-toggle:hover {
+    -fx-background-color: #d67bfd;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.auto-gen-toggle:selected {
     -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #cd9df1;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 0.8), 14, 0.5, 0, 0);
 }
 
-.light-mode .toggle-button:selected {
-    -fx-background-color: rgba(205, 157, 241, 0.18);
-    -fx-border-color: #b97de8;
-    -fx-text-fill: #8a4bbf;
-    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.5), 10, 0.4, 0, 0);
+.auto-gen-toggle:selected:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.50);
+    -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 1.0), 18, 0.6, 0, 0);
 }
 
-.light-mode .toggle-button:selected:hover {
-    -fx-background-color: rgba(205, 157, 241, 0.28);
-    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.7), 14, 0.5, 0, 0);
+.light-mode .auto-gen-toggle {
+    -fx-background-color: rgba(122, 122, 122, 0.3);
+    -fx-text-fill: #ffffff;
 }
+
+.light-mode .auto-gen-toggle:hover {
+    -fx-background-color: #cd9df1;
+    -fx-text-fill: #ffffff;
+}
+
+.light-mode .auto-gen-toggle:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.25);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #cd9df1;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.6), 14, 0.5, 0, 0);
+}
+
+.light-mode .auto-gen-toggle:selected:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.40);
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.8), 18, 0.6, 0, 0);
+}
+

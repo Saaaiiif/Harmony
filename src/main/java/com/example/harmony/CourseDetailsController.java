@@ -65,13 +65,19 @@ public class CourseDetailsController implements ThemeAware {
         return org.fxmisc.richtext.model.ReadOnlyStyledDocument.codec(codecs._1, codecs._2, area.getSegOps());
     }
 
+    public enum Origin { COURSES, LIBRARY }
+
+    private Origin origin = Origin.COURSES;
+
+    public void setOrigin(Origin origin) {
+        this.origin = origin;
+    }
+
     public void setCourse(int courseId, String title, String subjectName) {
         this.courseId = courseId;
         courseTitle.setText(title == null ? "Course title" : title);
-
         String s = (subjectName == null) ? "" : subjectName.trim();
         courseSubject.setText(s);
-
         installInlineEdit();
         refreshFiles();
         if (publishToggle != null) {
@@ -85,7 +91,6 @@ public class CourseDetailsController implements ThemeAware {
         }
     }
 
-
     @FXML
     private void initialize() {
         if (navWheelController != null) navWheelController.setActiveIndex(5);
@@ -94,9 +99,19 @@ public class CourseDetailsController implements ThemeAware {
 
         backBtn.setOnAction(e -> {
             try {
-                SceneTransitionUtil.changeContent("/com/example/harmony/courses-layout.fxml",
-                        SceneTransitionUtil.TransitionType.FADE,
-                        CoursesLayoutController.class);
+                if (origin == Origin.LIBRARY) {
+                    SceneTransitionUtil.changeContent(
+                            "/com/example/harmony/library-layout.fxml",
+                            SceneTransitionUtil.TransitionType.FADE,
+                            LibraryLayoutController.class
+                    );
+                } else {
+                    SceneTransitionUtil.changeContent(
+                            "/com/example/harmony/courses-layout.fxml",
+                            SceneTransitionUtil.TransitionType.FADE,
+                            CoursesLayoutController.class
+                    );
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

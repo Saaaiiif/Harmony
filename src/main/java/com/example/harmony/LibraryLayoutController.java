@@ -142,13 +142,16 @@ public class LibraryLayoutController {
                     SceneTransitionUtil.TransitionType.FADE,
                     CourseDetailsController.class
             );
+            c.setOrigin(CourseDetailsController.Origin.LIBRARY);
             c.setCourse(courseId, title, subjectName);
         } catch (Exception ex) {
             ex.printStackTrace();
             UiPopups.showError(
                     myCoursesBtn != null && myCoursesBtn.getScene() != null
                             ? (javafx.stage.Stage) myCoursesBtn.getScene().getWindow() : null,
-                    "Failed to open course.", true, getClass()
+                    "Failed to open course.",
+                    true,
+                    getClass()
             );
         }
     }
