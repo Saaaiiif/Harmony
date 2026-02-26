@@ -496,4 +496,168 @@
     -fx-background-radius: 8;
     -fx-cursor: hand;
 }
+/* ══════════════════════════════════════════════════════════════════════════
+   AI IMAGE GENERATOR — Styles
+   À coller à la fin de admin-styles.css
+   ══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Bouton dans la topbar du forum ──────────────────────────────────────── */
+.ai-gen-btn {
+    -fx-background-color: linear-gradient(to right, #7c3aed, #a855f7);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 20;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.4), 10, 0, 0, 3);
+}
+
+.ai-gen-btn:hover {
+    -fx-background-color: linear-gradient(to right, #6d28d9, #9333ea);
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.6), 14, 0, 0, 4);
+}
+
+/* ── Dialog root ─────────────────────────────────────────────────────────── */
+.ai-dialog-root {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 30, 0, 0, 8);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.ai-dialog-header {
+    -fx-background-color: linear-gradient(to right, #7c3aed, #a855f7);
+    -fx-background-radius: 16 16 0 0;
+}
+
+.ai-dialog-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.ai-dialog-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(255,255,255,0.75);
+}
+
+.ai-close-btn {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.ai-close-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.35);
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+.ai-dialog-body {
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 0 0 16 16;
+}
+
+/* ── Label champ ─────────────────────────────────────────────────────────── */
+.ai-field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+
+/* ── Prompt TextArea ─────────────────────────────────────────────────────── */
+.ai-prompt-area {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-font-size: 13px;
+    -fx-text-fill: #111827;
+    -fx-padding: 10;
+}
+
+.ai-prompt-area:focused {
+    -fx-border-color: #7c3aed;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.2), 8, 0, 0, 0);
+}
+
+/* ── Style chips ─────────────────────────────────────────────────────────── */
+.style-chip {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #4b5563;
+    -fx-background-radius: 20;
+    -fx-padding: 5 12;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
+.style-chip:hover {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7c3aed;
+    -fx-border-color: #7c3aed;
+}
+
+.style-chip-active {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7c3aed;
+    -fx-border-color: #7c3aed;
+    -fx-font-weight: bold;
+}
+
+/* ── Bouton générer ──────────────────────────────────────────────────────── */
+.ai-generate-btn {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 10;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.35), 8, 0, 0, 3);
+}
+
+.ai-generate-btn:hover {
+    -fx-background-color: #6d28d9;
+}
+
+.ai-generate-btn:disabled {
+    -fx-background-color: #c4b5fd;
+    -fx-effect: none;
+}
+
+/* ── Status label ────────────────────────────────────────────────────────── */
+.ai-status-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
+
+/* ── Image preview ───────────────────────────────────────────────────────── */
+.ai-image-preview {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);
+}
+
+/* ── Action buttons (Copier / Régénérer) ─────────────────────────────────── */
+.ai-action-btn {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #374151;
+    -fx-background-radius: 8;
+    -fx-padding: 7 16;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.ai-action-btn:hover {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7c3aed;
+    -fx-border-color: #7c3aed;
+}
