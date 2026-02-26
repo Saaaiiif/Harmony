@@ -1,7 +1,4 @@
-import models.Role;
-import models.user;
-import services.serviceUser;
-import utils.PasswordUtils;
+import services.UserServices.serviceUser;
 
 
 public class main {

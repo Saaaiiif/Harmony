@@ -1,10 +1,9 @@
 package utils;
 
-import models.NiveauActivitePhysique;
-import models.user;
+import models.UserModels.NiveauActivitePhysique;
+import models.UserModels.user;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Period;
 import java.util.Arrays;
 import java.util.List;

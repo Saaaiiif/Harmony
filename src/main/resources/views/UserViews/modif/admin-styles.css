@@ -1,0 +1,499 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   HARMONY — Admin Styles
+   Sidebar collapse/expand matching reference project (RootLayoutController)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Content area background image ────────────────────────────────────── */
+.admin-content-area {
+    -fx-background-image: url("../backgLIGHT.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════════════════════════ */
+.sidebar {
+    -fx-background-color: rgba(238, 237, 246, 0.93);
+    -fx-padding: 22 10 18 10;
+    -fx-spacing: 6;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 16, 0, 4, 0);
+}
+
+/* ── Section labels ───────────────────────────────────────────────────── */
+.sidebar-section-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9CA3AF;
+    -fx-padding: 10 0 4 12;
+    -fx-opacity: 1;
+    -fx-managed: true;
+}
+
+/* ── Nav buttons ──────────────────────────────────────────────────────── */
+.sidebar-item {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b6b6b;
+    -fx-background-radius: 10px;
+    -fx-padding: 9 14 9 14;
+    -fx-alignment: CENTER-LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 12;
+    -fx-max-width: Infinity;
+}
+
+.sidebar-item:hover {
+    -fx-background-color: #d9d6ec;
+    -fx-text-fill: #7C3AED;
+    -fx-background-radius: 10px;
+}
+
+/* Active page highlight */
+.sidebar-item-active {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7C3AED;
+    -fx-font-weight: bold;
+}
+
+/* Logout / danger style */
+.sidebar-item-danger {
+    -fx-text-fill: #9CA3AF;
+}
+.sidebar-item-danger:hover {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #EF4444;
+    -fx-background-radius: 10px;
+}
+
+/* ── Profile zone ─────────────────────────────────────────────────────── */
+.profile-row {
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-padding: 8 10 8 10;
+}
+.profile-row:hover {
+    -fx-background-color: #d9d6ec;
+    -fx-background-radius: 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   COLLAPSED STATE — added/removed dynamically in Java
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Hide section titles */
+.sidebar.sidebar-collapsed .sidebar-section-title {
+    -fx-opacity: 0;
+    -fx-managed: false;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+}
+
+/* Show only icon, centered */
+.sidebar.sidebar-collapsed .sidebar-item {
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-alignment: CENTER;
+    -fx-padding: 10 8;
+    -fx-graphic-text-gap: 0;
+}
+
+/* Hide logo label text */
+.sidebar.sidebar-collapsed .sidebar-logo-text {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Hide profile name */
+.sidebar.sidebar-collapsed .profile-name-label {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Hide profile hint text */
+.sidebar.sidebar-collapsed .profile-hint-label {
+    -fx-opacity: 0;
+    -fx-managed: false;
+}
+
+/* Center profile row when collapsed */
+.sidebar.sidebar-collapsed .profile-row {
+    -fx-alignment: CENTER;
+}
+
+/* =============================================================================
+   🎓 ACCUEIL ÉTUDIANT — NAVBAR & PROFIL
+   À AJOUTER à la fin de styles.css
+============================================================================= */
+
+/* ── Navbar principale ── */
+.accueil-navbar {
+    -fx-background-color: rgba(20, 18, 28, 0.88);
+    -fx-padding: 0 0 0 0;
+    -fx-min-height: 54px;
+    -fx-pref-height: 54px;
+    -fx-max-height: 54px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.35), 12, 0, 0, 4);
+}
+
+.light-mode .accueil-navbar {
+    -fx-background-color: rgba(240, 237, 252, 0.95);
+    -fx-border-color: rgba(180, 170, 210, 0.4);
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ── Logo / Brand ── */
+.accueil-navbar-brand {
+    -fx-font-family: "SF UI Text", "Segoe UI", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cd9df1;
+}
+
+.light-mode .accueil-navbar-brand {
+    -fx-text-fill: #7c3aed;
+}
+
+/* ── Séparateur vertical ── */
+.accueil-nav-sep {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-pref-width: 1px;
+    -fx-min-height: 28px;
+    -fx-max-height: 28px;
+    -fx-padding: 0 8 0 8;
+    -fx-opacity: 0.5;
+}
+
+/* ── Boutons de navigation ── */
+.accueil-nav-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "SF UI Text", "Segoe UI", sans-serif;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: normal;
+    -fx-text-fill: rgba(220, 210, 240, 0.78);
+    -fx-padding: 10 16 10 16;
+    -fx-background-radius: 8px;
+}
+
+.light-mode .accueil-nav-btn {
+    -fx-text-fill: #5b5573;
+}
+
+.accueil-nav-btn:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.13);
+    -fx-text-fill: #cd9df1;
+    -fx-background-radius: 8px;
+    -fx-translate-y: -1px;
+}
+
+.light-mode .accueil-nav-btn:hover {
+    -fx-background-color: rgba(124, 58, 237, 0.10);
+    -fx-text-fill: #7c3aed;
+}
+
+/* Bouton actif dans la navbar */
+.accueil-nav-btn-active {
+    -fx-background-color: rgba(139, 92, 246, 0.18);
+    -fx-text-fill: #c084fc !important;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent rgba(139,92,246,0.6) transparent;
+    -fx-border-width: 0 0 2.5 0;
+    -fx-background-radius: 0;
+}
+
+.light-mode .accueil-nav-btn-active {
+    -fx-background-color: rgba(124, 58, 237, 0.10);
+    -fx-text-fill: #7c3aed !important;
+    -fx-border-color: transparent transparent #7c3aed transparent;
+}
+
+/* ── Zone profil (conteneur global) ── */
+.accueil-profile-zone {
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+/* ── Avatar circulaire ── */
+.accueil-avatar-container {
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-max-width: 44px;
+    -fx-max-height: 44px;
+    -fx-background-color: linear-gradient(135deg, #8B5CF6, #6D28D9);
+    -fx-background-radius: 22px;
+    -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.55), 10, 0, 0, 3);
+    -fx-cursor: hand;
+}
+
+.accueil-avatar-container:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.8), 14, 0, 0, 5);
+}
+
+/* ── Initiale dans l'avatar ── */
+.accueil-avatar-initial {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* ── Badge "✎" sur l'avatar ── */
+.accueil-avatar-badge {
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+    -fx-background-color: #7C3AED;
+    -fx-background-radius: 10px;
+    -fx-padding: 1 5 1 5;
+    -fx-translate-x: 16px;
+    -fx-translate-y: 16px;
+}
+
+/* ── Tooltip profil ── */
+.accueil-profile-tooltip {
+    -fx-background-color: rgba(25, 22, 38, 0.96);
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(139,92,246,0.35);
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-padding: 12 16 12 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 18, 0, 0, 6);
+    -fx-translate-x: -80px;  /* décale à gauche pour ne pas sortir du bord */
+}
+
+.light-mode .accueil-profile-tooltip {
+    -fx-background-color: rgba(255, 255, 255, 0.97);
+    -fx-border-color: rgba(124, 58, 237, 0.3);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.18), 18, 0, 0, 6);
+}
+
+.accueil-tooltip-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e2d9f5;
+}
+
+.light-mode .accueil-tooltip-name {
+    -fx-text-fill: #2d2452;
+}
+
+.accueil-tooltip-email {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(180, 160, 230, 0.85);
+}
+
+.light-mode .accueil-tooltip-email {
+    -fx-text-fill: #6b6585;
+}
+
+.accueil-tooltip-hint {
+    -fx-font-size: 10.5px;
+    -fx-text-fill: rgba(139,92,246,0.7);
+    -fx-font-style: italic;
+    -fx-padding: 4 0 0 0;
+}
+
+/* ── Zone contenu central ── */
+.accueil-content-area {
+    -fx-background-color: transparent;
+}
+/* ===================================================
+   FORUM — à coller à la fin de admin-styles.css
+   =================================================== */
+
+.forum-root {
+    -fx-background-color: #f4f6f9;
+}
+
+.forum-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.forum-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ── Cards catégories ─────────────────────────────── */
+.forum-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 0;
+    -fx-pref-width: 200;
+    -fx-pref-height: 120;
+    -fx-min-width: 200;
+    -fx-min-height: 120;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.forum-card:hover {
+    -fx-background-color: #f0ecff;
+    -fx-effect: dropshadow(gaussian, rgba(100,60,200,0.18), 16, 0, 0, 6);
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+.forum-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d2d2d;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-padding: 10 15 10 15;
+}
+
+/* ── Card Ajouter (+) ─────────────────────────────── */
+.forum-add-card {
+    -fx-background-color: #7c3aed;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-pref-width: 200;
+    -fx-pref-height: 120;
+    -fx-min-width: 200;
+    -fx-min-height: 120;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.35), 12, 0, 0, 4);
+}
+
+.forum-add-card:hover {
+    -fx-background-color: #6d28d9;
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.5), 18, 0, 0, 6);
+}
+
+.forum-add-plus {
+    -fx-text-fill: white;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+}
+
+/* ── Posts page ───────────────────────────────────── */
+.posts-root {
+    -fx-background-color: #f4f6f9;
+}
+
+.post-card {
+    -fx-background-color: white;
+    -fx-padding: 18;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);
+}
+
+.post-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+.post-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ca3af;
+}
+
+.btn-primary {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 7 16;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #6d28d9;
+}
+
+.btn-secondary {
+    -fx-background-color: #f3f0ff;
+    -fx-text-fill: #7c3aed;
+    -fx-background-radius: 8;
+    -fx-border-color: #ddd6fe;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #ede9fe;
+}
+
+.comments-box {
+    -fx-background-color: #fafafa;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+}
+
+.comment-label {
+    -fx-background-color: white;
+    -fx-padding: 8 12;
+    -fx-background-radius: 6;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 6;
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+}
+
+/* ── Formulaires ──────────────────────────────────── */
+.add-categorie-root {
+    -fx-background-color: white;
+    -fx-padding: 30;
+}
+
+.form-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+.save-btn {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 8 24;
+    -fx-cursor: hand;
+}
+
+.save-btn:hover {
+    -fx-background-color: #6d28d9;
+}
+
+/* ── Popup traduction ─────────────────────────────── */
+.translate-popup {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 15, 0.3, 0, 5);
+}
+
+.translate-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+.translate-btn-yes {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.translate-btn-no {
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+

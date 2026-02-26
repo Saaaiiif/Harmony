@@ -83,7 +83,7 @@ public class FaceRecognitionService {
      */
     private void loadCascade() {
         try {
-            InputStream is = getClass().getResourceAsStream("/haarcascade_frontalface_default.xml");
+            InputStream is = getClass().getResourceAsStream("/views/UserViews/haarcascade_frontalface_default.xml");
             if (is == null) {
                 System.err.println("⚠  haarcascade_frontalface_default.xml introuvable dans resources !");
                 return;
