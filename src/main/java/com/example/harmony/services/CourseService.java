@@ -19,19 +19,57 @@ public class CourseService {
         private final String subjectName;
         private final Integer userId;
         private final List<File> files;
+        private final File coverImage;
 
-        public CreateCourseRequest(String title, String subjectName, Integer userId, List<File> files) {
+        public CreateCourseRequest(String title, String subjectName, Integer userId, List<File> files, File coverImage) {
             this.title = title;
             this.subjectName = subjectName;
             this.userId = userId;
-            this.files = (files == null) ? List.of() : List.copyOf(files);
+            this.files = files == null ? List.of() : List.copyOf(files);
+            this.coverImage = coverImage;
         }
 
         public String title() { return title; }
         public String subjectName() { return subjectName; }
         public Integer userId() { return userId; }
         public List<File> files() { return files; }
+        public File coverImage() { return coverImage; }
     }
+
+
+    private static java.nio.file.Path getCoversDir() throws Exception {
+        java.nio.file.Path dir = java.nio.file.Paths.get("C:/wamp64/www/covers");
+        java.nio.file.Files.createDirectories(dir);
+        return dir;
+    }
+
+    private int insertCourse(Connection conn, String title, Integer subjectId, Integer userId, File coverImage) throws Exception {
+        String coverPath = null;
+        if (coverImage != null && coverImage.exists()) {
+            java.nio.file.Path coversDir = getCoversDir();
+            String name = coverImage.getName();
+            String ext = name.contains(".") ? name.substring(name.lastIndexOf(".")) : ".jpg";
+            String filename = "cover_" + System.currentTimeMillis() + ext;
+            java.nio.file.Files.copy(coverImage.toPath(), coversDir.resolve(filename),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            coverPath = filename;
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO courses(title, subjectid, userid, cover_image_path) VALUES (?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, title);
+            if (subjectId == null) ps.setNull(2, Types.INTEGER); else ps.setInt(2, subjectId);
+            if (userId == null) ps.setNull(3, Types.INTEGER); else ps.setInt(3, userId);
+            if (coverPath == null) ps.setNull(4, Types.VARCHAR); else ps.setString(4, coverPath);
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) return keys.getInt(1);
+            }
+            throw new IllegalStateException("Failed to create course");
+        }
+    }
+
 
     public int createCourse(CreateCourseRequest req) throws Exception {
         Objects.requireNonNull(req, "req");
@@ -52,7 +90,8 @@ public class CourseService {
                 subjectId = getOrCreateSubjectId(conn, subjectName);
             }
 
-            int courseId = insertCourse(conn, title, subjectId, req.userId());
+            int courseId = insertCourse(conn, title, subjectId, req.userId(), req.coverImage());
+
 
             for (File f : req.files()) {
                 if (f == null) continue;

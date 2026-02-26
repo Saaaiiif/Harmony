@@ -812,7 +812,18 @@
 .course-card:pressed {
     -fx-translate-y: 1;
 }
+.course-card-image {
+    -fx-effect: null;
+}
 
+.course-card-image-placeholder {
+    -fx-background-color: rgba(205, 157, 241, 0.12);
+    -fx-background-radius: 14 14 0 0;
+}
+
+.light-mode .course-card-image-placeholder {
+    -fx-background-color: rgba(205, 157, 241, 0.18);
+}
 /* Title */
 .course-title {
     -fx-font-family: "SF UI  Text";
@@ -1096,4 +1107,154 @@
 
 .light-mode.toggle-button.switch-toggle:selected:hover {
     -fx-background-color: rgba(214, 123, 253, 0.60), white;
+}
+.search-field {
+    -fx-background-color: rgba(18, 18, 18, 0.45);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5px;
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.45);
+    -fx-font-size: 13px;
+    -fx-padding: 6 12 6 12;
+}
+
+.search-field:focused {
+    -fx-border-color: #cd9df1;
+    -fx-background-color: rgba(18, 18, 18, 0.55);
+}
+
+.light-mode .search-field {
+    -fx-background-color: rgba(255, 255, 255, 0.65);
+    -fx-border-color: rgba(0, 0, 0, 0.10);
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+    -fx-prompt-text-fill: rgba(30, 30, 30, 0.45);
+}
+
+.light-mode .search-field:focused {
+    -fx-border-color: #cd9df1;
+    -fx-background-color: rgba(255, 255, 255, 0.80);
+}
+
+.subject-filter {
+    -fx-background-color: rgba(18, 18, 18, 0.45);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5px;
+    -fx-font-size: 13px;
+    -fx-padding: 2 8 2 8;
+}
+
+.subject-filter:focused,
+.subject-filter:showing {
+    -fx-border-color: #cd9df1;
+}
+
+.subject-filter .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6 0 0;
+}
+
+.subject-filter .arrow {
+    -fx-background-color: rgba(255, 255, 255, 0.45);
+}
+
+.subject-filter .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
+    -fx-font-size: 13px;
+    -fx-padding: 4 8 4 8;
+}
+
+.subject-filter .list-view {
+    -fx-background-color: rgba(30, 30, 30, 0.95);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 18, 0.2, 0, 6);
+    -fx-padding: 6;
+}
+
+.subject-filter .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
+    -fx-font-size: 13px;
+    -fx-padding: 8 14 8 14;
+    -fx-background-radius: 8;
+}
+
+.subject-filter .list-view .list-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.20);
+}
+
+.subject-filter .list-view .list-cell:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-text-fill: #ffffff;
+}
+
+.light-mode .subject-filter {
+    -fx-background-color: rgba(255, 255, 255, 0.65);
+    -fx-border-color: rgba(0, 0, 0, 0.10);
+}
+
+.light-mode .subject-filter:focused,
+.light-mode .subject-filter:showing {
+    -fx-border-color: #cd9df1;
+}
+
+.light-mode .subject-filter .arrow {
+    -fx-background-color: rgba(30, 30, 30, 0.55);
+}
+
+.light-mode .subject-filter .list-cell {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+.light-mode .subject-filter .list-view {
+    -fx-background-color: rgba(238, 237, 246, 0.98);
+    -fx-border-color: rgba(0, 0, 0, 0.08);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.15, 0, 6);
+}
+
+.light-mode .subject-filter .list-view .list-cell {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+.light-mode .subject-filter .list-view .list-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.20);
+}
+
+.light-mode .subject-filter .list-view .list-cell:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+.toggle-button:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.25);
+    -fx-border-color: #cd9df1;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #cd9df1;
+    -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 0.6), 10, 0.4, 0, 0);
+}
+
+.toggle-button:selected:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-effect: dropshadow(gaussian, rgba(205, 157, 241, 0.8), 14, 0.5, 0, 0);
+}
+
+.light-mode .toggle-button:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.18);
+    -fx-border-color: #b97de8;
+    -fx-text-fill: #8a4bbf;
+    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.5), 10, 0.4, 0, 0);
+}
+
+.light-mode .toggle-button:selected:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.28);
+    -fx-effect: dropshadow(gaussian, rgba(185, 125, 232, 0.7), 14, 0.5, 0, 0);
 }
