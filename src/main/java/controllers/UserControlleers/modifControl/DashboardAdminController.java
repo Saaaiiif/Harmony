@@ -1,5 +1,6 @@
 package controllers.UserControlleers.modifControl;
 
+import controllers.ForumControllers.BackOffice.ForumBackDashboardController;
 import controllers.UserControlleers.AdminProfilePopupController;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -347,5 +348,45 @@ public class DashboardAdminController {
     // =========================================================================
     //  UTILITAIRE
     // =========================================================================
+
     private String nvl(String s) { return s != null ? s : ""; }
+    @FXML
+    private void handleForum() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml")
+            );
+            Parent content = loader.load();
+
+            ForumBackDashboardController ctrl = loader.getController();
+            // pas d'AccueilController ici, handleBack() peut juste recharger le dashboard
+
+            // Même pattern fade que handleGestionUsers()
+            if (contentArea.getChildren().isEmpty()) {
+                contentArea.getChildren().setAll(content);
+            } else {
+                javafx.animation.FadeTransition fadeOut =
+                        new javafx.animation.FadeTransition(
+                                javafx.util.Duration.millis(180),
+                                contentArea.getChildren().get(0));
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.setOnFinished(e -> {
+                    contentArea.getChildren().setAll(content);
+                    javafx.animation.FadeTransition fadeIn =
+                            new javafx.animation.FadeTransition(
+                                    javafx.util.Duration.millis(220), content);
+                    fadeIn.setFromValue(0.0);
+                    fadeIn.setToValue(1.0);
+                    fadeIn.play();
+                });
+                fadeOut.play();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
+

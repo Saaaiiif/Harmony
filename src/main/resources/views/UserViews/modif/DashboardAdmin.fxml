@@ -85,6 +85,7 @@
             </Button>
 
             <Button fx:id="btnForum"
+                    onAction="#handleForum"
                     styleClass="sidebar-item"
                     prefWidth="240" prefHeight="42"
                     text="  Gestion Forum">

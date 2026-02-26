@@ -55,4 +55,44 @@ public class DashboardContentController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    void openGestionForum(ActionEvent event) {
+        try {
+            javafx.scene.Node source = (javafx.scene.Node) event.getSource();
+            javafx.scene.layout.BorderPane root =
+                    (javafx.scene.layout.BorderPane) source.getScene().getRoot();
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml")
+            );
+            Parent content = loader.load();
+
+            javafx.scene.layout.StackPane contentArea =
+                    (javafx.scene.layout.StackPane) root.getCenter();
+
+            javafx.animation.FadeTransition fadeOut =
+                    new javafx.animation.FadeTransition(
+                            javafx.util.Duration.millis(180),
+                            contentArea.getChildren().get(0));
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+                contentArea.getChildren().setAll(content);
+                javafx.animation.FadeTransition fadeIn =
+                        new javafx.animation.FadeTransition(
+                                javafx.util.Duration.millis(220), content);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            });
+            fadeOut.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

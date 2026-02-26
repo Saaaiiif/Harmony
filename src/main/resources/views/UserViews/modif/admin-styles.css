@@ -661,3 +661,122 @@
     -fx-text-fill: #7c3aed;
     -fx-border-color: #7c3aed;
 }
+/* ══════════════════════════════════════════════════════════════════════════
+   BACK OFFICE FORUM CARDS — coller à la fin de admin-styles.css
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.back-root {
+    -fx-background-color: #f4f6f9;
+}
+
+/* ── Topbar ──────────────────────────────────────────────────────────────── */
+.modern-topbar {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #7c3aed, #a855f7);
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.3), 10, 0, 0, 4);
+}
+.topbar-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.back-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255,255,255,0.7);
+}
+.back-button {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+.back-button:hover {
+    -fx-background-color: rgba(255,255,255,0.35);
+}
+
+/* ── ScrollPane transparent ──────────────────────────────────────────────── */
+.back-root .scroll-pane,
+.back-root .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Ces classes sont appliquées DYNAMIQUEMENT dans les controllers Java
+   Ex: card.getStyleClass().add("bo-card");
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Card individuelle ───────────────────────────────────────────────────── */
+.bo-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+    -fx-cursor: default;
+}
+.bo-card:hover {
+    -fx-border-color: #c4b5fd;
+    -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.18), 12, 0, 0, 4);
+}
+
+/* ── Badge accent (bande colorée en haut de card) ───────────────────────── */
+.bo-card-accent {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #7c3aed, #a855f7);
+    -fx-background-radius: 12 12 0 0;
+    -fx-pref-height: 4;
+}
+
+/* ── Label nom/titre dans card ───────────────────────────────────────────── */
+.bo-card-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+    -fx-wrap-text: true;
+}
+
+/* ── Label description/contenu dans card ────────────────────────────────── */
+.bo-card-desc {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+    -fx-wrap-text: true;
+}
+
+/* ── Label meta (auteur, date) ───────────────────────────────────────────── */
+.bo-card-meta {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9ca3af;
+}
+
+/* ── Bouton Modifier ─────────────────────────────────────────────────────── */
+.bo-btn-edit {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #7c3aed;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 7;
+    -fx-padding: 5 12;
+    -fx-cursor: hand;
+}
+.bo-btn-edit:hover {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+}
+
+/* ── Bouton Supprimer ────────────────────────────────────────────────────── */
+.bo-btn-delete {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 7;
+    -fx-padding: 5 12;
+    -fx-cursor: hand;
+}
+.bo-btn-delete:hover {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+}
+
