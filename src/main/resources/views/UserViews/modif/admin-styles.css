@@ -779,4 +779,74 @@
     -fx-background-color: #dc2626;
     -fx-text-fill: white;
 }
+/* ══════════════════════════════════════════════════════════════════════════
+   🎉 JOKE TOAST NOTIFICATION — coller à la fin de admin-styles.css
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Conteneur principal du toast ────────────────────────────────────────── */
+.joke-toast {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(124, 58, 237, 0.25);
+    -fx-border-width: 1.5;
+    -fx-padding: 14 16 10 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 20, 0.1, 0, 6);
+    -fx-pref-width: 320;
+    -fx-max-width: 320;
+}
+
+/* ── Emoji (grand, à gauche du titre) ───────────────────────────────────── */
+.joke-toast-emoji {
+    -fx-font-size: 22px;
+}
+
+/* ── Titre "Blague du moment" ───────────────────────────────────────────── */
+.joke-toast-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7c3aed;
+}
+
+/* ── Bouton fermer ✕ ───────────────────────────────────────────────────── */
+.joke-toast-close {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ca3af;
+    -fx-cursor: hand;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 6;
+}
+
+.joke-toast-close:hover {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #6b7280;
+}
+
+/* ── Corps : texte de la blague ─────────────────────────────────────────── */
+.joke-toast-message {
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3;
+    -fx-padding: 4 0 8 0;
+}
+
+/* ── Barre de progression (timer visuel) ────────────────────────────────── */
+.joke-toast-progress {
+    -fx-accent: #7c3aed;
+    -fx-background-color: #ede9fe;
+    -fx-background-radius: 2;
+    -fx-pref-height: 3;
+}
+
+.joke-toast-progress > .track {
+    -fx-background-color: #ede9fe;
+    -fx-background-radius: 2;
+}
+
+.joke-toast-progress > .bar {
+    -fx-background-color: linear-gradient(to right, #7c3aed, #a855f7);
+    -fx-background-radius: 2;
+    -fx-padding: 0;
+}
 
