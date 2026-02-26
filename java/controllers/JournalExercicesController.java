@@ -167,8 +167,25 @@ public class JournalExercicesController {
             btnCat.setOnMouseExited(e -> { btnCat.setScaleX(1.0); btnCat.setScaleY(1.0); });
 
             btnCat.setOnAction(e -> {
-                hboxCategories.getChildren().forEach(n -> n.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 20; -fx-padding: 15 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"));
-                btnCat.setStyle("-fx-background-color: white; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 17; -fx-background-radius: 20; -fx-padding: 15 25; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, " + activeColor.replace("#", "rgba(") + ", 0.4), 15, 0, 0, 5);");
+                // Reset tous les boutons au style par défaut
+                hboxCategories.getChildren().forEach(n ->
+                        n.setStyle("-fx-background-color: rgba(255,255,255,0.9); " +
+                                "-fx-background-radius: 20; -fx-padding: 15 25; " +
+                                "-fx-cursor: hand; " +
+                                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"));
+                // Style du bouton sélectionné — dropshadow avec couleur hex valide
+                btnCat.setStyle("-fx-background-color: white; " +
+                        "-fx-border-color: " + activeColor + "; " +
+                        "-fx-border-width: 3; -fx-border-radius: 17; " +
+                        "-fx-background-radius: 20; -fx-padding: 15 25; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-effect: dropshadow(three-pass-box, " + activeColor + ", 15, 0.4, 0, 5);");
+                // Met à jour le label en couleur active
+                conteneur.getChildren().stream()
+                        .filter(child -> child instanceof Label)
+                        .map(child -> (Label) child)
+                        .forEach(l -> l.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; " +
+                                "-fx-text-fill: " + activeColor + ";"));
                 chargerExercices3D(catCode);
             });
             hboxCategories.getChildren().add(btnCat);
@@ -507,7 +524,8 @@ public class JournalExercicesController {
     }
 
     private void preparerEtAfficherQR(LocalDate date, List<Activite> activites) {
-        StringBuilder sb = new StringBuilder("🏋️ Séance du : " + date.toString() + "\n\n");
+        // Construit le message texte de la séance
+        StringBuilder sb = new StringBuilder("🏋️ Séance Harmony du : " + date.toString() + "\n\n");
         for (Activite act : activites) {
             Exercice ex = cacheExercices.get(act.getId_exercice());
             if (ex != null) {
@@ -519,38 +537,76 @@ public class JournalExercicesController {
                 }
             }
         }
+        sb.append("\n💪 Partagé via Harmony App !");
 
         try {
+            // ── CORRECTION PROBLÈME 3 : Encode l'URL WhatsApp dans le QR code ──
+            // Quand l'étudiant scanne ce QR, son téléphone ouvre WhatsApp directement
+            // avec le message pré-rempli pour partager à un contact.
+            String messageText = sb.toString();
+            String whatsappUrl = "https://wa.me/?text=" +
+                    java.net.URLEncoder.encode(messageText, java.nio.charset.StandardCharsets.UTF_8);
+
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            com.google.zxing.common.BitMatrix bitMatrix = qrCodeWriter.encode(sb.toString(), BarcodeFormat.QR_CODE, 300, 300);
-            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-            Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+            com.google.zxing.common.BitMatrix bitMatrix = qrCodeWriter.encode(
+                    whatsappUrl, BarcodeFormat.QR_CODE, 300, 300);
+            java.awt.image.BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+            javafx.scene.image.Image image = javafx.embed.swing.SwingFXUtils.toFXImage(bufferedImage, null);
 
             Stage dialog = new Stage();
             dialog.initOwner(flowPaneHistorique.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initStyle(StageStyle.TRANSPARENT);
 
-            VBox vbox = new VBox(20);
+            VBox vbox = new VBox(18);
             vbox.setAlignment(Pos.CENTER);
-            vbox.setStyle("-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 20; -fx-border-color: " + activeColor + "; -fx-border-width: 3; -fx-border-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 0);");
+            vbox.setStyle("-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 20; " +
+                    "-fx-border-color: " + activeColor + "; -fx-border-width: 3; " +
+                    "-fx-border-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 20, 0, 0, 0);");
 
-            Label title = new Label("📱 QR Code de la Séance");
+            Label title = new Label("📱 Partager sur WhatsApp");
             title.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: " + activeColor + ";");
 
+            Label instruction = new Label("Scannez ce QR code avec votre téléphone :\nWhatsApp s'ouvre directement avec votre séance prête à envoyer !");
+            instruction.setStyle("-fx-text-fill: #555; -fx-font-size: 13px; -fx-text-alignment: center; -fx-alignment: center;");
+            instruction.setWrapText(true);
+            instruction.setAlignment(Pos.CENTER);
+
             ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(270); imageView.setFitHeight(270);
+
+            // ── Bouton pour ouvrir WhatsApp directement depuis l'appli (Desktop) ──
+            Button btnWhatsApp = new Button("💬 Ouvrir WhatsApp sur cet appareil");
+            btnWhatsApp.setStyle("-fx-background-color: #25d366; -fx-text-fill: white; " +
+                    "-fx-font-weight: bold; -fx-font-size: 14px; " +
+                    "-fx-background-radius: 15; -fx-padding: 10 20; -fx-cursor: hand; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(37,211,102,0.4), 8, 0, 0, 3);");
+            btnWhatsApp.setOnAction(ev -> {
+                try {
+                    java.awt.Desktop.getDesktop().browse(new java.net.URI(whatsappUrl));
+                } catch (Exception ex) {
+                    System.err.println("Impossible d'ouvrir WhatsApp : " + ex.getMessage());
+                }
+            });
 
             Button btnClose = new Button("Fermer");
-            btnClose.setStyle("-fx-background-color: #f1f2f6; -fx-text-fill: #333; -fx-font-weight: bold; -fx-background-radius: 15; -fx-padding: 10 30; -fx-cursor: hand;");
+            btnClose.setStyle("-fx-background-color: #f1f2f6; -fx-text-fill: #333; " +
+                    "-fx-font-weight: bold; -fx-background-radius: 15; " +
+                    "-fx-padding: 10 30; -fx-cursor: hand;");
             btnClose.setOnAction(e -> dialog.close());
 
-            vbox.getChildren().addAll(title, imageView, new Label("Scannez ce code avec votre téléphone !"), btnClose);
-            Scene scene = new Scene(vbox); scene.setFill(Color.TRANSPARENT);
+            HBox btnBox = new HBox(15, btnWhatsApp, btnClose);
+            btnBox.setAlignment(Pos.CENTER);
+
+            vbox.getChildren().addAll(title, imageView, instruction, btnBox);
+            Scene scene = new Scene(vbox);
+            scene.setFill(Color.TRANSPARENT);
             dialog.setScene(scene);
 
             FadeTransition ft = new FadeTransition(Duration.millis(300), vbox);
             ft.setFromValue(0); ft.setToValue(1); ft.play();
             dialog.showAndWait();
+
         } catch (Exception e) {
             System.err.println("Erreur de génération QR Code: " + e.getMessage());
         }

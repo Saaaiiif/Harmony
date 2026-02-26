@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -230,8 +231,6 @@ public class AccueilActiviteController {
     @FXML private Label      lblAlimentsKcal;
     @FXML private Label      lblExercicesKcal;
     @FXML private Label      lblAlerteCalories;
-    @FXML private TextField  tfPhone;          // ← javafx.scene.control.TextField (import explicite)
-    @FXML private Label      lblPhoneStatus;
     @FXML private Label      lblQuoteText;
     @FXML private Label      lblQuoteAuthor;
     @FXML private Label      lblObjCal;
@@ -246,6 +245,9 @@ public class AccueilActiviteController {
     @FXML private Label      lblObjMinutes;
     @FXML private Label      lblObjEau;
     @FXML private StackPane  overlayObjectifs;
+    // ── Champs du Centre d'Alertes (remplacent l'ancien SMS) ──
+    @FXML private VBox       vboxAlertes;
+    @FXML private Label      lblDerniereVerif;
 
     // ==========================================================================
     // ÉTAT INTERNE
@@ -284,6 +286,8 @@ public class AccueilActiviteController {
         actualiserDate();
         actualiserCalories();
         chargerCitation();
+        // Lance la vérification des alertes automatiquement au chargement
+        Platform.runLater(this::verifierAlertes);
     }
 
     // ==========================================================================
@@ -350,12 +354,8 @@ public class AccueilActiviteController {
         if (caloriesConsommees > objectifCalories) {
             int depasse = caloriesConsommees - objectifCalories;
             lblAlerteCalories.setText("\u26a0\ufe0f Objectif dépassé de " + depasse + " kcal !");
-            if (dateSelectionnee.equals(LocalDate.now()) && !phoneNumber.isBlank()) {
-                String dernierSMS = getStr("dernierSMSDate", "");
-                if (!dateSelectionnee.toString().equals(dernierSMS)) {
-                    envoyerSMSAlerte(caloriesConsommees);
-                }
-            }
+            // Relancer la vérification des alertes pour mettre à jour le centre d'alertes
+            Platform.runLater(this::verifierAlertes);
         } else {
             lblAlerteCalories.setText("");
         }
@@ -391,60 +391,134 @@ public class AccueilActiviteController {
     }
 
     // ==========================================================================
-    // TÉLÉPHONE & SMS
+    // CENTRE D'ALERTES HARMONY (remplace SMS TextBelt)
     // ==========================================================================
+
+    /** Appelé par le bouton "Actualiser les alertes" ET automatiquement au lancement */
     @FXML
-    void sauvegarderTelephone(ActionEvent e) {
-        String tel = tfPhone.getText().trim();
-        if (tel.isEmpty()) {
-            setPhoneStatus("\u274c Entrez un numéro valide.", "#c62828"); return;
+    void verifierAlertes(ActionEvent e) { verifierAlertes(); }
+
+    void verifierAlertes() {
+        if (vboxAlertes == null) return;
+        vboxAlertes.getChildren().clear();
+
+        boolean auMoinsUneAlerte = false;
+        LocalDate today = LocalDate.now();
+
+        // ── ALERTE 1 : Calories dépassées ──────────────────────────────────
+        Map<Integer, Aliment> alimentMap = new HashMap<>();
+        serviceAliment.afficherTout().forEach(a -> alimentMap.put(a.getId_aliment(), a));
+
+        int caloriesToday = serviceConsommation.afficherTout().stream()
+                .filter(c -> c.getDate_consommation() != null &&
+                        c.getDate_consommation().toLocalDateTime().toLocalDate().equals(today))
+                .mapToInt(c -> {
+                    Aliment a = alimentMap.get(c.getId_aliment());
+                    return (a == null) ? 0 :
+                            (int) Math.round(a.getCalories_pour_100g() * (double) c.getPoids_grammes() / 100.0);
+                }).sum();
+
+        if (caloriesToday > objectifCalories) {
+            int depasse = caloriesToday - objectifCalories;
+            ajouterCarteAlerte(vboxAlertes,
+                    "🔥 Calories dépassées !",
+                    "Vous avez dépassé votre objectif de " + depasse + " kcal aujourd'hui.\n" +
+                            "Pensez à faire une séance de sport pour compenser.",
+                    "#c62828", "#fff3e0");
+            auMoinsUneAlerte = true;
         }
-        if (!tel.matches("\\+?[0-9]{8,15}")) {
-            setPhoneStatus("\u274c Format invalide. Ex: +21699000000", "#c62828"); return;
+
+        // ── ALERTE 2 : Aucun repas enregistré aujourd'hui ──────────────────
+        long repasAujourdhui = serviceConsommation.afficherTout().stream()
+                .filter(c -> c.getDate_consommation() != null &&
+                        c.getDate_consommation().toLocalDateTime().toLocalDate().equals(today))
+                .count();
+
+        if (repasAujourdhui == 0) {
+            ajouterCarteAlerte(vboxAlertes,
+                    "🍽️ Journal alimentaire vide !",
+                    "Vous n'avez encore rien enregistré dans votre journal nutritionnel aujourd'hui." +
+                            "\nN'oubliez pas de tracker vos repas !",
+                    "#e65100", "#fff8e1");
+            auMoinsUneAlerte = true;
         }
-        phoneNumber = tel;
-        setVal("phoneNumber", phoneNumber);
-        sauvegarderFichierPrefs();
-        setPhoneStatus("\u2705 Numéro sauvegardé !", "#2e7d32");
+
+        // ── ALERTE 3 : Aucun entraînement cette semaine ────────────────────
+        LocalDate lundiSemaine = today.minusDays(today.getDayOfWeek().getValue() - 1);
+        long seancesSemaine = serviceActivite.afficherTout().stream()
+                .filter(a -> a.getDate_activite() != null)
+                .filter(a -> {
+                    LocalDate d = a.getDate_activite().toLocalDateTime().toLocalDate();
+                    return !d.isBefore(lundiSemaine) && !d.isAfter(today);
+                }).count();
+
+        if (seancesSemaine == 0) {
+            ajouterCarteAlerte(vboxAlertes,
+                    "💪 Pas d'entraînement cette semaine !",
+                    "Vous n'avez enregistré aucune séance depuis lundi.\n" +
+                            "Objectif : " + objEntrainements + " entraînement(s)/semaine.",
+                    "#1565c0", "#e3f2fd");
+            auMoinsUneAlerte = true;
+        } else if (objEntrainements > 0 && seancesSemaine < objEntrainements) {
+            long restantes = objEntrainements - seancesSemaine;
+            ajouterCarteAlerte(vboxAlertes,
+                    "📊 Objectif sport en cours",
+                    "Cette semaine : " + seancesSemaine + "/" + objEntrainements + " séances réalisées.\n" +
+                            restantes + " séance(s) restante(s) pour atteindre votre objectif !",
+                    "#1b5e20", "#e8f5e9");
+            auMoinsUneAlerte = true;
+        }
+
+        // ── PAS D'ALERTE = Message positif ─────────────────────────────────
+        if (!auMoinsUneAlerte) {
+            ajouterCarteAlerte(vboxAlertes,
+                    "✅ Tout est parfait !",
+                    "Aucune alerte pour aujourd'hui. Continuez sur cette lancée, vous êtes en bonne voie !",
+                    "#2e7d32", "#e8f5e9");
+        }
+
+        // Horodatage dernière vérification
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss");
+        if (lblDerniereVerif != null)
+            lblDerniereVerif.setText("Dernière vérif. : " +
+                    java.time.LocalTime.now().format(fmt));
     }
 
-    private void setPhoneStatus(String msg, String color) {
-        lblPhoneStatus.setText(msg);
-        lblPhoneStatus.setStyle(
-                "-fx-font-size: 12px; -fx-text-fill: " + color + "; -fx-font-weight: bold;");
+    /** Crée une carte d'alerte colorée et animée dans le vbox */
+    private void ajouterCarteAlerte(VBox parent, String titre, String message,
+                                    String textColor, String bgColor) {
+        VBox card = new VBox(4);
+        card.setStyle("-fx-background-color: " + bgColor + "; -fx-background-radius: 10; " +
+                "-fx-padding: 10 14; -fx-border-color: " + textColor + "; " +
+                "-fx-border-width: 0 0 0 4; -fx-border-radius: 10;");
+        card.setOpacity(0);
+
+        Label lblTitre = new Label(titre);
+        lblTitre.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: " + textColor + ";");
+        lblTitre.setWrapText(true);
+
+        Label lblMsg = new Label(message);
+        lblMsg.setStyle("-fx-font-size: 11px; -fx-text-fill: #424242;");
+        lblMsg.setWrapText(true);
+
+        card.getChildren().addAll(lblTitre, lblMsg);
+        parent.getChildren().add(card);
+
+        // Animation d'apparition
+        FadeTransition ft = new FadeTransition(Duration.millis(400), card);
+        ft.setFromValue(0.0); ft.setToValue(1.0);
+        ft.setDelay(Duration.millis(parent.getChildren().size() * 80L));
+        ft.play();
     }
 
-    private void envoyerSMSAlerte(int caloriesConsommees) {
-        String message = "Harmony : Objectif calorique depasse ! "
-                + "Consomme : " + caloriesConsommees + " kcal | "
-                + "Objectif : " + objectifCalories + " kcal.";
-        Thread t = new Thread(() -> {
-            try {
-                String body = "phone="   + URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8)
-                        + "&message=" + URLEncoder.encode(message, StandardCharsets.UTF_8)
-                        + "&key=textbelt";
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest req = HttpRequest.newBuilder()
-                        .uri(URI.create("https://textbelt.com/text"))
-                        .header("Content-Type", "application/x-www-form-urlencoded")
-                        .POST(HttpRequest.BodyPublishers.ofString(body))
-                        .timeout(java.time.Duration.ofSeconds(10))
-                        .build();
-                HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
-                System.out.println("SMS response: " + res.body());
-                if (res.body().contains("\"success\":true")) {
-                    setVal("dernierSMSDate", dateSelectionnee.toString());
-                    sauvegarderFichierPrefs();
-                    Platform.runLater(() ->
-                            setPhoneStatus("\uD83D\uDCE4 SMS d'alerte envoyé !", "#1565c0"));
-                }
-            } catch (Exception ex) {
-                System.out.println("Erreur SMS : " + ex.getMessage());
-            }
-        });
-        t.setDaemon(true);
-        t.start();
-    }
+    // ==========================================================================
+    // ANCIENS CHAMPS SMS — conservés pour éviter NullPointerException
+    // (les fx:id sont absents du FXML, les champs seront null, les méthodes
+    //  sont gardées mais ne font rien si les champs sont null)
+    // ==========================================================================
+    @FXML void sauvegarderTelephone(ActionEvent e) { /* désactivé - remplacé par alertes in-app */ }
+    private void setPhoneStatus(String msg, String color) { /* désactivé */ }
+    private void envoyerSMSAlerte(int caloriesConsommees) { /* désactivé - logique migrée dans verifierAlertes() */ }
 
     // ==========================================================================
     // CITATION — 100% FRANÇAIS
@@ -555,7 +629,6 @@ public class AccueilActiviteController {
         phoneNumber             = getStr("phoneNumber",         "");
         OBJECTIF_CALORIES_JOURNALIER = objectifCalories;
         OBJECTIF_EAU_ML              = objectifEauMl;
-        if (!phoneNumber.isBlank()) tfPhone.setText(phoneNumber);
     }
 
     private void sauvegarderPreferences() {
@@ -789,19 +862,17 @@ public class AccueilActiviteController {
     }
 
     // ==========================================================================
-    // GÉNÉRATION BILAN PDF (INCHANGÉE sauf correction WritableImage)
+    // GÉNÉRATION BILAN PDF — ENRICHI AVEC PLUS DE STATISTIQUES
     // ==========================================================================
     @FXML
     void genererBilanPDF(ActionEvent event) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Enregistrer le Bilan de Santé");
-        fc.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
-        fc.setInitialFileName("Bilan_Harmony_"
-                + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".pdf");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        fc.setInitialFileName("Bilan_Harmony_" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".pdf");
 
         Stage mainStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        File  file      = fc.showSaveDialog(mainStage);
+        File file = fc.showSaveDialog(mainStage);
         if (file == null) return;
 
         try {
@@ -813,92 +884,255 @@ public class AccueilActiviteController {
             List<Consommation> repas     = sc.afficherTout();
             List<Sommeil>      nuits     = ss.afficherTout();
 
+            // ── CALCULS STATISTIQUES ────────────────────────────────────────
             int totalSportMin        = activites.stream().mapToInt(Activite::getDuree_minutes).sum();
             int totalCaloriesBrulees = activites.stream().mapToInt(Activite::getCalories_brulees).sum();
             int totalEauMl           = repas.stream().mapToInt(Consommation::getQuantite_eau_ml).sum();
 
+            // Séances des 7 derniers jours
+            LocalDate today = LocalDate.now();
+            LocalDate il7j  = today.minusDays(7);
+            long seances7j = activites.stream()
+                    .filter(a -> a.getDate_activite() != null &&
+                            !a.getDate_activite().toLocalDateTime().toLocalDate().isBefore(il7j))
+                    .count();
+
+            // Calories moyennes par séance
+            double calMoyParSeance = activites.isEmpty() ? 0 :
+                    (double) totalCaloriesBrulees / activites.size();
+
+            // Sommeil : durée moyenne
+            double sommeilMoyH = 0;
+            if (!nuits.isEmpty()) {
+                double totalMin = nuits.stream().mapToDouble(n -> {
+                    long m = java.time.Duration.between(
+                            n.getDate_coucher().toLocalDateTime(),
+                            n.getDate_reveil().toLocalDateTime()).toMinutes();
+                    return m / 60.0;
+                }).sum();
+                sommeilMoyH = totalMin / nuits.size();
+            }
+
+            // Nuits de bonne qualité (Excellent ou BON)
+            long bonneNuits = nuits.stream()
+                    .filter(n -> "EXCELLENT".equals(n.getQualite_sommeil()) || "BON".equals(n.getQualite_sommeil()))
+                    .count();
+
+            // Journées alimentaires distinctes
+            long joursAvecRepas = repas.stream()
+                    .filter(c -> c.getDate_consommation() != null)
+                    .map(c -> c.getDate_consommation().toLocalDateTime().toLocalDate())
+                    .distinct().count();
+
+            // Taux de réussite calories (jours où objectif respecté)
+            Map<LocalDate, Integer> calParJour = new HashMap<>();
+            Map<Integer, Aliment> alimentMap = new HashMap<>();
+            serviceAliment.afficherTout().forEach(a -> alimentMap.put(a.getId_aliment(), a));
+            repas.forEach(c -> {
+                if (c.getDate_consommation() == null) return;
+                LocalDate d = c.getDate_consommation().toLocalDateTime().toLocalDate();
+                Aliment a = alimentMap.get(c.getId_aliment());
+                int cal = (a == null) ? 0 : (int) Math.round(
+                        a.getCalories_pour_100g() * (double) c.getPoids_grammes() / 100.0);
+                calParJour.merge(d, cal, Integer::sum);
+            });
+            long joursObjectifRespect = calParJour.values().stream()
+                    .filter(cal -> cal <= objectifCalories).count();
+            int tauxReussite = calParJour.isEmpty() ? 0 :
+                    (int) Math.round(100.0 * joursObjectifRespect / calParJour.size());
+
+            // Calories brûlées cette semaine
+            LocalDate lundiSem = today.minusDays(today.getDayOfWeek().getValue() - 1);
+            int calBruleesSemaine = activites.stream()
+                    .filter(a -> a.getDate_activite() != null &&
+                            !a.getDate_activite().toLocalDateTime().toLocalDate().isBefore(lundiSem))
+                    .mapToInt(Activite::getCalories_brulees).sum();
+
+            // ── DOCUMENT PDF ──────────────────────────────────────────────
             Document doc = new Document();
             PdfWriter.getInstance(doc, new FileOutputStream(file));
             doc.open();
 
             BaseColor mauve    = new BaseColor(106, 27, 154);
+            BaseColor vert     = new BaseColor(27, 94, 32);
+            BaseColor bleu     = new BaseColor(21, 101, 192);
+            BaseColor orange   = new BaseColor(230, 81, 0);
             BaseColor gris     = new BaseColor(80, 80, 80);
             Font fontTitre     = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 26, mauve);
             Font fontSousTitre = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, mauve);
+            Font fontSection   = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, bleu);
             Font fontTexte     = FontFactory.getFont(FontFactory.HELVETICA, 12, gris);
             Font fontHdr       = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.WHITE);
+            Font fontVert      = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, vert);
+            Font fontOrange    = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, orange);
 
-            Paragraph titre = new Paragraph("BILAN GLOBAL DE SANTÉ", fontTitre);
-            titre.setAlignment(Element.ALIGN_CENTER); doc.add(titre);
+            // ── PAGE 1 : EN-TÊTE + RÉSUMÉ GLOBAL ─────────────────────────
+            Paragraph titre = new Paragraph("BILAN GLOBAL DE SANTÉ — HARMONY", fontTitre);
+            titre.setAlignment(Element.ALIGN_CENTER);
+            doc.add(titre);
 
             Paragraph dateGen = new Paragraph(
-                    "Généré par Harmony le : "
-                            + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+                    "Généré le : " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
                     FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 11, BaseColor.GRAY));
             dateGen.setAlignment(Element.ALIGN_CENTER);
-            dateGen.setSpacingAfter(25f);
+            dateGen.setSpacingAfter(20f);
             doc.add(dateGen);
 
-            // Sport
-            Paragraph tSport = new Paragraph("SYNTHESE SPORTIVE", fontSousTitre);
+            // Tableau résumé global (4 colonnes)
+            Paragraph tResume = new Paragraph("TABLEAU DE BORD GLOBAL", fontSousTitre);
+            tResume.setSpacingBefore(10f); tResume.setSpacingAfter(10f);
+            doc.add(tResume);
+
+            PdfPTable tableResume = new PdfPTable(4);
+            tableResume.setWidthPercentage(100); tableResume.setSpacingAfter(20f);
+            String[] resumeLabels = {"Séances sport", "Calories brûlées", "Jours trackés", "Nuits enregistrées"};
+            String[] resumeValues = {
+                    activites.size() + " séances",
+                    totalCaloriesBrulees + " kcal",
+                    joursAvecRepas + " jours",
+                    nuits.size() + " nuits"
+            };
+            BaseColor[] resumeColors = {mauve, new BaseColor(198, 40, 40), new BaseColor(21, 101, 192), new BaseColor(0, 131, 143)};
+            for (int i = 0; i < 4; i++) {
+                PdfPCell cell = new PdfPCell();
+                cell.setBackgroundColor(resumeColors[i]);
+                cell.setPadding(12f); cell.setBorder(PdfPCell.NO_BORDER);
+                Paragraph p = new Paragraph(resumeLabels[i] + "\n",
+                        FontFactory.getFont(FontFactory.HELVETICA, 11, BaseColor.WHITE));
+                p.add(new Phrase(resumeValues[i],
+                        FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.WHITE)));
+                p.setAlignment(Element.ALIGN_CENTER);
+                cell.addElement(p); tableResume.addCell(cell);
+            }
+            doc.add(tableResume);
+
+            // ── SECTION SPORT ─────────────────────────────────────────────
+            Paragraph tSport = new Paragraph("SYNTHÈSE SPORTIVE", fontSousTitre);
             tSport.setSpacingAfter(10f); doc.add(tSport);
+
             PdfPTable tableSport = pdfTable("Indicateur", "Performances", fontHdr);
-            pdfRow(tableSport, "Séances réalisées",       activites.size() + " séances",              fontTexte, true);
-            pdfRow(tableSport, "Temps total d'effort",    (totalSportMin/60)+"h "+(totalSportMin%60)+"m", fontTexte, false);
-            pdfRow(tableSport, "Calories brûlées",        totalCaloriesBrulees + " kcal",              fontTexte, true);
+            pdfRow(tableSport, "Séances réalisées (total)",     activites.size() + " séances",                              fontTexte, true);
+            pdfRow(tableSport, "Séances cette semaine",          seances7j + " séances (7 derniers jours)",                  fontTexte, false);
+            pdfRow(tableSport, "Temps total d'effort",           (totalSportMin/60)+"h "+(totalSportMin%60)+"m",             fontTexte, true);
+            pdfRow(tableSport, "Temps moyen par séance",         activites.isEmpty() ? "N/A" :
+                    (totalSportMin/activites.size()) + " min/séance",                                                         fontTexte, false);
+            pdfRow(tableSport, "Calories brûlées (total)",       totalCaloriesBrulees + " kcal",                             fontTexte, true);
+            pdfRow(tableSport, "Calories brûlées cette semaine", calBruleesSemaine + " kcal",                                fontTexte, false);
+            pdfRow(tableSport, "Moyenne cal/séance",             String.format("%.0f kcal", calMoyParSeance),                fontTexte, true);
+            pdfRow(tableSport, "Objectif entraînements/semaine", objEntrainements + " séances/semaine",                      fontTexte, false);
             doc.add(tableSport);
 
+            // Graphique calories brûlées par séance — CORRIGÉ
             if (!activites.isEmpty()) {
-                CategoryAxis xA = new CategoryAxis(); NumberAxis yA = new NumberAxis();
-                xA.setAnimated(false); yA.setAnimated(false);
-                BarChart<String, Number> chart = new BarChart<>(xA, yA);
-                chart.setAnimated(false);
-                chart.setTitle("Calories brûlées par séance");
-                XYChart.Series<String, Number> s = new XYChart.Series<>();
-                int i = 1;
-                for (Activite a : activites)
-                    s.getData().add(new XYChart.Data<>("S" + i++, a.getCalories_brulees()));
-                chart.getData().add(s);
-                doc.add(chartToPdfImage(chart, "bar"));
+                doc.add(new Paragraph("Évolution des calories brûlées par séance :", fontSection));
+                doc.add(chartToPdfImage(creerBarChart(activites), "bar"));
             }
 
+            // ── PAGE 2 : NUTRITION ────────────────────────────────────────
             doc.newPage();
             Paragraph tNutri = new Paragraph("NUTRITION & HYDRATATION", fontSousTitre);
             tNutri.setSpacingAfter(10f); doc.add(tNutri);
+
             PdfPTable tableNutri = pdfTable("Indicateur", "Valeur", fontHdr);
-            pdfRow(tableNutri, "Repas enregistrés", String.valueOf(repas.size()),           fontTexte, true);
-            pdfRow(tableNutri, "Volume d'eau bu",   String.format("%.1f L", totalEauMl/1000.0), fontTexte, false);
+            pdfRow(tableNutri, "Jours avec repas enregistrés",  joursAvecRepas + " jours",                                  fontTexte, true);
+            pdfRow(tableNutri, "Total entrées nutritionnelles",  repas.size() + " entrées",                                  fontTexte, false);
+            pdfRow(tableNutri, "Volume d'eau bu (total)",        String.format("%.1f L", totalEauMl/1000.0),                 fontTexte, true);
+            pdfRow(tableNutri, "Objectif calorique journalier",  objectifCalories + " kcal/jour",                            fontTexte, false);
+            pdfRow(tableNutri, "Taux de réussite objectif cal.", tauxReussite + "% des jours dans l'objectif",               fontTexte, true);
+            pdfRow(tableNutri, "Répartition macros cibles",
+                    "G:" + (int)objectifGluPct + "% | L:" + (int)objectifLipPct + "% | P:" + (int)objectifProtPct + "%",    fontTexte, false);
             doc.add(tableNutri);
 
+            // Graphique hydratation — CORRIGÉ
             if (!repas.isEmpty()) {
-                CategoryAxis xW = new CategoryAxis(); NumberAxis yW = new NumberAxis();
-                xW.setAnimated(false); yW.setAnimated(false);
-                LineChart<String, Number> chartEau = new LineChart<>(xW, yW);
-                chartEau.setAnimated(false);
-                chartEau.setTitle("Suivi hydratation (ml)");
-                XYChart.Series<String, Number> sE = new XYChart.Series<>();
-                int j = 1;
-                for (Consommation c : repas)
-                    sE.getData().add(new XYChart.Data<>("R" + j++, c.getQuantite_eau_ml()));
-                chartEau.getData().add(sE);
-                doc.add(chartToPdfImage(chartEau, "line"));
+                doc.add(new Paragraph("\nSuivi de l'hydratation quotidienne :", fontSection));
+                doc.add(chartToPdfImage(creerLineChartEau(repas), "line"));
             }
 
-            Paragraph tSommeil = new Paragraph("\nRECUPERATION & SOMMEIL", fontSousTitre);
+            // ── PAGE 3 : SOMMEIL ─────────────────────────────────────────
+            doc.newPage();
+            Paragraph tSommeil = new Paragraph("RÉCUPÉRATION & SOMMEIL", fontSousTitre);
             tSommeil.setSpacingAfter(10f); doc.add(tSommeil);
+
             PdfPTable tableSommeil = pdfTable("Indicateur", "Donnée", fontHdr);
-            pdfRow(tableSommeil, "Nuits enregistrées", String.valueOf(nuits.size()), fontTexte, true);
+            pdfRow(tableSommeil, "Nuits enregistrées",         nuits.size() + " nuits",                                      fontTexte, true);
+            pdfRow(tableSommeil, "Durée moyenne de sommeil",   String.format("%.1f h/nuit", sommeilMoyH),                    fontTexte, false);
+            pdfRow(tableSommeil, "Nuits de bonne qualité",     bonneNuits + " nuits (Excellent ou Bon)",                     fontTexte, true);
+            pdfRow(tableSommeil, "Taux de bonne qualité",      nuits.isEmpty() ? "N/A" :
+                    String.format("%.0f%%", 100.0 * bonneNuits / nuits.size()),                                               fontTexte, false);
+            pdfRow(tableSommeil, "Objectif sommeil recommandé", "7 à 9 heures par nuit (OMS)",                               fontTexte, true);
             doc.add(tableSommeil);
 
+            // Graphique sommeil — CORRIGÉ
+            if (!nuits.isEmpty()) {
+                doc.add(new Paragraph("\nÉvolution de la durée de sommeil :", fontSection));
+                doc.add(chartToPdfImage(creerLineChartSommeil(nuits), "sommeil"));
+            }
+
+            // ── CONCLUSION ────────────────────────────────────────────────
             Paragraph concl = new Paragraph(
-                    "\n\nCe rapport a été généré par Harmony. Continuez de prendre soin de vous !",
+                    "\n\nBravo pour votre suivi ! Ce rapport Harmony résume votre parcours de santé.\n" +
+                            "Continuez à tracker, progresser et prendre soin de vous chaque jour. 💪",
                     FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 12, mauve));
             concl.setAlignment(Element.ALIGN_CENTER);
             doc.add(concl);
+
             doc.close();
             afficherFenetreSucces(mainStage);
 
         } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // ── Helpers Graphiques pour PDF (méthodes séparées pour clarté) ──
+
+    private BarChart<String, Number> creerBarChart(List<Activite> activites) {
+        CategoryAxis xA = new CategoryAxis(); NumberAxis yA = new NumberAxis();
+        xA.setAnimated(false); yA.setAnimated(false);
+        xA.setLabel("Séances"); yA.setLabel("Calories brûlées");
+        BarChart<String, Number> chart = new BarChart<>(xA, yA);
+        chart.setAnimated(false); chart.setTitle("Calories brûlées par séance");
+        chart.setLegendVisible(false);
+        XYChart.Series<String, Number> s = new XYChart.Series<>();
+        int i = 1;
+        for (Activite a : activites)
+            s.getData().add(new XYChart.Data<>("S" + i++, a.getCalories_brulees()));
+        chart.getData().add(s);
+        return chart;
+    }
+
+    private LineChart<String, Number> creerLineChartEau(List<Consommation> repas) {
+        CategoryAxis xW = new CategoryAxis(); NumberAxis yW = new NumberAxis();
+        xW.setAnimated(false); yW.setAnimated(false);
+        xW.setLabel("Entrées"); yW.setLabel("Eau (ml)");
+        LineChart<String, Number> chart = new LineChart<>(xW, yW);
+        chart.setAnimated(false); chart.setTitle("Suivi hydratation (ml)");
+        chart.setLegendVisible(false);
+        XYChart.Series<String, Number> sE = new XYChart.Series<>();
+        int j = 1;
+        for (Consommation c : repas)
+            sE.getData().add(new XYChart.Data<>("R" + j++, c.getQuantite_eau_ml()));
+        chart.getData().add(sE);
+        return chart;
+    }
+
+    private LineChart<String, Number> creerLineChartSommeil(List<Sommeil> nuits) {
+        CategoryAxis xS = new CategoryAxis(); NumberAxis yS = new NumberAxis();
+        xS.setAnimated(false); yS.setAnimated(false);
+        xS.setLabel("Nuits"); yS.setLabel("Heures de sommeil");
+        LineChart<String, Number> chart = new LineChart<>(xS, yS);
+        chart.setAnimated(false); chart.setTitle("Durée de sommeil par nuit");
+        chart.setLegendVisible(false);
+        XYChart.Series<String, Number> sS = new XYChart.Series<>();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
+        for (Sommeil n : nuits) {
+            String label = n.getDate_coucher().toLocalDateTime().format(fmt);
+            double h = java.time.Duration.between(
+                    n.getDate_coucher().toLocalDateTime(),
+                    n.getDate_reveil().toLocalDateTime()).toMinutes() / 60.0;
+            sS.getData().add(new XYChart.Data<>(label, h));
+        }
+        chart.getData().add(sS);
+        return chart;
     }
 
     // ── Helpers PDF ──
@@ -927,28 +1161,51 @@ public class AccueilActiviteController {
     }
 
     private Image chartToPdfImage(Chart chart, String type) throws Exception {
+        // CORRECTION : on force le rendu CSS dans une scène temporaire non affichée
+        chart.setPrefSize(650, 320);
+        chart.setMinSize(650, 320);
+        chart.setMaxSize(650, 320);
+        chart.setAnimated(false);
         chart.setLegendVisible(false);
-        Scene scene = new Scene(chart, 650, 320);
-        scene.getRoot().applyCss(); scene.getRoot().layout();
-        chart.applyCss(); chart.layout();
-        chart.setStyle("-fx-background-color: transparent;");
+        chart.setStyle("-fx-background-color: white;");
+
+        // Crée une scène temporaire (non affichée) pour forcer le CSS
+        Group group = new Group(chart);
+        Scene offscreenScene = new Scene(group, 650, 320);
+
+        // Applique les CSS et force le layout
+        offscreenScene.getRoot().applyCss();
+        offscreenScene.getRoot().layout();
+        chart.applyCss();
+        chart.layout();
+
+        // Personnalisation visuelle des graphiques
         Node pb = chart.lookup(".chart-plot-background");
         if (pb != null) pb.setStyle("-fx-background-color: #fbf6fc;");
-        if ("bar".equals(type))
+
+        if ("bar".equals(type)) {
             for (Node n : chart.lookupAll(".default-color0.chart-bar"))
-                n.setStyle("-fx-bar-fill: linear-gradient(to top, #6a1b9a, #d500f9);");
-        else if ("line".equals(type)) {
+                n.setStyle("-fx-bar-fill: #6a1b9a;");
+        } else {
             Node ln = chart.lookup(".chart-series-line");
-            if (ln != null) ln.setStyle("-fx-stroke: #6a1b9a; -fx-stroke-width: 4px;");
+            if (ln != null) ln.setStyle("-fx-stroke: #6a1b9a; -fx-stroke-width: 3px;");
+            for (Node sym : chart.lookupAll(".chart-line-symbol"))
+                sym.setStyle("-fx-background-color: #d500f9, white;");
         }
-        // ← CORRECTION : WritableImage maintenant importé correctement
-        WritableImage fxImage  = chart.snapshot(new SnapshotParameters(), null);
+
+        // Snapshot
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.WHITE);
+        WritableImage fxImage = chart.snapshot(params, null);
         BufferedImage awtImage = SwingFXUtils.fromFXImage(fxImage, null);
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(awtImage, "png", baos);
         Image img = Image.getInstance(baos.toByteArray());
         img.setAlignment(Element.ALIGN_CENTER);
-        img.scalePercent(75);
+        img.scalePercent(80);
+        img.setSpacingBefore(8f);
+        img.setSpacingAfter(12f);
         return img;
     }
 
