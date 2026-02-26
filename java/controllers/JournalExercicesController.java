@@ -56,6 +56,8 @@ public class JournalExercicesController {
     @FXML private StackPane coachOverlayPane;
     @FXML private TextArea chatArea;
     @FXML private TextField chatInput;
+    // ── Bouton 3D Blessures (nouvelle fonctionnalité) ──
+    @FXML private Button btnBlessures3D;
 
     private ServiceActivite serviceActivite = new ServiceActivite();
     private ServiceExercice serviceExercice = new ServiceExercice();
@@ -81,6 +83,10 @@ public class JournalExercicesController {
         if (isModeFemme) setModeFemmeUI(); else setModeHommeUI();
 
         chargerHistoriqueInnovant();
+        // ── Initialiser le bouton Blessures 3D ──
+        if (btnBlessures3D != null) {
+            btnBlessures3D.setOnAction(e -> ouvrirBlessures3D(e));
+        }
     }
 
     // =======================================================================
@@ -652,5 +658,15 @@ public class JournalExercicesController {
             int end = json.indexOf("\"", start);
             return json.substring(start, end).replace("\\n", "\n").replace("\\\"", "\"");
         } catch (Exception e) { return "Erreur d'analyse."; }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  NOUVELLE FONCTIONNALITÉ : Visualisation 3D des Blessures
+    // ═══════════════════════════════════════════════════════════
+    @FXML
+    void ouvrirBlessures3D(ActionEvent event) {
+        BlessureViewerController.openBlessureViewer(
+                flowPaneExercices.getScene().getWindow()
+        );
     }
 }
