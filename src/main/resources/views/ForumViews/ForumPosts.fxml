@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           xmlns="http://javafx.com/javafx/21"
+           fx:controller="controllers.ForumControllers.ForumPostsController"
+           styleClass="posts-root"
+           stylesheets="@/views/UserViews/modif/admin-styles.css"
+           style="-fx-background-color: #f4f6f9;">
+
+    <!-- MAIN CONTENT -->
+    <BorderPane fx:id="mainLayout">
+
+        <!-- TOP BAR -->
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="modern-topbar">
+                <padding>
+                    <Insets top="15" right="30" bottom="15" left="30"/>
+                </padding>
+
+                <Button text="←"
+                        onAction="#handleBack"
+                        styleClass="icon-btn"/>
+
+                <Label text="💬 Forum"
+                       styleClass="topbar-title"/>
+
+                <Label fx:id="categorieTitle"
+                       text="Catégorie"
+                       styleClass="posts-title"
+                       style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 14px;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Search Bar -->
+                <HBox spacing="8" alignment="CENTER">
+                    <TextField fx:id="searchField"
+                               promptText="Rechercher..."
+                               styleClass="search-field"
+                               prefWidth="220"/>
+                    <Button text="🔍"
+                            onAction="#handleSearch"
+                            styleClass="search-btn"/>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="addPostBtn"
+                        text="+ Nouveau Post"
+                        styleClass="primary-btn"/>
+            </HBox>
+        </top>
+
+        <!-- FEED -->
+        <center>
+            <ScrollPane fitToWidth="true"
+                        hbarPolicy="NEVER"
+                        style="-fx-background: transparent; -fx-background-color: transparent;">
+                <content>
+                    <VBox fx:id="postsContainer"
+                          spacing="15"
+                          style="-fx-background-color: transparent;">
+                        <padding>
+                            <Insets top="20" right="40" bottom="20" left="40"/>
+                        </padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+
+    <!-- OVERLAY LAYER (traduction + autres popups) -->
+    <StackPane fx:id="overlayContainer"
+               pickOnBounds="false"
+               mouseTransparent="false"/>
+
+</StackPane>
