@@ -75,8 +75,12 @@ public class ServiceActivite {
              ResultSet rs = stm.executeQuery(qry)) {
 
             while (rs.next()) {
+                // ✅ CORRECTION : utilisation du constructeur 10-args (id_activite, user_id, ...)
+                // L'ancien code utilisait le constructeur 9-args dont le 1er int → user_id,
+                // laissant id_activite à 0 → modifier() et supprimer() sans effet (WHERE id=0).
                 Activite a = new Activite(
                         rs.getInt("id_activite"),
+                        rs.getInt("user_id"),
                         rs.getTimestamp("date_activite"),
                         rs.getInt("id_exercice"),
                         rs.getInt("duree_minutes"),
@@ -86,7 +90,6 @@ public class ServiceActivite {
                         rs.getFloat("poids"),
                         rs.getString("notes")
                 );
-                a.setUser_id(rs.getInt("user_id"));
                 liste.add(a);
             }
 
@@ -112,8 +115,10 @@ public class ServiceActivite {
             try (ResultSet rs = pstm.executeQuery()) {
 
                 while (rs.next()) {
+                    // ✅ CORRECTION : même correction que afficherTout()
                     Activite a = new Activite(
                             rs.getInt("id_activite"),
+                            rs.getInt("user_id"),
                             rs.getTimestamp("date_activite"),
                             rs.getInt("id_exercice"),
                             rs.getInt("duree_minutes"),
@@ -123,7 +128,6 @@ public class ServiceActivite {
                             rs.getFloat("poids"),
                             rs.getString("notes")
                     );
-                    a.setUser_id(rs.getInt("user_id"));
                     liste.add(a);
                 }
             }

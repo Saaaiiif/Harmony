@@ -310,9 +310,10 @@ public class JournalExercicesController {
             tf3.setStyle("-fx-background-radius: 10; -fx-border-width: 0;");
             lblErreur.setText("");
 
-            String val1 = tf1.getText().trim();
-            String val2 = tf2.getText().trim();
-            String val3 = tf3.getText().trim();
+            // ✅ CORRECTION CONTRÔLE DE SAISIE : normalise la virgule en point
+            String val1 = tf1.getText().trim().replace(",", ".");
+            String val2 = tf2.getText().trim().replace(",", ".");
+            String val3 = tf3.getText().trim().replace(",", ".");
 
             if (finalIsCardio) {
                 if (!val1.matches("\\d+")) { tf1.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
@@ -320,11 +321,12 @@ public class JournalExercicesController {
             } else {
                 if (!val1.matches("\\d+")) { tf1.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
                 if (!val2.matches("\\d+")) { tf2.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
+                // ✅ Accepte entier ou décimal (ex: 75 ou 75.5 ou 75,5)
                 if (!val3.matches("\\d+(\\.\\d+)?")) { tf3.setStyle("-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;"); hasError = true; }
             }
 
             if (hasError) {
-                lblErreur.setText("⚠️ Veuillez entrer des valeurs numériques valides.");
+                lblErreur.setText("⚠️ Veuillez entrer des valeurs numériques valides (ex: 10 ou 75,5).");
                 return;
             }
 
@@ -333,15 +335,26 @@ public class JournalExercicesController {
             act.setNotes(taNote.getText());
 
             if (!isEditMode) {
+                // ✅ CORRECTION : injecter user_id depuis la Session
+                try {
+                    if (models.UserModels.Session.getInstance() != null
+                            && models.UserModels.Session.getInstance().getUser() != null) {
+                        act.setUser_id(models.UserModels.Session.getInstance().getUser().getUser_id());
+                    }
+                } catch (Exception ignored) {}
+
                 LocalDate date = datePickerSeance.getValue() != null ? datePickerSeance.getValue() : LocalDate.now();
                 act.setDate_activite(Timestamp.valueOf(date.atStartOfDay()));
             }
 
             if (finalIsCardio) {
-                act.setDuree_minutes(Integer.parseInt(val1)); act.setCalories_brulees(Integer.parseInt(val2));
+                act.setDuree_minutes(Integer.parseInt(val1));
+                act.setCalories_brulees(Integer.parseInt(val2));
                 act.setNb_series(0); act.setNb_repetitions(0); act.setPoids(0f);
             } else {
-                act.setNb_series(Integer.parseInt(val1)); act.setNb_repetitions(Integer.parseInt(val2)); act.setPoids(Float.parseFloat(val3));
+                act.setNb_series(Integer.parseInt(val1));
+                act.setNb_repetitions(Integer.parseInt(val2));
+                act.setPoids(Float.parseFloat(val3));
                 act.setDuree_minutes(0); act.setCalories_brulees(0);
             }
 
@@ -502,11 +515,16 @@ public class JournalExercicesController {
             String path = ex.getVideo_exercice();
             if (path == null || path.trim().isEmpty()) throw new Exception("Aucune vidéo.");
             Media media;
-            if (path.startsWith("http")) media = new Media(path);
-            else {
+            if (path.startsWith("http")) {
+                media = new Media(path);
+            } else {
                 if (!path.toLowerCase().endsWith(".mp4")) path += ".mp4";
-                java.net.URL videoUrl = getClass().getResource("/videos/" + path);
-                if (videoUrl == null) throw new Exception("Introuvable.");
+                // ✅ CORRECTION CHEMIN VIDÉO : dans le projet d'intégration,
+                // les vidéos sont sous /views/ActiviteViews/videos/ et NON sous /videos/
+                java.net.URL videoUrl = getClass().getResource("/views/ActiviteViews/videos/" + path);
+                // Fallback : tente aussi la racine /videos/ (compatibilité)
+                if (videoUrl == null) videoUrl = getClass().getResource("/videos/" + path);
+                if (videoUrl == null) throw new Exception("Introuvable : " + path);
                 media = new Media(videoUrl.toExternalForm());
             }
             mediaPlayer = new MediaPlayer(media);
@@ -515,6 +533,7 @@ public class JournalExercicesController {
             mediaPlayer.play();
         } catch (Exception e) {
             title.setText("Vidéo Introuvable ⚠️"); title.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 22px; -fx-font-weight: bold;");
+            System.err.println("Erreur vidéo : " + e.getMessage());
         }
 
         HBox controls = new HBox(20); controls.setAlignment(Pos.CENTER);
