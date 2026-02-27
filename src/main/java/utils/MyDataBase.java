@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class MyDataBase {
 
     private static MyDataBase instance;
-    final String URL ="jdbc:mysql://localhost:4306/projet_pi";
+    final String URL ="jdbc:mysql://localhost:3306/integration-pi";
     final String USER = "root";
     final String PASS = "";
     private Connection cnx;

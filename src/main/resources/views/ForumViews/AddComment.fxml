@@ -9,7 +9,7 @@
             fx:controller="controllers.ForumControllers.AddCommentController"
             prefWidth="440"
             prefHeight="320"
-            stylesheets="@/views/UserViews/modif/admin-styles.css"
+            stylesheets="@/views/admin-styles.css"
             style="-fx-background-color: white;">
 
     <VBox spacing="16" alignment="TOP_CENTER"

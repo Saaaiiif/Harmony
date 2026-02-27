@@ -8,7 +8,7 @@
            xmlns="http://javafx.com/javafx/21"
            fx:controller="controllers.ForumControllers.ForumPostsController"
            styleClass="posts-root"
-           stylesheets="@/views/UserViews/modif/admin-styles.css"
+           stylesheets="@/views/admin-styles.css"
            style="-fx-background-color: #f4f6f9;">
 
     <!-- MAIN CONTENT -->

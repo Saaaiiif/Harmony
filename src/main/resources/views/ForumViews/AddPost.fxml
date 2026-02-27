@@ -10,7 +10,7 @@
             fx:controller="controllers.ForumControllers.AddPostController"
             prefWidth="480"
             prefHeight="580"
-            stylesheets="@/views/UserViews/modif/admin-styles.css"
+            stylesheets="@/views/admin-styles.css"
             style="-fx-background-color: white;">
 
     <ScrollPane fitToWidth="true"

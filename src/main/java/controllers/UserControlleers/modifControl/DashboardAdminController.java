@@ -35,10 +35,11 @@ import java.io.IOException;
  * Controller racine de l'espace admin.
  *
  * Gère :
- *  - Sidebar collapsible (80 px ↔ 260 px, animation 180ms, même logique que RootLayoutController)
+ *  - Sidebar collapsible (72 px ↔ 260 px, animation 180ms)
  *  - Navigation par chargement de contenu dans le StackPane contentArea (fade 250ms)
  *  - Avatar profil avec tooltip au survol et popup au double-clic
  *  - Session check + logout
+ *  - Gestion Sport (GestionSport.fxml) et Gestion Nutrition (GestionNutrition.fxml)
  */
 public class DashboardAdminController {
 
@@ -48,6 +49,8 @@ public class DashboardAdminController {
 
     @FXML private Button    btnDashboard;
     @FXML private Button    btnGestionUsers;
+    @FXML private Button    btnGestionSport;
+    @FXML private Button    btnGestionNutrition;
     @FXML private Button    btnLogout;
 
     @FXML private StackPane profileZone;
@@ -61,16 +64,10 @@ public class DashboardAdminController {
     @FXML private Label     tooltipNom;
     @FXML private Label     tooltipEmail;
 
-    // ── Sidebar dimensions (identiques à RootLayoutController) ────────────────
+    // ── Sidebar dimensions ─────────────────────────────────────────────────────
     private static final double SIDEBAR_EXPANDED  = 260.0;
     private static final double SIDEBAR_COLLAPSED =  72.0;
     private Timeline sidebarAnim;
-
-    // ── Styles bouton actif / inactif ─────────────────────────────────────────
-    private static final String STYLE_ACTIVE =
-            "sidebar-item sidebar-item-active";
-    private static final String STYLE_INACTIVE =
-            "sidebar-item";
 
     // ── Page courante ─────────────────────────────────────────────────────────
     private String currentPage = "dashboard";
@@ -93,15 +90,14 @@ public class DashboardAdminController {
             sidebar.setMinWidth(SIDEBAR_COLLAPSED);
             sidebar.setMaxWidth(SIDEBAR_COLLAPSED);
 
-            // ✅ Appliquer le background image sur le StackPane contentArea
-            // (robuste car utilise le classloader pour résoudre l'URL absolue)
+            // Appliquer le background image sur le StackPane contentArea
             try {
                 java.net.URL bgUrl = getClass().getResource("/views/UserViews/backgLIGHT.png");
                 if (bgUrl != null) {
                     contentArea.setStyle(
-                        "-fx-background-image: url('" + bgUrl.toExternalForm() + "');" +
-                        "-fx-background-size: cover;" +
-                        "-fx-background-position: center center;"
+                            "-fx-background-image: url('" + bgUrl.toExternalForm() + "');" +
+                                    "-fx-background-size: cover;" +
+                                    "-fx-background-position: center center;"
                     );
                 }
             } catch (Exception ignored) {}
@@ -153,7 +149,7 @@ public class DashboardAdminController {
     }
 
     // =========================================================================
-    //  SIDEBAR — ANIMATION (même logique que RootLayoutController)
+    //  SIDEBAR — ANIMATION
     // =========================================================================
 
     private void animateSidebarTo(double targetWidth) {
@@ -194,6 +190,24 @@ public class DashboardAdminController {
     }
 
     /**
+     * Charge la page Gestion Sport dans le contentArea.
+     */
+    @FXML
+    void handleGestionSport() {
+        if ("gestionSport".equals(currentPage)) return;
+        loadContent("/views/ActiviteViews/GestionSport.fxml", "gestionSport");
+    }
+
+    /**
+     * Charge la page Gestion Nutrition dans le contentArea.
+     */
+    @FXML
+    void handleGestionNutrition() {
+        if ("gestionNutrition".equals(currentPage)) return;
+        loadContent("/views/ActiviteViews/GestionNutrition.fxml", "gestionNutrition");
+    }
+
+    /**
      * Charge un FXML dans le StackPane contentArea avec un fade transition.
      * Met à jour le bouton actif dans la sidebar.
      */
@@ -229,13 +243,17 @@ public class DashboardAdminController {
     }
 
     private void updateActiveButton(String pageKey) {
-        // Réinitialiser
+        // Réinitialiser tous les boutons
         btnDashboard.getStyleClass().setAll("sidebar-item");
         btnGestionUsers.getStyleClass().setAll("sidebar-item");
+        if (btnGestionSport != null)    btnGestionSport.getStyleClass().setAll("sidebar-item");
+        if (btnGestionNutrition != null) btnGestionNutrition.getStyleClass().setAll("sidebar-item");
 
         switch (pageKey) {
-            case "dashboard"    -> btnDashboard.getStyleClass().setAll("sidebar-item", "sidebar-item-active");
-            case "gestionUsers" -> btnGestionUsers.getStyleClass().setAll("sidebar-item", "sidebar-item-active");
+            case "dashboard"       -> btnDashboard.getStyleClass().setAll("sidebar-item", "sidebar-item-active");
+            case "gestionUsers"    -> btnGestionUsers.getStyleClass().setAll("sidebar-item", "sidebar-item-active");
+            case "gestionSport"    -> { if (btnGestionSport != null) btnGestionSport.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
+            case "gestionNutrition"-> { if (btnGestionNutrition != null) btnGestionNutrition.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
         }
     }
 
@@ -251,6 +269,43 @@ public class DashboardAdminController {
         session.clearSession();
         new File("remember.dat").delete();
         switchToLogin();
+    }
+
+    // =========================================================================
+    //  FORUM
+    // =========================================================================
+
+    @FXML
+    private void handleForum() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml")
+            );
+            Parent content = loader.load();
+
+            ForumBackDashboardController ctrl = loader.getController();
+
+            if (contentArea.getChildren().isEmpty()) {
+                contentArea.getChildren().setAll(content);
+            } else {
+                FadeTransition fadeOut =
+                        new FadeTransition(Duration.millis(180), contentArea.getChildren().get(0));
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.setOnFinished(e -> {
+                    contentArea.getChildren().setAll(content);
+                    FadeTransition fadeIn = new FadeTransition(Duration.millis(220), content);
+                    fadeIn.setFromValue(0.0);
+                    fadeIn.setToValue(1.0);
+                    fadeIn.play();
+                });
+                fadeOut.play();
+            }
+            currentPage = "forum";
+            updateActiveButton("forum");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // =========================================================================
@@ -350,43 +405,4 @@ public class DashboardAdminController {
     // =========================================================================
 
     private String nvl(String s) { return s != null ? s : ""; }
-    @FXML
-    private void handleForum() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml")
-            );
-            Parent content = loader.load();
-
-            ForumBackDashboardController ctrl = loader.getController();
-            // pas d'AccueilController ici, handleBack() peut juste recharger le dashboard
-
-            // Même pattern fade que handleGestionUsers()
-            if (contentArea.getChildren().isEmpty()) {
-                contentArea.getChildren().setAll(content);
-            } else {
-                javafx.animation.FadeTransition fadeOut =
-                        new javafx.animation.FadeTransition(
-                                javafx.util.Duration.millis(180),
-                                contentArea.getChildren().get(0));
-                fadeOut.setFromValue(1.0);
-                fadeOut.setToValue(0.0);
-                fadeOut.setOnFinished(e -> {
-                    contentArea.getChildren().setAll(content);
-                    javafx.animation.FadeTransition fadeIn =
-                            new javafx.animation.FadeTransition(
-                                    javafx.util.Duration.millis(220), content);
-                    fadeIn.setFromValue(0.0);
-                    fadeIn.setToValue(1.0);
-                    fadeIn.play();
-                });
-                fadeOut.play();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }
-

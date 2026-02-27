@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<title>Corps 3D Harmony</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#0d0220;font-family:'Segoe UI',Tahoma,sans-serif;overflow:hidden;user-select:none}
+#c{position:absolute;top:0;left:0;width:100%;height:100%;cursor:grab}
+#info{
+  position:absolute;top:15px;right:15px;width:245px;
+  background:rgba(5,0,20,0.93);border:1px solid rgba(139,92,246,0.55);
+  border-radius:16px;padding:18px;color:#e2e8f0;
+  box-shadow:0 0 32px rgba(139,92,246,0.28);pointer-events:none
+}
+#ititle{font-size:15px;font-weight:700;color:#a78bfa;margin-bottom:6px}
+#izone{display:inline-block;background:rgba(239,68,68,0.18);color:#f87171;
+  font-size:11px;font-weight:600;padding:3px 10px;border-radius:8px;margin-bottom:12px}
+#idesc{font-size:11px;color:#cbd5e1;line-height:1.7;margin-bottom:14px}
+#ittitle{font-size:10px;font-weight:700;color:#34d399;text-transform:uppercase;
+  letter-spacing:1px;padding-top:12px;border-top:1px solid rgba(139,92,246,0.25);margin-bottom:8px}
+#itlist{list-style:none}
+#itlist li{font-size:10.5px;color:#94a3b8;padding:2px 0 2px 14px;position:relative;line-height:1.5}
+#itlist li::before{content:'→';position:absolute;left:0;color:#34d399}
+#badge{position:absolute;top:15px;left:50%;transform:translateX(-50%);
+  background:rgba(109,40,217,0.85);color:white;font-size:13px;font-weight:700;
+  padding:8px 22px;border-radius:20px;white-space:nowrap;pointer-events:none;
+  box-shadow:0 0 22px rgba(139,92,246,0.45)}
+#hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  background:rgba(5,0,20,0.75);border:1px solid rgba(139,92,246,0.25);
+  border-radius:20px;padding:5px 16px;color:#94a3b8;font-size:10px;
+  pointer-events:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="badge">&#x1F9B4; S&#xe9;lectionnez une blessure</div>
+<div id="info">
+  <div id="ititle">Aucune blessure s&#xe9;lectionn&#xe9;e</div>
+  <div id="izone" style="display:none"></div>
+  <div id="idesc">Utilisez les boutons &#xe0; gauche pour s&#xe9;lectionner une zone et explorer le mod&#xe8;le 3D.</div>
+  <div id="ittitle" style="display:none">Traitement &amp; R&#xe9;cup&#xe9;ration</div>
+  <ul id="itlist"></ul>
+</div>
+<div id="hint">Glisser : rotation &#x2022; Molette : zoom</div>
+<script>
+// ================================================================
+//  HARMONY 3D BODY VIEWER
+//  Canvas 2D UNIQUEMENT — aucune dépendance externe
+//  Compatible JavaFX WebView (pas de WebGL requis)
+// ================================================================
+
+// ── Données des blessures ────────────────────────────────────────
+var INJ = {
+  genou:{
+    name:"Blessure au Genou", zone:"Genou / Ligaments",
+    hl:["lKnee","rKnee"],
+    desc:"Entorse ou déchirure des ligaments du genou. Causée par une torsion brusque, un choc direct ou une surcharge lors des squats et sauts.",
+    tips:["Repos immédiat 48-72h + glaçage 20 min","Compression avec bandage élastique","Élévation du membre blessé","Anti-inflammatoires sur avis médical","Kinésithérapie dès la 2ème semaine","Éviter: squats, course, sauts"]
+  },
+  dos:{
+    name:"Douleur au Dos", zone:"Colonne / Lombaires",
+    hl:["torso","pelvis"],
+    desc:"Douleurs lombaires ou contractures musculaires. Fréquent lors de soulevés de terre mal exécutés ou position assise prolongée.",
+    tips:["Chaleur locale (pas de glace pour le dos)","Étirements doux du bas du dos","Renforcement des abdominaux profonds","Corriger la posture en permanence","Éviter: soulevé de terre lourd","Natation recommandée en récupération"]
+  },
+  epaule:{
+    name:"Blessure à l'Épaule", zone:"Épaule / Coiffe des rotateurs",
+    hl:["lShoulder","rShoulder"],
+    desc:"Tendinite ou rupture partielle de la coiffe des rotateurs. Causée par des mouvements répétitifs au-dessus de la tête.",
+    tips:["Repos sportif et glaçage 3x/jour","Exercices de mobilité douce","Renforcement des rotateurs externes","Éviter: développé militaire, tractions","Bandes élastiques pour rééducation","Consultation ortho si douleurs > 2 sem."]
+  },
+  cheville:{
+    name:"Entorse de Cheville", zone:"Cheville / Ligaments latéraux",
+    hl:["lAnkle","rAnkle"],
+    desc:"Entorse des ligaments latéraux, fréquente lors de la course, sauts ou changements de direction rapides.",
+    tips:["RICE: Repos, Glace, Compression, Élévation","Immobilisation 24-48h si nécessaire","Rééducation proprioceptive après 72h","Exercices d'équilibre sur plateau instable","Éviter: course sur terrain irrégulier","Taping fonctionnel lors de la reprise"]
+  },
+  coude:{
+    name:"Épicondylite (Tennis Elbow)", zone:"Coude / Épicondyles",
+    hl:["lElbow","rElbow"],
+    desc:"Inflammation des tendons de l'avant-bras au niveau du coude. Causée par des mouvements répétitifs de préhension ou de frappe.",
+    tips:["Glaçage après activité 10-15 min","Étirements de l'avant-bras quotidiens","Massage transversal profond","Bande de contention épicondylienne","Éviter: exercices de tirage, curl barre","Exercices excentriques progressifs"]
+  },
+  hanche:{
+    name:"Douleur à la Hanche", zone:"Hanche / Fléchisseurs",
+    hl:["lHip","rHip"],
+    desc:"Tendinite des fléchisseurs ou syndrome du piriforme. Fréquent chez les coureurs et pratiquants de sports asymétriques.",
+    tips:["Étirements du psoas et piriforme","Renforcement des abducteurs/fessiers","Massage des points de tension","Éviter: course prolongée, vélo","Gainage latéral recommandé","Chaleur avant l'activité sportive"]
+  },
+  nuque:{
+    name:"Cervicalgie (Nuque)", zone:"Cervicales / Trapèzes",
+    hl:["head","neck"],
+    desc:"Contractures cervicales liées au stress mécanique. Fréquente lors d'un mauvais positionnement pendant les exercices ou travail de bureau.",
+    tips:["Rotations douces de la tête","Chaleur locale (bouillotte 15 min)","Correction posturale immédiate","Étirements des trapèzes supérieurs","Éviter: développé nuque, shrug lourd","Oreiller ergonomique la nuit"]
+  },
+  poignet:{
+    name:"Tendinite du Poignet", zone:"Poignet / Tendons fléchisseurs",
+    hl:["lWrist","rWrist"],
+    desc:"Inflammation des tendons du poignet, fréquente lors des exercices de musculation avec prise en pronation.",
+    tips:["Orthèse de poignet la nuit","Glaçage après l'effort","Exercices de renforcement progressif","Améliorer la prise avec sangles","Éviter: curl poignet, planche","Anti-inflammatoires locaux en phase aiguë"]
+  }
+};
+
+// ── Palettes couleurs ────────────────────────────────────────────
+var SKIN  = [200,158,126];
+var HAIR  = [38, 22, 8  ];
+var SHIRT = [62, 62,178 ];
+var PANTS = [38, 38,118 ];
+var SHOE  = [22, 16, 10 ];
+var SKINS = [185,145,115]; // peau légèrement plus sombre pour ombres
+
+// ── Corps : primitives 3D ────────────────────────────────────────
+// t:'s' = sphère  → {name,x,y,z,r,col}
+// t:'c' = capsule → {name,x1,y1,z1,x2,y2,z2,r,col}
+// Repère: Y vers le haut, origine au bassin, Z vers le spectateur
+var BODY = [
+  // Tête et cou
+  {t:'s',name:'head',   x:0,   y:177,z:0,  r:24,col:SKIN },
+  {t:'s',name:'hair',   x:0,   y:191,z:-3, r:21,col:HAIR },
+  {t:'c',name:'neck',   x1:0,  y1:153,z1:0, x2:0,  y2:164,z2:0,  r:8, col:SKIN },
+  // Torse
+  {t:'c',name:'torso',  x1:0,  y1:90, z1:0, x2:0,  y2:153,z2:0,  r:27,col:SHIRT},
+  {t:'s',name:'pelvis', x:0,   y:87,  z:0,  r:23,  col:PANTS},
+  // Épaules
+  {t:'s',name:'lShoulder',x:-41,y:143,z:0, r:14,col:SHIRT},
+  {t:'s',name:'rShoulder',x: 41,y:143,z:0, r:14,col:SHIRT},
+  // Bras gauche
+  {t:'c',name:'lUpperArm',x1:-41,y1:143,z1:0,x2:-47,y2:104,z2:0,r:10,col:SKIN},
+  {t:'s',name:'lElbow',   x:-47,y:100,z:0, r:9, col:SKIN},
+  {t:'c',name:'lForearm', x1:-47,y1:100,z1:0,x2:-51,y2:64,z2:0, r:8, col:SKIN},
+  {t:'s',name:'lWrist',   x:-51,y:61, z:0, r:6, col:SKIN},
+  {t:'s',name:'lHand',    x:-52,y:51, z:0, r:9, col:SKIN},
+  // Bras droit
+  {t:'c',name:'rUpperArm',x1: 41,y1:143,z1:0,x2: 47,y2:104,z2:0,r:10,col:SKIN},
+  {t:'s',name:'rElbow',   x: 47,y:100,z:0, r:9, col:SKIN},
+  {t:'c',name:'rForearm', x1: 47,y1:100,z1:0,x2: 51,y2:64,z2:0, r:8, col:SKIN},
+  {t:'s',name:'rWrist',   x: 51,y:61, z:0, r:6, col:SKIN},
+  {t:'s',name:'rHand',    x: 52,y:51, z:0, r:9, col:SKIN},
+  // Hanches
+  {t:'s',name:'lHip',  x:-17,y:83,z:0, r:15,col:PANTS},
+  {t:'s',name:'rHip',  x: 17,y:83,z:0, r:15,col:PANTS},
+  // Jambe gauche
+  {t:'c',name:'lThigh',x1:-17,y1:83,z1:0,x2:-15,y2:24,z2:0,r:14,col:PANTS},
+  {t:'s',name:'lKnee', x:-15,y:20,z:0, r:12,col:SKIN},
+  {t:'c',name:'lShin', x1:-15,y1:20,z1:0,x2:-13,y2:-45,z2:0,r:9, col:PANTS},
+  {t:'s',name:'lAnkle',x:-13,y:-48,z:0, r:7, col:SKIN},
+  {t:'c',name:'lFoot', x1:-13,y1:-53,z1:0,x2:-7,y2:-59,z2:12,r:7,col:SHOE},
+  // Jambe droite
+  {t:'c',name:'rThigh',x1: 17,y1:83,z1:0,x2: 15,y2:24,z2:0,r:14,col:PANTS},
+  {t:'s',name:'rKnee', x: 15,y:20,z:0, r:12,col:SKIN},
+  {t:'c',name:'rShin', x1: 15,y1:20,z1:0,x2: 13,y2:-45,z2:0,r:9, col:PANTS},
+  {t:'s',name:'rAnkle',x: 13,y:-48,z:0, r:7, col:SKIN},
+  {t:'c',name:'rFoot', x1: 13,y1:-53,z1:0,x2: 7,y2:-59,z2:12,r:7,col:SHOE}
+];
+
+// ── État ─────────────────────────────────────────────────────────
+var rotY = 0.25, rotX = 0.05, zoom = 1.0;
+var cx = 0, cy = 0;
+var activeHL  = [];   // noms de parties à surligner
+var dragging  = false, lmx = 0, lmy = 0;
+var autoRot   = true;
+var dirty     = true;
+var pulseT    = 0;    // pour animation pulsante blessure
+
+var canvas = document.getElementById('c');
+var ctx    = canvas.getContext('2d');
+
+// ── Redimensionnement ─────────────────────────────────────────────
+function resize(){
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  cx = Math.round(canvas.width  / 2);
+  cy = Math.round(canvas.height / 2 + 15);
+  dirty = true;
+}
+window.addEventListener('resize', resize);
+
+// ── Math 3D ───────────────────────────────────────────────────────
+function rotPt(x,y,z){
+  var cy_=Math.cos(rotY), sy_=Math.sin(rotY);
+  var x2 = x*cy_ + z*sy_;
+  var z2 = z*cy_ - x*sy_;
+  var cx_=Math.cos(rotX), sx_=Math.sin(rotX);
+  var y2 = y*cx_ - z2*sx_;
+  var z3 = y*sx_ + z2*cx_;
+  return [x2,y2,z3];
+}
+
+function proj(rx,ry,rz){
+  var sc = Math.min(canvas.width,canvas.height)/385*zoom;
+  return {sx: cx+rx*sc, sy: cy-ry*sc, sz: rz, sc: sc};
+}
+
+// ── Dessin sphère ─────────────────────────────────────────────────
+function drawSphere(sx,sy,sz,r,col,isHL){
+  if(r < 1.5) return;
+  var brt = Math.max(0.28, Math.min(1.15, 0.68 + sz/290));
+  var hx = sx-r*0.32, hy = sy-r*0.36;
+  var g = ctx.createRadialGradient(hx,hy,r*0.04, sx,sy,r);
+  if(isHL){
+    var p = 0.7 + 0.3*Math.sin(pulseT*0.006);
+    g.addColorStop(0,'rgb(255,'+Math.round(col[1]*brt*0.5*p+70)+',' +Math.round(col[2]*brt*0.3)+')');
+    g.addColorStop(0.55,'rgb('+Math.round(225*brt*p)+','+Math.round(col[1]*brt*0.25)+',0)');
+    g.addColorStop(1,'rgb('+Math.round(70*brt)+',4,0)');
+  } else {
+    g.addColorStop(0,'rgb('+Math.min(255,Math.round(col[0]*brt*1.5+32))+','+Math.min(255,Math.round(col[1]*brt*1.5+22))+','+Math.min(255,Math.round(col[2]*brt*1.5+16))+')');
+    g.addColorStop(0.5,'rgb('+Math.round(col[0]*brt)+','+Math.round(col[1]*brt)+','+Math.round(col[2]*brt)+')');
+    g.addColorStop(1,'rgb('+Math.round(col[0]*brt*0.3)+','+Math.round(col[1]*brt*0.3)+','+Math.round(col[2]*brt*0.3)+')');
+  }
+  ctx.beginPath();
+  ctx.arc(sx,sy,r,0,6.2832);
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.strokeStyle = isHL ? 'rgba(255,90,0,0.65)' : 'rgba(0,0,0,0.22)';
+  ctx.lineWidth   = isHL ? 1.8 : 0.5;
+  ctx.stroke();
+  if(isHL){
+    var pulse = 0.5 + 0.5*Math.sin(pulseT*0.006);
+    ctx.beginPath();
+    ctx.arc(sx,sy,r+5+3*pulse,0,6.2832);
+    ctx.strokeStyle = 'rgba(255,50,0,'+(0.22+0.18*pulse)+')';
+    ctx.lineWidth = 4+2*pulse;
+    ctx.stroke();
+  }
+}
+
+// ── Dessin capsule ────────────────────────────────────────────────
+function drawCapsule(pa,pb,r,col,isHL){
+  var dx=pb.sx-pa.sx, dy=pb.sy-pa.sy;
+  var len=Math.sqrt(dx*dx+dy*dy);
+  if(len<0.5){ drawSphere(pa.sx,pa.sy,pa.sz,r,col,isHL); return; }
+  var a = Math.atan2(dy,dx);
+  var avgZ=(pa.sz+pb.sz)*0.5;
+  var brt=Math.max(0.28,Math.min(1.15,0.68+avgZ/290));
+
+  // Tracé du contour (arc pa + arc pb)
+  ctx.beginPath();
+  ctx.arc(pa.sx,pa.sy,r, a+1.5708, a-1.5708, false);
+  ctx.arc(pb.sx,pb.sy,r, a-1.5708, a+1.5708, false);
+  ctx.closePath();
+
+  // Dégradé perpendiculaire à l'axe
+  var mx=(pa.sx+pb.sx)*0.5, my_=(pa.sy+pb.sy)*0.5;
+  var lnx=Math.sin(a)*r, lny=-Math.cos(a)*r;
+  var g = ctx.createLinearGradient(mx+lnx, my_+lny, mx-lnx, my_-lny);
+  if(isHL){
+    var p=0.7+0.3*Math.sin(pulseT*0.006);
+    g.addColorStop(0,'rgb(255,'+Math.round(col[1]*brt*0.45*p+60)+',0)');
+    g.addColorStop(0.5,'rgb('+Math.round(215*brt*p)+','+Math.round(col[1]*brt*0.22)+',0)');
+    g.addColorStop(1,'rgb('+Math.round(60*brt)+',2,0)');
+  } else {
+    g.addColorStop(0,'rgb('+Math.min(255,Math.round(col[0]*brt*1.45+26))+','+Math.min(255,Math.round(col[1]*brt*1.45+18))+','+Math.min(255,Math.round(col[2]*brt*1.45+12))+')');
+    g.addColorStop(0.48,'rgb('+Math.round(col[0]*brt)+','+Math.round(col[1]*brt)+','+Math.round(col[2]*brt)+')');
+    g.addColorStop(1,'rgb('+Math.round(col[0]*brt*0.3)+','+Math.round(col[1]*brt*0.3)+','+Math.round(col[2]*brt*0.3)+')');
+  }
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  ctx.strokeStyle = isHL ? 'rgba(255,85,0,0.55)' : 'rgba(0,0,0,0.18)';
+  ctx.lineWidth   = isHL ? 1.8 : 0.5;
+  ctx.stroke();
+
+  if(isHL){
+    var pulse2=0.5+0.5*Math.sin(pulseT*0.006);
+    ctx.beginPath();
+    ctx.arc(pa.sx,pa.sy,r+4+2*pulse2, a+1.5708,a-1.5708,false);
+    ctx.arc(pb.sx,pb.sy,r+4+2*pulse2, a-1.5708,a+1.5708,false);
+    ctx.closePath();
+    ctx.strokeStyle='rgba(255,45,0,'+(0.18+0.15*pulse2)+')';
+    ctx.lineWidth=4+2*pulse2;
+    ctx.stroke();
+  }
+
+  // Calottes sphériques aux extrémités
+  drawSphere(pa.sx,pa.sy,pa.sz,r,col,isHL);
+  drawSphere(pb.sx,pb.sy,pb.sz,r,col,isHL);
+}
+
+// ── Rendu principal ───────────────────────────────────────────────
+function draw(){
+  var W=canvas.width, H=canvas.height;
+  if(!W||!H) return;
+  ctx.clearRect(0,0,W,H);
+
+  // Fond dégradé
+  var bg=ctx.createRadialGradient(cx,cy,60,cx,cy,Math.max(W,H)*0.78);
+  bg.addColorStop(0,'#160438');
+  bg.addColorStop(1,'#060110');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  // Grille de sol subtile
+  ctx.strokeStyle='rgba(139,92,246,0.055)';
+  ctx.lineWidth=1;
+  var step=55, gmin=-240, gmax=240, gz=-80;
+  for(var gi=gmin;gi<=gmax;gi+=step){
+    var ra=rotPt(gi,gz,-220), rb=rotPt(gi,gz,220);
+    var pa_=proj(ra[0],ra[1],ra[2]), pb_=proj(rb[0],rb[1],rb[2]);
+    ctx.beginPath(); ctx.moveTo(pa_.sx,pa_.sy); ctx.lineTo(pb_.sx,pb_.sy); ctx.stroke();
+    var rc=rotPt(-240,gz,gi), rd=rotPt(240,gz,gi);
+    var pc_=proj(rc[0],rc[1],rc[2]), pd_=proj(rd[0],rd[1],rd[2]);
+    ctx.beginPath(); ctx.moveTo(pc_.sx,pc_.sy); ctx.lineTo(pd_.sx,pd_.sy); ctx.stroke();
+  }
+
+  // Ombre au sol
+  var sc=Math.min(W,H)/385*zoom;
+  var shadowY=cy+78*sc;
+  ctx.save();
+  ctx.translate(cx,shadowY);
+  ctx.scale(1,0.25);
+  var shG=ctx.createRadialGradient(0,0,0,0,0,70*zoom);
+  shG.addColorStop(0,'rgba(0,0,0,0.58)');
+  shG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=shG;
+  ctx.beginPath(); ctx.arc(0,0,70*zoom,0,6.2832); ctx.fill();
+  ctx.restore();
+
+  // Calculer les éléments 3D projetés
+  var items=[], i, part, rp, rp1, rp2, pp, pp1, pp2, isHL;
+  for(i=0;i<BODY.length;i++){
+    part=BODY[i];
+    isHL=(activeHL.indexOf(part.name)>=0);
+    if(part.t==='s'){
+      rp=rotPt(part.x,part.y,part.z);
+      pp=proj(rp[0],rp[1],rp[2]);
+      items.push({z:rp[2],isHL:isHL,t:'s',p:pp,r:part.r*pp.sc,col:part.col});
+    } else {
+      rp1=rotPt(part.x1,part.y1,part.z1);
+      rp2=rotPt(part.x2,part.y2,part.z2);
+      pp1=proj(rp1[0],rp1[1],rp1[2]);
+      pp2=proj(rp2[0],rp2[1],rp2[2]);
+      items.push({z:(rp1[2]+rp2[2])*0.5,isHL:isHL,t:'c',
+        pa:pp1,pb:pp2,r:part.r*pp1.sc,col:part.col});
+    }
+  }
+
+  // Algorithme du peintre (trier arrière → avant)
+  items.sort(function(a,b){return a.z-b.z;});
+
+  // Dessiner tout
+  for(i=0;i<items.length;i++){
+    var it=items[i];
+    if(it.t==='s') drawSphere(it.p.sx,it.p.sy,it.p.sz,it.r,it.col,it.isHL);
+    else           drawCapsule(it.pa,it.pb,it.r,it.col,it.isHL);
+  }
+
+  // Halo de blessure au centre de la zone
+  if(activeHL.length>0){
+    var hx=0,hy=0,hn=0;
+    for(i=0;i<BODY.length;i++){
+      part=BODY[i];
+      if(activeHL.indexOf(part.name)<0) continue;
+      var bx=(part.t==='s')?part.x:(part.x1+part.x2)*0.5;
+      var by_=(part.t==='s')?part.y:(part.y1+part.y2)*0.5;
+      var bz=(part.t==='s')?part.z:(part.z1+part.z2)*0.5;
+      rp=rotPt(bx,by_,bz);
+      pp=proj(rp[0],rp[1],rp[2]);
+      hx+=pp.sx; hy+=pp.sy; hn++;
+    }
+    if(hn>0){
+      hx/=hn; hy/=hn;
+      var pulse3=0.5+0.5*Math.sin(pulseT*0.006);
+      var hR=(75+12*pulse3)*zoom;
+      var glo=ctx.createRadialGradient(hx,hy,0,hx,hy,hR);
+      glo.addColorStop(0,'rgba(255,55,0,'+(0.28+0.18*pulse3)+')');
+      glo.addColorStop(0.5,'rgba(255,20,0,'+(0.12+0.08*pulse3)+')');
+      glo.addColorStop(1,'rgba(255,0,0,0)');
+      ctx.fillStyle=glo;
+      ctx.beginPath(); ctx.arc(hx,hy,hR,0,6.2832); ctx.fill();
+    }
+  }
+}
+
+// ── Contrôles souris ──────────────────────────────────────────────
+canvas.addEventListener('mousedown',function(e){
+  dragging=true; autoRot=false;
+  lmx=e.clientX; lmy=e.clientY;
+  canvas.style.cursor='grabbing';
+  e.preventDefault();
+});
+window.addEventListener('mousemove',function(e){
+  if(!dragging) return;
+  rotY+=(e.clientX-lmx)*0.012;
+  rotX+=(e.clientY-lmy)*0.008;
+  rotX=Math.max(-1.1,Math.min(1.1,rotX));
+  lmx=e.clientX; lmy=e.clientY;
+  dirty=true;
+  e.preventDefault();
+});
+window.addEventListener('mouseup',function(){
+  dragging=false; canvas.style.cursor='grab';
+});
+canvas.addEventListener('wheel',function(e){
+  zoom*=(e.deltaY>0)?0.92:1.09;
+  zoom=Math.max(0.3,Math.min(3.0,zoom));
+  dirty=true; e.preventDefault();
+},{passive:false});
+
+// ── Boucle principale ─────────────────────────────────────────────
+var prevT=0;
+function loop(t){
+  requestAnimationFrame(loop);
+  pulseT=t;
+  var dt=Math.min(t-prevT,50); prevT=t;
+  if(autoRot&&!dragging){
+    rotY+=0.003*dt/16;
+    dirty=true;
+  }
+  if(activeHL.length>0) dirty=true; // animation pulsante
+  if(dirty){ draw(); dirty=false; }
+}
+
+// ── API appelée depuis JavaFX ─────────────────────────────────────
+window.showBodyInjury = function(key){
+  var inj=INJ[key];
+  if(!inj){ console.error('Injury key inconnu: '+key); return; }
+  activeHL=inj.hl.slice();
+  autoRot=false;
+
+  document.getElementById('ititle').textContent=inj.name;
+  var badge_=document.getElementById('izone');
+  badge_.textContent=inj.zone; badge_.style.display='inline-block';
+  document.getElementById('idesc').textContent=inj.desc;
+  document.getElementById('ittitle').style.display='block';
+  var ul=document.getElementById('itlist');
+  ul.innerHTML='';
+  for(var i=0;i<inj.tips.length;i++){
+    var li=document.createElement('li');
+    li.textContent=inj.tips[i]; ul.appendChild(li);
+  }
+  document.getElementById('badge').textContent='\uD83C\uDFE5 '+inj.name;
+  dirty=true;
+};
+
+window.resetView = function(){
+  rotY=0.25; rotX=0.05; zoom=1.0;
+  activeHL=[]; autoRot=true;
+  document.getElementById('ititle').textContent='Aucune blessure s\u00e9lectionn\u00e9e';
+  document.getElementById('izone').style.display='none';
+  document.getElementById('idesc').textContent='Utilisez les boutons \u00e0 gauche pour s\u00e9lectionner une zone.';
+  document.getElementById('ittitle').style.display='none';
+  document.getElementById('itlist').innerHTML='';
+  document.getElementById('badge').textContent='\uD83E\uDDB4 S\u00e9lectionnez une blessure';
+  dirty=true;
+};
+
+// ── Démarrage ─────────────────────────────────────────────────────
+resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

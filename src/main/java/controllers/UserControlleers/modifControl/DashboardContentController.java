@@ -4,95 +4,80 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
 /**
- * Controller du contenu dashboard.
- * Léger : le bouton "Ouvrir →" déclenche la navigation vers GestionUsersContent
- * en passant par le DashboardAdminController parent (qui gère le StackPane).
- *
- * Astuce : on remonte au DashboardAdminController via la scène.
+ * Controller du contenu dashboard (page d'accueil admin).
+ * Les boutons "Ouvrir →" chargent les pages correspondantes
+ * dans le StackPane contentArea du DashboardAdmin.
  */
 public class DashboardContentController {
 
-    @FXML
-    void openGestionUsers(ActionEvent event) {
-        // Récupérer le controller parent (DashboardAdminController) depuis la scène
-        // Le StackPane contentArea est dans DashboardAdmin.fxml dont le controller est DashboardAdminController
+    // ── Méthode utilitaire : récupère le StackPane contentArea depuis la scène ──
+
+    private StackPane getContentArea(ActionEvent event) {
+        javafx.scene.Node source = (javafx.scene.Node) event.getSource();
+        BorderPane root = (BorderPane) source.getScene().getRoot();
+        return (StackPane) root.getCenter();
+    }
+
+    private void navigateTo(String fxmlPath, ActionEvent event) {
         try {
-            javafx.scene.Node source = (javafx.scene.Node) event.getSource();
-            // Remonter jusqu'à la racine BorderPane de DashboardAdmin.fxml
-            javafx.scene.layout.BorderPane root =
-                    (javafx.scene.layout.BorderPane) source.getScene().getRoot();
-
-            // Charger GestionUsersContent dans le StackPane contentArea
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/views/UserViews/GestionUsersContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent content = loader.load();
+            StackPane contentArea = getContentArea(event);
 
-            javafx.scene.layout.StackPane contentArea =
-                    (javafx.scene.layout.StackPane) root.getCenter();
-
-            javafx.animation.FadeTransition fadeOut =
-                    new javafx.animation.FadeTransition(
-                            javafx.util.Duration.millis(180),
-                            (javafx.scene.Node) contentArea.getChildren().get(0));
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            fadeOut.setOnFinished(e -> {
+            if (contentArea.getChildren().isEmpty()) {
                 contentArea.getChildren().setAll(content);
-                javafx.animation.FadeTransition fadeIn =
-                        new javafx.animation.FadeTransition(
-                                javafx.util.Duration.millis(220), content);
-                fadeIn.setFromValue(0.0);
-                fadeIn.setToValue(1.0);
-                fadeIn.play();
-            });
-            fadeOut.play();
-
+            } else {
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(180),
+                        contentArea.getChildren().get(0));
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.setOnFinished(e -> {
+                    contentArea.getChildren().setAll(content);
+                    FadeTransition fadeIn = new FadeTransition(Duration.millis(220), content);
+                    fadeIn.setFromValue(0.0);
+                    fadeIn.setToValue(1.0);
+                    fadeIn.play();
+                });
+                fadeOut.play();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    // ── Gestion Utilisateurs ──────────────────────────────────────────────────
+
+    @FXML
+    void openGestionUsers(ActionEvent event) {
+        navigateTo("/views/UserViews/GestionUsersContent.fxml", event);
+    }
+
+    // ── Gestion Forum ─────────────────────────────────────────────────────────
 
     @FXML
     void openGestionForum(ActionEvent event) {
-        try {
-            javafx.scene.Node source = (javafx.scene.Node) event.getSource();
-            javafx.scene.layout.BorderPane root =
-                    (javafx.scene.layout.BorderPane) source.getScene().getRoot();
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml")
-            );
-            Parent content = loader.load();
-
-            javafx.scene.layout.StackPane contentArea =
-                    (javafx.scene.layout.StackPane) root.getCenter();
-
-            javafx.animation.FadeTransition fadeOut =
-                    new javafx.animation.FadeTransition(
-                            javafx.util.Duration.millis(180),
-                            contentArea.getChildren().get(0));
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            fadeOut.setOnFinished(e -> {
-                contentArea.getChildren().setAll(content);
-                javafx.animation.FadeTransition fadeIn =
-                        new javafx.animation.FadeTransition(
-                                javafx.util.Duration.millis(220), content);
-                fadeIn.setFromValue(0.0);
-                fadeIn.setToValue(1.0);
-                fadeIn.play();
-            });
-            fadeOut.play();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigateTo("/views/ForumViews/ForumBackOffice/ForumBackDashboard.fxml", event);
     }
 
+    // ── Gestion Sport ─────────────────────────────────────────────────────────
 
+    @FXML
+    void openGestionSport(ActionEvent event) {
+        navigateTo("/views/ActiviteViews/GestionSport.fxml", event);
+    }
 
+    // ── Gestion Nutrition ─────────────────────────────────────────────────────
+
+    @FXML
+    void openGestionNutrition(ActionEvent event) {
+        navigateTo("/views/ActiviteViews/GestionNutrition.fxml", event);
+    }
 }

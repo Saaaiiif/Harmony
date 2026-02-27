@@ -10,7 +10,7 @@
            prefWidth="1100"
            prefHeight="650"
            styleClass="forum-root"
-           stylesheets="@/views/UserViews/modif/admin-styles.css">
+           stylesheets="@/views/admin-styles.css">
 
     <!-- ══════════════════════════════════════════════
          CONTENU PRINCIPAL (BorderPane original intact)

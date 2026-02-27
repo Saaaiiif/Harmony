@@ -19,7 +19,7 @@
       spacing="15"
       alignment="CENTER"
       styleClass="add-categorie-root"
-      stylesheets="@/views/UserViews/modif/admin-styles.css">
+      stylesheets="@/views/admin-styles.css">
 
     <padding>
         <Insets top="30" right="40" bottom="30" left="40"/>

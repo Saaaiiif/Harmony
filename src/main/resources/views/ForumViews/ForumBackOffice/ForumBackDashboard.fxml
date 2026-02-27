@@ -10,7 +10,7 @@
             prefWidth="1100"
             prefHeight="650"
             styleClass="back-root"
-            stylesheets="/views/UserViews/modif/admin-styles.css">
+            stylesheets="/views/admin-styles.css">
 
     <top>
         <HBox spacing="12" alignment="CENTER_LEFT" styleClass="modern-topbar">
