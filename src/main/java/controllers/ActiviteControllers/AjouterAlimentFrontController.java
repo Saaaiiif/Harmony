@@ -14,6 +14,8 @@ import models.ActiviteModels.Consommation;
 import services.ActiviteServices.ServiceAliment;
 import services.ActiviteServices.ServiceConsommation;
 
+import models.UserModels.Session;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -124,6 +126,14 @@ public class AjouterAlimentFrontController {
             c.setPoids_grammes(grammes);
             c.setQuantite_eau_ml(0);
 
+            // Récupérer l'user_id depuis la session
+            int userId = 0;
+            try {
+                if (Session.getInstance() != null && Session.getInstance().getUser() != null)
+                    userId = Session.getInstance().getUser().getUser_id();
+            } catch (Exception ignored) {}
+            c.setUser_id(userId);
+
             // Synchronisation avec la date sélectionnée
             LocalDateTime ldt = JournalAlimentaireController.dateSelectionnee.atTime(LocalTime.now());
             c.setDate_consommation(Timestamp.valueOf(ldt));
@@ -136,5 +146,5 @@ public class AjouterAlimentFrontController {
         }
     }
 
-    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/JournalAlimentaire.fxml"); }
+    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/JournalAlimentaire.fxml"); }
 }

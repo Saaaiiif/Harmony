@@ -412,6 +412,10 @@ public class JournalAlimentaireController {
     private void supprimerJourneeEntiere(LocalDate date, List<Consommation> repasDuJour) {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
+        try {
+            if (dpDateJournal != null && dpDateJournal.getScene() != null)
+                stage.initOwner(dpDateJournal.getScene().getWindow());
+        } catch (Exception ignored) {}
         stage.initModality(Modality.APPLICATION_MODAL);
 
         VBox content = new VBox(20);
@@ -473,6 +477,10 @@ public class JournalAlimentaireController {
     private void modifierConsommation(Consommation c, Aliment al) {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
+        try {
+            if (dpDateJournal != null && dpDateJournal.getScene() != null)
+                stage.initOwner(dpDateJournal.getScene().getWindow());
+        } catch (Exception ignored) {}
         stage.initModality(Modality.APPLICATION_MODAL);
 
         VBox content = new VBox(20);
@@ -501,17 +509,33 @@ public class JournalAlimentaireController {
                 "-fx-background-color: white; -fx-text-fill: #6a1b9a; " +
                         "-fx-font-weight: bold; -fx-font-size: 14px; " +
                         "-fx-background-radius: 30; -fx-padding: 10 20; -fx-cursor: hand;");
+        // ── Label d'erreur inline pour la fenêtre de modification ──
+        Label errModif = new Label("");
+        errModif.setStyle("-fx-text-fill: #ff5252; -fx-font-size: 12px; -fx-font-weight: bold;");
+
         btnEnregistrer.setOnAction(e -> {
+            errModif.setText("");
+            String saisi = txtQte.getText().trim().replace(",", ".");
+            if (saisi.isEmpty()) {
+                errModif.setText("⚠️ Champ vide.");
+                return;
+            }
             try {
-                int nouvelleQte = Integer.parseInt(txtQte.getText().trim());
-                if (nouvelleQte > 0) {
-                    c.setPoids_grammes(nouvelleQte);
-                    serviceConsommation.modifier(c);
-                    chargerRepasDuJour();
-                    chargerHistorique();
-                    stage.close();
+                // ✅ CORRECTION CONTRÔLE DE SAISIE : accepte "150", "150.5" et "150,5"
+                double valeur = Double.parseDouble(saisi);
+                int nouvelleQte = (int) Math.round(valeur);
+                if (nouvelleQte <= 0) {
+                    errModif.setText("⚠️ La quantité doit être supérieure à 0.");
+                    return;
                 }
-            } catch (Exception ignored) {}
+                c.setPoids_grammes(nouvelleQte);
+                serviceConsommation.modifier(c);
+                chargerRepasDuJour();
+                chargerHistorique();
+                stage.close();
+            } catch (NumberFormatException ex) {
+                errModif.setText("❌ Valeur invalide (ex: 150 ou 150,5).");
+            }
         });
 
         Button btnAnnuler = new Button("Annuler");
@@ -524,7 +548,7 @@ public class JournalAlimentaireController {
 
         HBox boutonsBox = new HBox(15, btnAnnuler, btnEnregistrer);
         boutonsBox.setAlignment(Pos.CENTER_RIGHT);
-        content.getChildren().addAll(titleLabel, l1, txtQte, boutonsBox);
+        content.getChildren().addAll(titleLabel, l1, txtQte, errModif, boutonsBox);
 
         Scene scene = new Scene(content);
         scene.setFill(Color.TRANSPARENT);
@@ -535,6 +559,10 @@ public class JournalAlimentaireController {
     private void supprimerConsommation(Consommation c) {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
+        try {
+            if (dpDateJournal != null && dpDateJournal.getScene() != null)
+                stage.initOwner(dpDateJournal.getScene().getWindow());
+        } catch (Exception ignored) {}
         stage.initModality(Modality.APPLICATION_MODAL);
 
         VBox content = new VBox(20);
@@ -585,6 +613,10 @@ public class JournalAlimentaireController {
     private void showCustomAlert(boolean isSuccess, String title, String message) {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
+        try {
+            if (dpDateJournal != null && dpDateJournal.getScene() != null)
+                stage.initOwner(dpDateJournal.getScene().getWindow());
+        } catch (Exception ignored) {}
         stage.initModality(Modality.APPLICATION_MODAL);
 
         VBox content = new VBox(20);
@@ -675,31 +707,31 @@ public class JournalAlimentaireController {
     @FXML void addPetitDej(ActionEvent event) {
         repasSelectionne = CODE_PD;
         if (accueilController != null)
-            accueilController.loadActivityPage("/views/AjouterAlimentFront.fxml");
+            accueilController.loadActivityPage("/views/ActiviteViews/AjouterAlimentFront.fxml");
     }
 
     @FXML void addDejeuner(ActionEvent event) {
         repasSelectionne = CODE_DEJ;
         if (accueilController != null)
-            accueilController.loadActivityPage("/views/AjouterAlimentFront.fxml");
+            accueilController.loadActivityPage("/views/ActiviteViews/AjouterAlimentFront.fxml");
     }
 
     @FXML void addDiner(ActionEvent event) {
         repasSelectionne = CODE_DIN;
         if (accueilController != null)
-            accueilController.loadActivityPage("/views/AjouterAlimentFront.fxml");
+            accueilController.loadActivityPage("/views/ActiviteViews/AjouterAlimentFront.fxml");
     }
 
     @FXML void addSnacks(ActionEvent event) {
         repasSelectionne = CODE_SNACK;
         if (accueilController != null)
-            accueilController.loadActivityPage("/views/AjouterAlimentFront.fxml");
+            accueilController.loadActivityPage("/views/ActiviteViews/AjouterAlimentFront.fxml");
     }
 
     // ── Navigation ──
     @FXML void goToAccueil(ActionEvent event) {
         if (accueilController != null)
-            accueilController.loadActivityPage("/views/AccueilActivite.fxml");
+            accueilController.loadActivityPage("/views/ActiviteViews/AccueilActivite.fxml");
     }
 
     @FXML void goToAliments(ActionEvent event) {

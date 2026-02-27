@@ -40,7 +40,7 @@ import java.io.IOException;
 public class AccueilController {
 
     // ── Chemins FXML sous-pages activités ────────────────────────────────────
-    private static final String PAGE_ACTIVITES  = "/views/AccueilActivite.fxml";
+    private static final String PAGE_ACTIVITES  = "/views/ActiviteViews/AccueilActivite.fxml";
     private static final String PAGE_ALIMENTS   = "/views/ActiviteViews/JournalAlimentaire.fxml";
     private static final String PAGE_EXERCICES  = "/views/ActiviteViews/JournalExercices.fxml";
     private static final String PAGE_SOMMEIL    = "/views/ActiviteViews/JournalSommeil.fxml";

@@ -247,7 +247,10 @@ public class JournalExercicesController {
 
     private void showAddOrEditDialog(Exercice ex, Activite activiteExistante) {
         Stage dialog = new Stage();
-        dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        try {
+            if (flowPaneExercices != null && flowPaneExercices.getScene() != null)
+                dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        } catch (Exception ignored) {}
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.TRANSPARENT);
 
@@ -443,7 +446,10 @@ public class JournalExercicesController {
 
     private void showDeleteConfirmation(String element, Runnable onConfirm) {
         Stage dialog = new Stage();
-        dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+        try {
+            if (flowPaneHistorique != null && flowPaneHistorique.getScene() != null)
+                dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+        } catch (Exception ignored) {}
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.TRANSPARENT);
 
@@ -475,7 +481,10 @@ public class JournalExercicesController {
 
     private void showVideoPopup(Exercice ex) {
         Stage dialog = new Stage();
-        dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        try {
+            if (flowPaneExercices != null && flowPaneExercices.getScene() != null)
+                dialog.initOwner(flowPaneExercices.getScene().getWindow());
+        } catch (Exception ignored) {}
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initStyle(StageStyle.TRANSPARENT);
 
@@ -566,7 +575,10 @@ public class JournalExercicesController {
             javafx.scene.image.Image image = javafx.embed.swing.SwingFXUtils.toFXImage(bufferedImage, null);
 
             Stage dialog = new Stage();
-            dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+            try {
+                if (flowPaneHistorique != null && flowPaneHistorique.getScene() != null)
+                    dialog.initOwner(flowPaneHistorique.getScene().getWindow());
+            } catch (Exception ignored) {}
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initStyle(StageStyle.TRANSPARENT);
 
@@ -624,9 +636,9 @@ public class JournalExercicesController {
         }
     }
 
-    @FXML void goToAccueil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/AccueilActivite.fxml"); }
-    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/JournalAlimentaire.fxml"); }
-    @FXML void goToSommeil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/JournalSommeil.fxml"); }
+    @FXML void goToAccueil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/AccueilActivite.fxml"); }
+    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/JournalAlimentaire.fxml"); }
+    @FXML void goToSommeil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/JournalSommeil.fxml"); }
 
     @FXML void ouvrirCoach(ActionEvent event) { coachOverlayPane.setVisible(true); }
     @FXML void fermerCoach(ActionEvent event) { coachOverlayPane.setVisible(false); }

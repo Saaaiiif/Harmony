@@ -33,20 +33,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
 
-/**
- * Controller de la page d'accueil Activités (AccueilActivite.fxml).
- *
- * TOUTES LES ERREURS CORRIGÉES :
- *  1. getConsommationsDuJour()     → afficherParUtilisateur() + filtre par date
- *  2. getById()                    → trouverAlimentParId() (recherche dans cache)
- *  3. getAliment_id()              → getId_aliment()         (nom réel Consommation.java)
- *  4. getQuantite_g()              → getPoids_grammes()       (nom réel Consommation.java)
- *  5. getCalories_100g()           → getCalories_pour_100g()  (nom réel Aliment.java)
- *  6. getCaloriesBruleesDuJour()   → calcul manuel via afficherParUtilisateur() + filtre date
- *  7. getUser_objectif_calorique() → supprimé (n'existe pas dans user.java)
- *  8. try(Properties props = ...) → corrigé : Properties n'implémente pas AutoCloseable
- *  9. Imports inutilisés           → supprimés (ServiceExercice, ServiceSommeil, HttpClient...)
- */
+
 public class AccueilActiviteController {
 
     // ── Référence au contrôleur parent (front office) ────────────────────────
@@ -58,7 +45,7 @@ public class AccueilActiviteController {
     }
 
     // ── Chemins FXML ─────────────────────────────────────────────────────────
-    private static final String FXML_ACCUEIL   = "/views/AccueilActivite.fxml";
+    private static final String FXML_ACCUEIL   = "/views/ActiviteViews/AccueilActivite.fxml";
     private static final String FXML_ALIMENTS  = "/views/ActiviteViews/JournalAlimentaire.fxml";
     private static final String FXML_EXERCICES = "/views/ActiviteViews/JournalExercices.fxml";
     private static final String FXML_SOMMEIL   = "/views/ActiviteViews/JournalSommeil.fxml";
@@ -69,6 +56,7 @@ public class AccueilActiviteController {
     private static final int OBJ_LIP_PCT     = 10;
     private static final int OBJ_PROT_PCT    = 60;
     private static final int OBJ_EAU_ML      = 2000;
+    private int    dernierIndexCitation     = -1;
 
     // ── Services ─────────────────────────────────────────────────────────────
     private final ServiceConsommation serviceConsommation = new ServiceConsommation();

@@ -238,8 +238,8 @@ public class JournalSommeilController {
     }
 
     // --- NAVIGATION UNIFIÉE (LA CORRECTION EST ICI) ---
-    @FXML void goToAccueil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/AccueilActivite.fxml"); }
-    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/JournalAlimentaire.fxml"); }
-    @FXML void goToExercices(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/JournalExercices.fxml"); }
+    @FXML void goToAccueil(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/AccueilActivite.fxml"); }
+    @FXML void goToAliments(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/JournalAlimentaire.fxml"); }
+    @FXML void goToExercices(ActionEvent event) { if (accueilController != null) accueilController.loadActivityPage("/views/ActiviteViews/JournalExercices.fxml"); }
     @FXML void goToSommeil(ActionEvent event) { /* On est déjà sur la page Sommeil, on ne fait rien pour éviter le rechargement infini */ }
 }

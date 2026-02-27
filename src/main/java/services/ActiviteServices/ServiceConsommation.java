@@ -72,15 +72,20 @@ public class ServiceConsommation {
              ResultSet rs = stm.executeQuery(qry)) {
 
             while (rs.next()) {
+                // ✅ CORRECTION : utilisation du constructeur 7-args pour que
+                // id_consommation soit correctement renseigné.
+                // L'ancien code utilisait le constructeur 6-args dont le premier
+                // paramètre int correspond à user_id, ce qui laissait
+                // id_consommation à 0 et rendait modifier() et supprimer() sans effet.
                 Consommation c = new Consommation(
                         rs.getInt("id_consommation"),
+                        rs.getInt("user_id"),
                         rs.getTimestamp("date_consommation"),
                         rs.getString("type_repas"),
                         rs.getInt("id_aliment"),
                         rs.getInt("quantite_eau_ml"),
                         rs.getInt("poids_grammes")
                 );
-                c.setUser_id(rs.getInt("user_id"));
                 liste.add(c);
             }
 
@@ -106,15 +111,16 @@ public class ServiceConsommation {
             try (ResultSet rs = pstm.executeQuery()) {
 
                 while (rs.next()) {
+                    // ✅ CORRECTION : même correction que afficherTout()
                     Consommation c = new Consommation(
                             rs.getInt("id_consommation"),
+                            rs.getInt("user_id"),
                             rs.getTimestamp("date_consommation"),
                             rs.getString("type_repas"),
                             rs.getInt("id_aliment"),
                             rs.getInt("quantite_eau_ml"),
                             rs.getInt("poids_grammes")
                     );
-                    c.setUser_id(rs.getInt("user_id"));
                     liste.add(c);
                 }
             }
