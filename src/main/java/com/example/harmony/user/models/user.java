@@ -1,6 +1,4 @@
-package models;
-
-import java.util.Date;
+package com.example.harmony.user.models;
 
 public class user {   // je garde "user" pour l'instant pour ne pas casser tes imports
 

@@ -1,4 +1,4 @@
-package main;
+package com.example.harmony.user.launcher;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

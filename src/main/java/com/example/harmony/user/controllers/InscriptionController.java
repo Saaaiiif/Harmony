@@ -1,5 +1,8 @@
-package controllers;
+package com.example.harmony.user.controllers;
 
+import com.example.harmony.user.models.Role;
+import com.example.harmony.user.models.user;
+import com.example.harmony.user.services.serviceUser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,9 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import models.Role;
-import models.user;
-import services.serviceUser;
 
 import java.io.IOException;
 

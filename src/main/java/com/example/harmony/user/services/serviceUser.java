@@ -1,9 +1,9 @@
-package services;
+package com.example.harmony.user.services;
 
-import models.Role;
-import models.user;
-import interfaces.services;
-import utils.MyDataBase;
+import com.example.harmony.user.interfaces.services;
+import com.example.harmony.user.models.Role;
+import com.example.harmony.user.models.user;
+import com.example.harmony.user.utils.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class serviceUser implements services<user> {
     private Connection cnx;
 
     public serviceUser() {
-        this.cnx=MyDataBase.getInstance().getCnx();
+        this.cnx= MyDataBase.getInstance().getCnx();
     }
 
 

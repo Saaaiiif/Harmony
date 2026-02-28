@@ -1,11 +1,9 @@
-import models.Role;
-import models.user;
-import services.serviceUser;
+package com.example.harmony.user;
+
+import com.example.harmony.user.services.serviceUser;
 
 
-
-
-public class main {
+public class main2 {
     public static void main(String[] args) {
 
         serviceUser service = new serviceUser();

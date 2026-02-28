@@ -1,4 +1,4 @@
-package utils;
+package com.example.harmony.user.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

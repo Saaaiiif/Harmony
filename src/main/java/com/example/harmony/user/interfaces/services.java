@@ -1,6 +1,6 @@
-package interfaces;
+package com.example.harmony.user.interfaces;
 
-import models.Role;
+import com.example.harmony.user.models.Role;
 
 import java.util.List;
 
