@@ -14,10 +14,15 @@
             <Label fx:id="courseTitle" text="Course" styleClass="section-title"/>
             <Label fx:id="courseSubject" text="Subject" styleClass="course-subtitle"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label text="Publish" styleClass="publish-label"/>
+            <Label fx:id="publishLabel" text="Publish" styleClass="publish-label"/>
             <ToggleButton fx:id="publishToggle" text="" styleClass="switch-toggle"/>
             <Button fx:id="createNoteBtn" text="Create note" styleClass="action-button"/>
             <Button fx:id="addFilesBtn" text="Add files" styleClass="action-button"/>
+            <Button fx:id="saveAsLibraryCopyBtn" text="📋 Save as Copy"
+                    styleClass="action-button" visible="false" managed="false"/>
+
+            <Button fx:id="saveToLibraryBtn" text="💾 Save to My Library" styleClass="action-button"
+                    visible="false" managed="false" />
             <Button fx:id="backBtn" text="Back" styleClass="action-button"/>
         </HBox>
     </top>

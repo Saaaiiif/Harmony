@@ -9,10 +9,59 @@ import java.util.List;
 
 public class LibraryService {
 
-    public record CourseCardRow(int id, String title, String subjectName, String coverImagePath) {}
+    public record CourseCardRow(int id, String title, String subjectName, String coverImagePath, int saves) {}
 
     public List<CourseCardRow> listPublishedCourses() throws Exception {
         return searchPublishedCourses("", null);
+    }
+    public boolean isCourseSaved(int userId, int courseId) throws Exception {
+        String sql = "SELECT COUNT(*) FROM saved_courses WHERE user_id = ? AND course_id = ?";
+        try (Connection conn = DB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
+    public boolean saveCourse(int userId, int courseId) throws Exception {
+        if (isCourseSaved(userId, courseId)) return false;
+
+        try (Connection conn = DB.getConnection()) {
+            // insert into saved_courses
+            String insert = "INSERT INTO saved_courses (user_id, course_id) VALUES (?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(insert)) {
+                ps.setInt(1, userId);
+                ps.setInt(2, courseId);
+                ps.executeUpdate();
+            }
+            // increment saves count
+            String update = "UPDATE courses SET saves = saves + 1 WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(update)) {
+                ps.setInt(1, courseId);
+                ps.executeUpdate();
+            }
+        }
+        return true;
+    }
+
+    public void unsaveCourse(int userId, int courseId) throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            // remove from saved_courses
+            String delete = "DELETE FROM saved_courses WHERE user_id = ? AND course_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(delete)) {
+                ps.setInt(1, userId);
+                ps.setInt(2, courseId);
+                ps.executeUpdate();
+            }
+            // decrement saves count (don't go below 0)
+            String update = "UPDATE courses SET saves = GREATEST(saves - 1, 0) WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(update)) {
+                ps.setInt(1, courseId);
+                ps.executeUpdate();
+            }
+        }
     }
 
     public List<CourseCardRow> searchPublishedCourses(String keyword, String subjectName) throws Exception {
@@ -22,7 +71,7 @@ public class LibraryService {
         boolean hasSubject = subjectName != null && !subjectName.isBlank();
 
         StringBuilder sql = new StringBuilder(
-                "SELECT c.id, c.title, s.name AS subjectname, c.cover_image_path " +
+                "SELECT c.id, c.title, s.name AS subjectname, c.cover_image_path, c.saves " +
                         "FROM courses c LEFT JOIN subject s ON s.id = c.subjectid " +
                         "WHERE c.is_published = 1 "
         );
@@ -44,7 +93,8 @@ public class LibraryService {
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("subjectname"),
-                        rs.getString("cover_image_path")
+                        rs.getString("cover_image_path"),
+                        rs.getInt("saves")
                 ));
             }
         }

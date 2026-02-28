@@ -115,10 +115,19 @@ public class CourseService {
     }
 
     public void deleteCourse(int courseId) throws Exception {
-        try (Connection conn = DB.getConnection();
-             PreparedStatement ps = conn.prepareStatement("DELETE FROM courses WHERE id = ?")) {
-            ps.setInt(1, courseId);
-            ps.executeUpdate();
+        try (Connection conn = DB.getConnection()) {
+            // remove from saved_courses first
+            String deleteSaved = "DELETE FROM saved_courses WHERE course_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(deleteSaved)) {
+                ps.setInt(1, courseId);
+                ps.executeUpdate();
+            }
+            // then delete the course itself
+            String deleteCourse = "DELETE FROM courses WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(deleteCourse)) {
+                ps.setInt(1, courseId);
+                ps.executeUpdate();
+            }
         }
     }
 

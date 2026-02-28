@@ -45,7 +45,14 @@ public class CourseDetailsController implements ThemeAware {
     @FXML private Button addFilesBtn;
     @FXML private Label courseSubject;
     @FXML private ToggleButton publishToggle;
+    @FXML private Label publishLabel;
+    @FXML private Button saveToLibraryBtn;
+    @FXML private Button saveAsLibraryCopyBtn;
+
+    private boolean isOwner = true;
+
     private final CourseService courseService = new CourseService();
+
     private int courseId;
     private final AtomicBoolean internalToggleChange = new AtomicBoolean(false);
     private volatile boolean createNoteArmed = false;
@@ -79,7 +86,35 @@ public class CourseDetailsController implements ThemeAware {
         String s = (subjectName == null) ? "" : subjectName.trim();
         courseSubject.setText(s);
         installInlineEdit();
-        refreshFiles();
+
+        // ── ownership check first ─────────────────────────────────
+        int currentUserId = SessionManager.getInstance().getCurrentUserId();
+        try (var conn = DB.getConnection();
+             var ps = conn.prepareStatement("SELECT userid FROM courses WHERE id = ?")) {
+            ps.setInt(1, courseId);
+            try (var rs = ps.executeQuery()) {
+                isOwner = rs.next() && rs.getInt("userid") == currentUserId;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            isOwner = false;
+        }
+
+        applyOwnershipUi();
+
+        // ── saved to library state ────────────────────────────────
+        if (saveToLibraryBtn != null && !isOwner) {
+            try {
+                com.example.harmony.services.LibraryService libraryService =
+                        new com.example.harmony.services.LibraryService();
+                boolean alreadySaved = libraryService.isCourseSaved(currentUserId, courseId);
+                saveToLibraryBtn.setText(alreadySaved ? "✔ Saved — click to remove" : "🔖 Save to Library");
+                saveToLibraryBtn.setDisable(false); // ← always enabled so they can toggle
+            } catch (Exception ex) { ex.printStackTrace(); }
+        }
+        refreshFiles(); // ← AFTER isOwner is set
+
+        // ── publish toggle ────────────────────────────────────────
         if (publishToggle != null) {
             try {
                 boolean published = courseService.isCoursePublished(courseId);
@@ -88,6 +123,32 @@ public class CourseDetailsController implements ThemeAware {
                 ex.printStackTrace();
                 publishToggle.setSelected(false);
             }
+        }
+    }
+    private void applyOwnershipUi() {
+        if (publishLabel != null) {
+            publishLabel.setVisible(isOwner);
+            publishLabel.setManaged(isOwner);
+        }
+        if (publishToggle != null) {
+            publishToggle.setVisible(isOwner);
+            publishToggle.setManaged(isOwner);
+        }
+        if (createNoteBtn != null) {
+            createNoteBtn.setVisible(isOwner);
+            createNoteBtn.setManaged(isOwner);
+        }
+        if (addFilesBtn != null) {
+            addFilesBtn.setVisible(isOwner);
+            addFilesBtn.setManaged(isOwner);
+        }
+        if (saveToLibraryBtn != null) {
+            saveToLibraryBtn.setVisible(!isOwner);
+            saveToLibraryBtn.setManaged(!isOwner);
+        }
+        if (saveAsLibraryCopyBtn != null) {
+            saveAsLibraryCopyBtn.setVisible(!isOwner);
+            saveAsLibraryCopyBtn.setManaged(!isOwner);
         }
     }
 
@@ -129,7 +190,48 @@ public class CourseDetailsController implements ThemeAware {
                 onCreateNote();
             });
         }
+        if (saveToLibraryBtn != null) {
+            saveToLibraryBtn.setOnAction(e -> saveToUserLibrary());
+        }
+
+        if (saveAsLibraryCopyBtn != null) {
+            saveAsLibraryCopyBtn.setOnAction(e -> saveAsLibraryCopy());
+        }
+
+
     }
+
+    private void saveToUserLibrary() {
+        int currentUserId = SessionManager.getInstance().getCurrentUserId();
+        Stage owner = (Stage) filesContainer.getScene().getWindow();
+
+        try {
+            com.example.harmony.services.LibraryService libraryService =
+                    new com.example.harmony.services.LibraryService();
+
+            boolean alreadySaved = libraryService.isCourseSaved(currentUserId, courseId);
+
+            if (alreadySaved) {
+                boolean ok = UiPopups.confirm(
+                        owner,
+                        "Remove this course from your library?",
+                        isDarkModeNow(),
+                        getClass()
+                );
+                if (!ok) return;
+                libraryService.unsaveCourse(currentUserId, courseId);
+                saveToLibraryBtn.setText("🔖 Save to Library");
+            } else {
+                libraryService.saveCourse(currentUserId, courseId);
+                saveToLibraryBtn.setText("✔ Saved — click to remove");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            UiPopups.showError(owner, "Failed to update library.", isDarkModeNow(), getClass());
+        }
+    }
+
 
     private void onAddFiles() {
         Stage owner = (Stage) filesContainer.getScene().getWindow();
@@ -262,9 +364,13 @@ public class CourseDetailsController implements ThemeAware {
             ev.consume();
             confirmAndDeleteFromCard(f.id());
         });
-        wrapper.getChildren().add(xBtn);
-        StackPane.setAlignment(xBtn, Pos.TOP_RIGHT);
-        StackPane.setMargin(xBtn, new Insets(8));
+
+        if (isOwner) {                    // ← wrap in isOwner check
+            wrapper.getChildren().add(xBtn);
+            StackPane.setAlignment(xBtn, Pos.TOP_RIGHT);
+            StackPane.setMargin(xBtn, new Insets(8));
+        }
+
 
         Task<Node> thumbTask = new Task<>() {
             @Override
@@ -375,8 +481,14 @@ public class CourseDetailsController implements ThemeAware {
         Button close = new Button("Close");
         close.getStyleClass().add("action-button");
 
-        HBox actions = new HBox(10, download, rename, delete, close);
+        HBox actions;
+        if (isOwner) {
+            actions = new HBox(10, download, rename, delete, close);
+        } else {
+            actions = new HBox(10, download, close);
+        }
         actions.setAlignment(Pos.CENTER_RIGHT);
+
         VBox rootBox = new VBox(12, title, previewScroll, actions);
         rootBox.setPadding(new Insets(18));
         Stage popup = UiPopups.buildModalNoTitleBar(
@@ -716,7 +828,10 @@ public class CourseDetailsController implements ThemeAware {
 
         HBox top = new HBox(10, new Label("Name:"), nameField);
         HBox actions = new HBox(10, save, cancel);
+        nameField.setEditable(isOwner);
+
         actions.setAlignment(Pos.CENTER_RIGHT);
+
 
         VBox root = new VBox(12, top, scroll, actions);
         root.setPadding(new Insets(18));
@@ -799,6 +914,7 @@ public class CourseDetailsController implements ThemeAware {
 
         TextField nameField = new TextField(stripExt(f.originalName() == null ? "note.rtfx" : f.originalName()));
         nameField.setPromptText("Note name");
+        nameField.setEditable(isOwner);
 
         final long[] currentFileId = { f.id() };
         final String[] currentOriginalName = { f.originalName() == null ? "note.rtfx" : f.originalName() };
@@ -959,7 +1075,14 @@ public class CourseDetailsController implements ThemeAware {
                 UiPopups.showInfo(owner, "Not found", isDarkModeNow(), getClass());
             }
         });
-
+        if (!isOwner) {
+            fontBox.setDisable(true);
+            sizeSpinner.setDisable(true);
+            alignLeft.setDisable(true);
+            alignCenter.setDisable(true);
+            alignRight.setDisable(true);
+            alignJustify.setDisable(true);
+        }
 
         HBox topRow = new HBox(
                 10,
@@ -973,7 +1096,13 @@ public class CourseDetailsController implements ThemeAware {
         HBox.setHgrow(topRow.getChildren().get(2), Priority.ALWAYS);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
-        HBox actions = new HBox(10, save, saveAsNew, download, rename, delete, close);
+        HBox actions;
+        if (isOwner) {
+            actions = new HBox(10, save, saveAsNew, download, rename, delete, close);
+        } else {
+            actions = new HBox(10, download, close);
+            area.setEditable(false);   // ← read-only for non-owners
+        }
         actions.setAlignment(Pos.CENTER_RIGHT);
 
         VirtualizedScrollPane<InlineCssTextArea> scroll = new VirtualizedScrollPane<>(area);
@@ -1616,6 +1745,76 @@ public class CourseDetailsController implements ThemeAware {
             }
         });
     }
+    private void saveAsLibraryCopy() {
+        int currentUserId = SessionManager.getInstance().getCurrentUserId();
+        Stage owner = (Stage) filesContainer.getScene().getWindow();
 
+        TextInputDialog dialog = new TextInputDialog(courseTitle.getText() + " (copy)");
+        dialog.setTitle("Save as Copy");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Name for your copy:");
+        dialog.initOwner(owner);
+        UiPopups.styleDialog(dialog, isDarkModeNow(), getClass());
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) return;
+
+        String newTitle = result.get().trim();
+        if (newTitle.isEmpty()) {
+            UiPopups.showWarning(owner, "Name is required.", isDarkModeNow(), getClass());
+            return;
+        }
+
+        try (var conn = DB.getConnection()) {
+            // copy the course row
+            int newCourseId;
+            try (var ps = conn.prepareStatement(
+                    "INSERT INTO courses (title, subjectid, userid, cover_image_path) " +
+                            "SELECT ?, subjectid, ?, cover_image_path FROM courses WHERE id = ?",
+                    java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, newTitle);
+                ps.setInt(2, currentUserId);
+                ps.setInt(3, courseId);
+                ps.executeUpdate();
+                try (var keys = ps.getGeneratedKeys()) {
+                    if (!keys.next()) throw new Exception("No generated key for new course");
+                    newCourseId = keys.getInt(1);
+                }
+            }
+
+            // increment saves on the original course
+            try (var ps = conn.prepareStatement(
+                    "UPDATE courses SET saves = saves + 1 WHERE id = ?")) {
+                ps.setInt(1, courseId);
+                ps.executeUpdate();
+            }
+
+            // insert into saved_courses so the badge shows in Courses tab
+            try (var ps = conn.prepareStatement(
+                    "INSERT IGNORE INTO saved_courses (user_id, course_id) VALUES (?, ?)")) {
+                ps.setInt(1, currentUserId);
+                ps.setInt(2, courseId);
+                ps.executeUpdate();
+            }
+
+            // copy all files
+            List<CourseService.CourseFileRow> files = courseService.listCourseFiles(courseId);
+            for (CourseService.CourseFileRow f : files) {
+                byte[] data = courseService.loadCourseFileBytes(f.id());
+                java.nio.file.Path dir = java.nio.file.Files.createTempDirectory("course-copy-");
+                java.nio.file.Path tmp = dir.resolve(f.originalName() != null ? f.originalName() : "file");
+                java.nio.file.Files.write(tmp, data);
+                courseService.uploadCourseFile(newCourseId, tmp.toFile());
+            }
+
+            saveAsLibraryCopyBtn.setText("✔ Copied");
+            saveAsLibraryCopyBtn.setDisable(true);
+            UiPopups.showInfo(owner, "Course copied to your courses!", isDarkModeNow(), getClass());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            UiPopups.showError(owner, "Failed to copy course.", isDarkModeNow(), getClass());
+        }
+    }
 
 }

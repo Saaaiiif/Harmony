@@ -4,6 +4,7 @@
     import com.example.harmony.services.CourseService;
     import com.example.harmony.interfaces.ThemeAware;
     import com.example.harmony.services.ImageGenerationService;
+    import com.example.harmony.services.LibraryService;
     import com.example.harmony.util.UiPopups;
     import javafx.animation.AnimationTimer;
     import javafx.animation.TranslateTransition;
@@ -41,7 +42,15 @@
         @FXML private StackPane wheelZone;
         @FXML private StackPane navWheelContainer;
         @FXML private Button libraryBtn;
-    
+        @FXML private ImageView coursesHeaderIcon;
+        @FXML private Button gridViewBtn;
+        @FXML private Button listViewBtn;
+        @FXML private ScrollPane coursesScrollPane;
+        private final VBox listContainer = new VBox(8);
+
+
+        private boolean isGridView = true;
+
         private Stage stage;
         private boolean isDarkMode = false;
     
@@ -80,7 +89,7 @@
                 this.baseIconName = baseIconName;
             }
         }
-    
+
         private final List<NavItem> navItems = List.of(
                 new NavItem("Home", "homepage-6104"),
                 new NavItem("Quick Search", "search-interface-symbol"),
@@ -125,12 +134,13 @@
             addCourseButton.setOnAction(e -> addNewCourse());
     
             buildNavWheel();
-    
+
             Platform.runLater(() -> {
                 animatedCenter.set(currentIndex);
                 layoutSlots(animatedCenter.get());
                 installWheelHoverBehavior();
                 loadCourses();
+                updateHeaderIcon();
             });
     
             libraryBtn.setOnAction(e -> {
@@ -144,10 +154,104 @@
                     ex.printStackTrace();
                 }
             });
-    
-    
-    
+
+            gridViewBtn.setOnAction(e -> setViewMode(true));
+            listViewBtn.setOnAction(e -> setViewMode(false));
+            gridViewBtn.getStyleClass().add("view-toggle-btn-active"); // default
+
+
         }
+        private void setViewMode(boolean grid) {
+            isGridView = grid;
+            gridViewBtn.getStyleClass().remove("view-toggle-btn-active");
+            listViewBtn.getStyleClass().remove("view-toggle-btn-active");
+            if (grid) gridViewBtn.getStyleClass().add("view-toggle-btn-active");
+            else {
+                listContainer.setPadding(new Insets(24));
+                listContainer.getChildren().clear();
+            }
+            if (grid) coursesScrollPane.setContent(coursesContainer);
+            else      coursesScrollPane.setContent(listContainer);
+            loadCourses();
+        }
+        private HBox makeCourseListItem(int courseId, String title, String subjectName, String coverImagePath, boolean isSaved) {
+            StackPane thumb = new StackPane();
+            thumb.setMinSize(56, 56);
+            thumb.setPrefSize(56, 56);
+            thumb.setMaxSize(56, 56);
+            thumb.setStyle("-fx-background-radius: 8;");
+
+            if (coverImagePath != null && !coverImagePath.isBlank()) {
+                try {
+                    java.nio.file.Path p = java.nio.file.Paths.get("C:/wamp64/www/covers/" + coverImagePath);
+                    if (p.toFile().exists()) {
+                        ImageView iv = new ImageView(new Image(p.toUri().toString(), 56, 56, false, true));
+                        iv.setFitWidth(56);
+                        iv.setFitHeight(56);
+                        iv.setPreserveRatio(false);
+                        thumb.getChildren().add(iv);
+                    }
+                } catch (Exception e) { e.printStackTrace(); }
+            }
+
+            if (thumb.getChildren().isEmpty()) {
+                thumb.getStyleClass().add("course-card-image-placeholder");
+                Label icon = new Label("🎓");
+                icon.setStyle("-fx-font-size: 22px;");
+                thumb.getChildren().add(icon);
+            }
+
+            Label titleLbl = new Label(title != null ? title : "");
+            titleLbl.getStyleClass().add("course-title");
+            titleLbl.setStyle("-fx-font-size: 15px;");
+
+            Label subLbl = new Label(subjectName != null ? subjectName : "");
+            subLbl.getStyleClass().add("course-subtitle");
+
+            VBox info = new VBox(4, titleLbl, subLbl);
+            info.setAlignment(Pos.CENTER_LEFT);
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            HBox row;
+
+            if (isSaved) {
+                Label savedBadge = new Label("🔖 In Library");
+                savedBadge.getStyleClass().add("saves-badge");
+                row = new HBox(14, thumb, info, spacer, savedBadge);
+            } else {
+                Button deleteBtn = new Button("✕");
+                deleteBtn.getStyleClass().add("course-delete-btn");
+                deleteBtn.setOnAction(e -> {
+                    e.consume();
+                    confirmAndDeleteCourse(courseId, title);
+                });
+                row = new HBox(14, thumb, info, spacer, deleteBtn);
+            }
+
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.getStyleClass().add("course-list-item");
+            row.setPrefWidth(Double.MAX_VALUE);
+            row.setOnMouseClicked(e -> openCourse(courseId, title, subjectName));
+            return row;
+        }
+
+        private void refreshCourses() {
+            loadCourses();
+        }
+
+
+        private void updateHeaderIcon() {
+            boolean dark = isDarkModeNow();
+            String path = "/book-13427-" + (dark ? "dark" : "light") + ".png";
+            try {
+                coursesHeaderIcon.setImage(new Image(
+                        getClass().getResourceAsStream(path)
+                ));
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
         private boolean isDarkModeNow() {
             RootLayoutController rc = SceneTransitionUtil.getRootController();
             return rc != null && rc.isDarkMode();
@@ -358,7 +462,7 @@
                             CourseService.CreateCourseRequest req = new CourseService.CreateCourseRequest(
                                     title,
                                     subjectText,
-                                    null,
+                                    SessionManager.getInstance().getCurrentUserId(),   // ← logged-in user
                                     new ArrayList<>(filesList.getItems()),
                                     finalCover
                             );
@@ -398,6 +502,9 @@
         private void loadCourses() {
             if (coursesContainer == null) return;
             coursesContainer.getChildren().clear();
+            listContainer.getChildren().clear();
+
+            int currentUserId = SessionManager.getInstance().getCurrentUserId();
 
             try (Connection conn = DB.getConnection()) {
                 if (conn == null) {
@@ -405,19 +512,47 @@
                     return;
                 }
 
-                try (PreparedStatement ps = conn.prepareStatement("""
-            SELECT c.id, c.title, s.name AS subject_name, c.cover_image_path
+                // own courses + saved courses merged, no duplicates
+                String sql = """
+            SELECT c.id, c.title, s.name AS subject_name, c.cover_image_path,
+                   CASE WHEN c.userid = ? THEN 0 ELSE 1 END AS is_saved
             FROM courses c
             LEFT JOIN subject s ON s.id = c.subjectid
-            """);
-                     ResultSet rs = ps.executeQuery()) {
+            WHERE c.userid = ?
+               OR c.id IN (SELECT course_id FROM saved_courses WHERE user_id = ?)
+            ORDER BY is_saved ASC, c.id DESC
+        """;
 
-                    while (rs.next()) {
-                        int id = rs.getInt("id");
-                        String title = rs.getString("title");
-                        String subjectName = rs.getString("subject_name");
-                        String coverImagePath = rs.getString("cover_image_path");
-                        coursesContainer.getChildren().add(makeCourseCard(id, title, subjectName, coverImagePath));
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setInt(1, currentUserId);
+                    ps.setInt(2, currentUserId);
+                    ps.setInt(3, currentUserId);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        boolean hasAny = false;
+                        while (rs.next()) {
+                            hasAny = true;
+                            int id = rs.getInt("id");
+                            String title = rs.getString("title");
+                            String subjectName = rs.getString("subject_name");
+                            String coverImagePath = rs.getString("cover_image_path");
+                            boolean isSaved = rs.getInt("is_saved") == 1;
+
+                            if (isGridView) {
+                                coursesContainer.getChildren().add(
+                                        makeCourseCard(id, title, subjectName, coverImagePath, isSaved)
+                                );
+                            } else {
+                                listContainer.getChildren().add(
+                                        makeCourseListItem(id, title, subjectName, coverImagePath, isSaved)
+                                );
+                            }
+                        }
+
+                        if (!hasAny) {
+                            if (isGridView) coursesContainer.getChildren().add(makeEmptyState("No courses yet"));
+                            else listContainer.getChildren().add(makeEmptyState("No courses yet"));
+                        }
                     }
                 }
             } catch (Exception ex) {
@@ -426,7 +561,7 @@
             }
         }
 
-        private StackPane makeCourseCard(int courseId, String title, String subjectName, String coverImagePath) {
+        private StackPane makeCourseCard(int courseId, String title, String subjectName, String coverImagePath, boolean isSaved) {
             VBox cardBody = new VBox(0);
             cardBody.getStyleClass().add("course-card");
             cardBody.setAlignment(Pos.TOP_CENTER);
@@ -442,9 +577,7 @@
                         iv.getStyleClass().add("course-card-image");
                         cardBody.getChildren().add(iv);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception e) { e.printStackTrace(); }
             }
 
             if (cardBody.getChildren().isEmpty()) {
@@ -472,25 +605,31 @@
 
             cardBody.getChildren().add(info);
 
-            Button deleteBtn = new Button("✕");
-            deleteBtn.getStyleClass().add("course-delete-btn");
+            StackPane wrapper = new StackPane(cardBody);
 
-            StackPane wrapper = new StackPane(cardBody, deleteBtn);
-            StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
-            StackPane.setMargin(deleteBtn, new Insets(6, 6, 0, 0));
+            if (isSaved) {
+                // saved courses from library: show badge, no delete button
+                Label savedBadge = new Label("🔖 In Library");
+                savedBadge.getStyleClass().add("saves-badge");
+                StackPane.setAlignment(savedBadge, Pos.TOP_LEFT);
+                StackPane.setMargin(savedBadge, new Insets(6, 0, 0, 8));
+                wrapper.getChildren().add(savedBadge);
+            } else {
+                // own courses: show delete button
+                Button deleteBtn = new Button("✕");
+                deleteBtn.getStyleClass().add("course-delete-btn");
+                StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
+                StackPane.setMargin(deleteBtn, new Insets(6, 6, 0, 0));
+                deleteBtn.visibleProperty().bind(wrapper.hoverProperty());
+                deleteBtn.managedProperty().bind(deleteBtn.visibleProperty());
+                deleteBtn.setOnAction(e -> {
+                    e.consume();
+                    confirmAndDeleteCourse(courseId, title);
+                });
+                wrapper.getChildren().add(deleteBtn);
+            }
 
-            deleteBtn.visibleProperty().bind(wrapper.hoverProperty());
-            deleteBtn.managedProperty().bind(deleteBtn.visibleProperty());
-
-            deleteBtn.setOnAction(e -> {
-                e.consume();
-                confirmAndDeleteCourse(courseId, title);
-            });
-
-            wrapper.setOnMouseClicked(e -> {
-                if (e.getTarget() == deleteBtn) return;
-                openCourse(courseId, title, subjectName);
-            });
+            wrapper.setOnMouseClicked(e -> openCourse(courseId, title, subjectName));
 
             return wrapper;
         }
@@ -510,11 +649,11 @@
                 System.out.println("Open course: " + title + " subject: " + subjectName);
             }
         }
-    
-    
+
+
         private void confirmAndDeleteCourse(int courseId, String title) {
             Stage owner = getOwnerStage();
-    
+
             boolean ok = UiPopups.confirm(
                     owner,
                     "Delete \"" + title + "\"?\n\nThis will remove the course and all its files.",
@@ -522,8 +661,15 @@
                     getClass()
             );
             if (!ok) return;
-    
+
             try {
+                // clean up saved_courses first to avoid orphan rows
+                try (Connection conn = DB.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "DELETE FROM saved_courses WHERE course_id = ?")) {
+                    ps.setInt(1, courseId);
+                    ps.executeUpdate();
+                }
                 courseService.deleteCourse(courseId);
                 loadCourses();
             } catch (Exception ex) {
@@ -666,14 +812,15 @@
                 s.box.relocate(x - SLOT_W / 2.0, y - SLOT_H / 2.0);
             }
         }
-    
+
         @Override
         public void onThemeChanged() {
-            System.out.println("Library onThemeChanged called");
             layoutSlots(animatedCenter.get());
+            updateHeaderIcon();
         }
-    
-    
+
+
+
         private void onSlotClicked(WheelSlot s) {
             int step = s.offsetFromCenter;
     

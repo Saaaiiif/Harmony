@@ -11,6 +11,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane fx:id="root"
             xmlns:fx="http://javafx.com/fxml"
@@ -21,33 +24,55 @@
     <center>
         <BorderPane fx:id="contentPane" style="-fx-background-color: transparent;">
             <top>
-                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="library-header">
-                    <padding>
-                        <Insets top="20" right="20" bottom="20" left="20"/>
-                    </padding>
+                <VBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="library-header">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <ImageView fx:id="libraryHeaderIcon" fitWidth="28" fitHeight="28" preserveRatio="true" styleClass="header-icon"/>
+                            <Label text="Library" styleClass="section-title"/>
+                        </HBox>
+                        <TextField fx:id="searchField"
+                                   promptText="Search courses…"
+                                   prefWidth="220"
+                                   styleClass="search-field"/>
+                        <ComboBox fx:id="subjectFilter"
+                                  promptText="All Subjects"
+                                  prefWidth="160"
+                                  styleClass="subject-filter"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="myCoursesBtn" text="My Courses" styleClass="action-button"/>
+                    </HBox>
 
-                    <Label text="Library" styleClass="section-title"/>
+                    <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0 20 8 20;">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="gridViewBtn" styleClass="view-toggle-btn" contentDisplay="GRAPHIC_ONLY">
+                            <graphic>
+                                <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/grid-view-svgrepo-com.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="listViewBtn" styleClass="view-toggle-btn" contentDisplay="GRAPHIC_ONLY">
+                            <graphic>
+                                <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/list-view-svgrepo-com.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
 
-                    <!-- NEW: search bar -->
-                    <TextField fx:id="searchField"
-                               promptText="Search courses…"
-                               prefWidth="220"
-                               styleClass="search-field"/>
-
-                    <!-- NEW: subject filter -->
-                    <ComboBox fx:id="subjectFilter"
-                              promptText="All Subjects"
-                              prefWidth="160"
-                              styleClass="subject-filter"/>
-
-                    <Region HBox.hgrow="ALWAYS"/>
-
-                    <Button fx:id="myCoursesBtn" text="My Courses" styleClass="action-button"/>
-                </HBox>
+                    </HBox>
+                </VBox>
             </top>
 
             <center>
-                <ScrollPane fitToWidth="true"
+                <ScrollPane fx:id="libraryScrollPane"
+                            fitToWidth="true"
                             styleClass="library-content"
                             style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
                     <TilePane fx:id="publishedCoursesContainer" hgap="18" vgap="18" prefColumns="3">
