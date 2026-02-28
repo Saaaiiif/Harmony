@@ -136,8 +136,8 @@
                             style="-fx-background-color: linear-gradient(to right, transparent, #d500f9, transparent);"/>
                     <Label fx:id="lblQuoteText"
                            text="Chargement de votre inspiration du jour..."
-                           textFill="#333333" wrapText="true" maxWidth="620.0"
-                           style="-fx-font-size: 17px; -fx-font-style: italic; -fx-text-alignment: center;"/>
+                           wrapText="true" maxWidth="620.0"
+                           style="-fx-font-size: 17px; -fx-font-style: italic; -fx-text-alignment: center; -fx-text-fill: #333333;"/>
                     <Label fx:id="lblQuoteAuthor" text="..."
                            style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #9c27b0;"/>
                     <Button onAction="#changerCitation" text="🔄  Nouvelle citation"

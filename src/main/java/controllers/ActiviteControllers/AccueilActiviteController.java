@@ -20,18 +20,36 @@ import javafx.util.Duration;
 import models.ActiviteModels.Activite;
 import models.ActiviteModels.Aliment;
 import models.ActiviteModels.Consommation;
+import models.ActiviteModels.Sommeil;
 import models.UserModels.Session;
 import services.ActiviteServices.ServiceActivite;
 import services.ActiviteServices.ServiceAliment;
 import services.ActiviteServices.ServiceConsommation;
+import services.ActiviteServices.ServiceSommeil;
+
+// ── iText 5 — vrai PDF ──────────────────────────────────────────────────────
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 
 public class AccueilActiviteController {
@@ -62,6 +80,7 @@ public class AccueilActiviteController {
     private final ServiceConsommation serviceConsommation = new ServiceConsommation();
     private final ServiceActivite     serviceActivite     = new ServiceActivite();
     private final ServiceAliment      serviceAliment      = new ServiceAliment();
+    private final ServiceSommeil      serviceSommeil      = new ServiceSommeil();
 
     // ── Cache aliments (évite de recharger la liste à chaque calcul) ─────────
     private List<Aliment> cacheAliments = null;
@@ -654,64 +673,547 @@ public class AccueilActiviteController {
     }
 
     // =========================================================================
-    //  EXPORT BILAN (fichier texte .pdf)
+    //  EXPORT BILAN PDF — iText 5 (vrai format PDF)
     // =========================================================================
 
     @FXML
     void genererBilanPDF(ActionEvent event) {
         FileChooser fc = new FileChooser();
-        fc.setTitle("Enregistrer le bilan");
+        fc.setTitle("Enregistrer le bilan Harmony");
         fc.setInitialFileName("bilan_harmony_" + LocalDate.now() + ".pdf");
         fc.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+                new FileChooser.ExtensionFilter("Fichiers PDF (*.pdf)", "*.pdf"));
 
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         File fichier = fc.showSaveDialog(stage);
         if (fichier == null) return;
 
         try {
-            genererPDFSimple(fichier);
-            afficherInfo("Bilan généré avec succès :\n" + fichier.getAbsolutePath());
+            genererVraiPDF(fichier);
+            afficherInfo("✅ Bilan généré avec succès !\n" + fichier.getAbsolutePath());
         } catch (Exception e) {
-            afficherInfo("Erreur lors de la génération : " + e.getMessage());
+            afficherInfo("❌ Erreur lors de la génération PDF :\n" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void genererPDFSimple(File fichier) throws IOException {
-        int calAuj  = calculerCaloriesAliments(dateJour);
-        int calBrul = calculerCaloriesExercices(dateJour);
-        int reste   = objCalories - calAuj + calBrul;
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Génération du vrai PDF avec iText 5
+    // ──────────────────────────────────────────────────────────────────────────
 
-        String contenu =
-                "BILAN HARMONY — "
-                        + dateJour.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n"
-                        + "========================================\n\n"
-                        + "CALORIES\n"
-                        + "  Objectif    : " + objCalories + " kcal\n"
-                        + "  Consommées  : " + calAuj      + " kcal\n"
-                        + "  Brûlées     : " + calBrul     + " kcal\n"
-                        + "  Restantes   : " + reste        + " kcal\n\n"
-                        + "OBJECTIFS NUTRITIONNELS\n"
-                        + "  Glucides    : " + objGluPct  + "%  ("
-                        + (int)(objCalories * objGluPct  / 400.0) + " g)\n"
-                        + "  Lipides     : " + objLipPct  + "%  ("
-                        + (int)(objCalories * objLipPct  / 900.0) + " g)\n"
-                        + "  Protéines   : " + objProtPct + "%  ("
-                        + (int)(objCalories * objProtPct / 400.0) + " g)\n\n"
-                        + "HYDRATATION\n"
-                        + "  Objectif eau : " + objEauMl + " ml/jour\n\n"
-                        + "FITNESS\n"
-                        + "  Calories brûlées/sem. : " + objCalBrulees    + " kcal\n"
-                        + "  Entraînements/sem.    : " + objEntrainements  + "\n"
-                        + "  Minutes/entraînement  : " + objMinutes        + " min\n\n"
-                        + "========================================\n"
-                        + "Généré par Harmony — "
-                        + java.time.LocalDateTime.now().format(
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH));
+    /** Couleurs charte graphique Harmony */
+    private static final BaseColor VIOLET_HARMONY    = new BaseColor(106, 27, 154);
+    private static final BaseColor VIOLET_LIGHT      = new BaseColor(156, 39, 176);
+    private static final BaseColor VIOLET_VERY_LIGHT = new BaseColor(243, 229, 255);
+    private static final BaseColor GRIS_HEADER       = new BaseColor(245, 245, 250);
+    private static final BaseColor GRIS_SEPARATEUR   = new BaseColor(224, 224, 224);
+    private static final BaseColor VERT_OK           = new BaseColor(46, 125, 50);
+    private static final BaseColor ROUGE_ALERTE      = new BaseColor(198, 40, 40);
+    private static final BaseColor BLEU_DONNEE       = new BaseColor(21, 101, 192);
 
-        try (PrintWriter pw = new PrintWriter(new FileWriter(fichier))) {
-            pw.println(contenu);
+    private void genererVraiPDF(File fichier) throws IOException, DocumentException {
+        // ── 1. Récupérer les données ──────────────────────────────────────────
+        int userId = 0;
+        String nomUtilisateur = "Utilisateur";
+        if (Session.getInstance() != null && Session.getInstance().getUser() != null) {
+            userId = Session.getInstance().getUser().getUser_id();
+            String prenom = Session.getInstance().getUser().getUser_prenom();
+            String nom    = Session.getInstance().getUser().getUser_nom();
+            if (prenom != null || nom != null)
+                nomUtilisateur = (prenom != null ? prenom : "") + " " + (nom != null ? nom : "");
         }
+
+        // Sport
+        List<Activite> activites = userId > 0
+                ? serviceActivite.afficherParUtilisateur(userId)
+                : serviceActivite.afficherTout();
+        if (activites == null) activites = new ArrayList<>();
+
+        // Nutrition
+        if (cacheAliments == null) cacheAliments = serviceAliment.afficherTout();
+        List<Consommation> consos = userId > 0
+                ? serviceConsommation.afficherParUtilisateur(userId)
+                : serviceConsommation.afficherTout();
+        if (consos == null) consos = new ArrayList<>();
+
+        // Sommeil
+        List<Sommeil> nuits = userId > 0
+                ? serviceSommeil.afficherParUtilisateur(userId)
+                : serviceSommeil.afficherTout();
+        if (nuits == null) nuits = new ArrayList<>();
+
+        // ── 2. Calculs sport ─────────────────────────────────────────────────
+        int nbSeances = activites.size();
+        int calBruleesTotal = activites.stream().mapToInt(Activite::getCalories_brulees).sum();
+        int dureeTotal = activites.stream().mapToInt(Activite::getDuree_minutes).sum();
+        int dureeMin = nbSeances > 0 ? dureeTotal / nbSeances : 0;
+        int calMoySeance = nbSeances > 0 ? calBruleesTotal / nbSeances : 0;
+
+        LocalDate maintenant = LocalDate.now();
+        LocalDate il7Jours = maintenant.minusDays(7);
+        long nbSeancesSemaine = activites.stream()
+                .filter(a -> a.getDate_activite() != null
+                        && a.getDate_activite().toLocalDateTime().toLocalDate().isAfter(il7Jours))
+                .count();
+        int calBruleesSemaine = activites.stream()
+                .filter(a -> a.getDate_activite() != null
+                        && a.getDate_activite().toLocalDateTime().toLocalDate().isAfter(il7Jours))
+                .mapToInt(Activite::getCalories_brulees).sum();
+
+        long joursTrackes = activites.stream()
+                .filter(a -> a.getDate_activite() != null)
+                .map(a -> a.getDate_activite().toLocalDateTime().toLocalDate())
+                .distinct().count();
+
+        // ── 3. Calculs nutrition ─────────────────────────────────────────────
+        long joursMealsTrackes = consos.stream()
+                .filter(c -> c.getDate_consommation() != null)
+                .map(c -> c.getDate_consommation().toLocalDateTime().toLocalDate())
+                .distinct().count();
+        int totalEntrees = consos.size();
+        int eauTotalMl = consos.stream().mapToInt(Consommation::getQuantite_eau_ml).sum();
+        double eauTotalL = eauTotalMl / 1000.0;
+
+        // Calcul taux réussite objectif calorique (jours dans l'objectif)
+        Map<LocalDate, Integer> calParJour = new HashMap<>();
+        for (Consommation c : consos) {
+            if (c.getDate_consommation() == null) continue;
+            LocalDate d = c.getDate_consommation().toLocalDateTime().toLocalDate();
+            int cal = 0;
+            Aliment al = trouverAlimentParId(c.getId_aliment());
+            if (al != null && c.getPoids_grammes() > 0)
+                cal = (int) (al.getCalories_pour_100g() * c.getPoids_grammes() / 100.0);
+            calParJour.merge(d, cal, Integer::sum);
+        }
+        long joursOk = calParJour.values().stream().filter(cal -> cal <= objCalories).count();
+        int tauxOk = joursMealsTrackes > 0 ? (int) (joursOk * 100 / joursMealsTrackes) : 0;
+
+        // ── 4. Calculs sommeil ───────────────────────────────────────────────
+        int nbNuits = nuits.size();
+        double dureeMovSommeil = 0;
+        long nbBonnesNuits = 0;
+        for (Sommeil s : nuits) {
+            if (s.getDate_coucher() != null && s.getDate_reveil() != null) {
+                double heures = ChronoUnit.MINUTES.between(
+                        s.getDate_coucher().toLocalDateTime(),
+                        s.getDate_reveil().toLocalDateTime()) / 60.0;
+                dureeMovSommeil += heures;
+            }
+            if ("Excellent".equalsIgnoreCase(s.getQualite_sommeil())
+                    || "Bon".equalsIgnoreCase(s.getQualite_sommeil()))
+                nbBonnesNuits++;
+        }
+        double dureeMovh = nbNuits > 0 ? dureeMovSommeil / nbNuits : 0;
+        int tauxBonnesNuits = nbNuits > 0 ? (int) (nbBonnesNuits * 100 / nbNuits) : 0;
+
+        // ── 5. Création du document PDF ──────────────────────────────────────
+        Document doc = new Document(PageSize.A4, 45, 45, 30, 30);
+        PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(fichier));
+        doc.open();
+
+        // Fonts (CP1252 pour les caractères français)
+        BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        BaseFont bfBold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        com.itextpdf.text.Font fontTitrePrincipal = new com.itextpdf.text.Font(bfBold, 22, com.itextpdf.text.Font.NORMAL, BaseColor.WHITE);
+        com.itextpdf.text.Font fontSousTitre      = new com.itextpdf.text.Font(bf, 11, com.itextpdf.text.Font.NORMAL, new BaseColor(200, 170, 230));
+        com.itextpdf.text.Font fontSection        = new com.itextpdf.text.Font(bfBold, 15, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY);
+        com.itextpdf.text.Font fontTableHeader    = new com.itextpdf.text.Font(bfBold, 11, com.itextpdf.text.Font.NORMAL, BaseColor.WHITE);
+        com.itextpdf.text.Font fontTableBody      = new com.itextpdf.text.Font(bf, 10, com.itextpdf.text.Font.NORMAL, new BaseColor(60, 60, 60));
+        com.itextpdf.text.Font fontKpiValue       = new com.itextpdf.text.Font(bfBold, 18, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY);
+        com.itextpdf.text.Font fontKpiLabel       = new com.itextpdf.text.Font(bf, 9, com.itextpdf.text.Font.NORMAL, new BaseColor(120, 120, 120));
+        com.itextpdf.text.Font fontClosing        = new com.itextpdf.text.Font(bf, 11, com.itextpdf.text.Font.ITALIC, VIOLET_LIGHT);
+
+        String dateGen = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        // ════════════════════════════════════════════════════════════════════
+        //  PAGE 1 : EN-TÊTE + SPORT
+        // ════════════════════════════════════════════════════════════════════
+
+        // ── Bandeau d'en-tête violet ──────────────────────────────────────
+        PdfContentByte cb = writer.getDirectContent();
+        cb.saveState();
+        cb.setColorFill(VIOLET_HARMONY);
+        cb.roundRectangle(45, 760, 505, 62, 8);
+        cb.fill();
+        // Dégradé simulé : bande plus claire sur le côté droit
+        cb.setColorFill(VIOLET_LIGHT);
+        cb.roundRectangle(370, 760, 180, 62, 8);
+        cb.fill();
+        cb.restoreState();
+
+        Paragraph titreHeader = new Paragraph();
+        titreHeader.add(new Phrase("BILAN GLOBAL DE SANTE - HARMONY\n", fontTitrePrincipal));
+        titreHeader.add(new Phrase("Genere le : " + dateGen + "   |   " + nomUtilisateur.trim(), fontSousTitre));
+        titreHeader.setAlignment(Element.ALIGN_CENTER);
+        titreHeader.setSpacingBefore(5);
+        titreHeader.setSpacingAfter(18);
+        doc.add(titreHeader);
+
+        // ── TABLEAU DE BORD GLOBAL ─────────────────────────────────────
+        Paragraph titreDashboard = new Paragraph("TABLEAU DE BORD GLOBAL", fontSection);
+        titreDashboard.setSpacingAfter(4);
+        doc.add(titreDashboard);
+        doc.add(traitSeparateur(cb, writer, doc));
+        doc.add(new Paragraph(" "));
+
+        // ── SECTION SPORT ─────────────────────────────────────────────────
+        Paragraph titreSection1 = new Paragraph("SYNTHESE SPORTIVE", fontSection);
+        titreSection1.setSpacingAfter(10);
+        doc.add(titreSection1);
+
+        // 4 KPI boxes sur une ligne
+        PdfPTable kpiTable = new PdfPTable(4);
+        kpiTable.setWidthPercentage(100);
+        kpiTable.setSpacingAfter(14);
+        kpiTable.addCell(creerCelluleKpi(bfBold, bf, "Seances sport", nbSeances + " seances"));
+        kpiTable.addCell(creerCelluleKpi(bfBold, bf, "Calories brulees", calBruleesTotal + " kcal"));
+        kpiTable.addCell(creerCelluleKpi(bfBold, bf, "Jours trackes", joursTrackes + " jours"));
+        kpiTable.addCell(creerCelluleKpi(bfBold, bf, "Nuits enregistrees", nbNuits + " nuits"));
+        doc.add(kpiTable);
+
+        // ── Graphique calories brûlées par séance ─────────────────────────
+        Paragraph titrGraph1 = new Paragraph("Evolution des calories brulees par seance :", new com.itextpdf.text.Font(bfBold, 11, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY));
+        titrGraph1.setSpacingBefore(4);
+        titrGraph1.setSpacingAfter(6);
+        doc.add(titrGraph1);
+
+        // Préparer les données du graphique
+        List<Activite> actSortees = activites.stream()
+                .filter(a -> a.getDate_activite() != null)
+                .sorted(Comparator.comparing(a -> a.getDate_activite().toLocalDateTime()))
+                .collect(Collectors.toList());
+
+        dessinerGraphiqueLigne(cb, writer, doc,
+                actSortees.stream().mapToDouble(Activite::getCalories_brulees).toArray(),
+                actSortees.stream().map(a -> "S" + (actSortees.indexOf(a) + 1)).toArray(String[]::new),
+                "Seances", "Calories brulees", VIOLET_HARMONY);
+
+        doc.add(new Paragraph(" "));
+
+        // ── Table indicateurs de performance sport ────────────────────────
+        PdfPTable tableSport = creerTableauSection(
+                new String[]{"Indicateur", "Performances"},
+                new String[][]{
+                        {"Seances realisees (total)", nbSeances + " seances"},
+                        {"Seances cette semaine", nbSeancesSemaine + " seances (7 derniers jours)"},
+                        {"Temps total d'effort", (dureeTotal / 60) + "h " + (dureeTotal % 60) + "m"},
+                        {"Temps moyen par seance", dureeMin + " min/seance"},
+                        {"Calories brulees (total)", calBruleesTotal + " kcal"},
+                        {"Calories brulees cette semaine", calBruleesSemaine + " kcal"},
+                        {"Moyenne cal/seance", calMoySeance + " kcal"},
+                        {"Objectif entrainements/semaine", objEntrainements + " seances/semaine"}
+                },
+                bfBold, bf
+        );
+        doc.add(tableSport);
+
+        // ════════════════════════════════════════════════════════════════════
+        //  PAGE 2 : NUTRITION & HYDRATATION
+        // ════════════════════════════════════════════════════════════════════
+        doc.newPage();
+        dessinerBandeauSection(cb, writer, "NUTRITION & HYDRATATION", bfBold, 770);
+
+        doc.add(new Paragraph("\n"));
+
+        // Table nutrition
+        PdfPTable tableNutrition = creerTableauSection(
+                new String[]{"Indicateur", "Valeur"},
+                new String[][]{
+                        {"Jours avec repas enregistres", joursMealsTrackes + " jours"},
+                        {"Total entrees nutritionnelles", totalEntrees + " entrees"},
+                        {"Volume d'eau bu (total)", String.format("%.1f L", eauTotalL)},
+                        {"Objectif calorique journalier", objCalories + " kcal/jour"},
+                        {"Taux de reussite objectif cal.", tauxOk + "% des jours dans l'objectif"},
+                        {"Repartition macros cibles", "G:" + objGluPct + "% | L:" + objLipPct + "% | P:" + objProtPct + "%"}
+                },
+                bfBold, bf
+        );
+        doc.add(tableNutrition);
+        doc.add(new Paragraph(" "));
+
+        // ── Graphique hydratation ──────────────────────────────────────────
+        Paragraph titrGraph2 = new Paragraph("Suivi de l'hydratation quotidienne :", new com.itextpdf.text.Font(bfBold, 11, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY));
+        titrGraph2.setSpacingBefore(8);
+        titrGraph2.setSpacingAfter(6);
+        doc.add(titrGraph2);
+
+        // Données eau par entrée
+        List<Consommation> consosTriees = consos.stream()
+                .filter(c -> c.getDate_consommation() != null)
+                .sorted(Comparator.comparing(c -> c.getDate_consommation().toLocalDateTime()))
+                .collect(Collectors.toList());
+        double[] eauData = consosTriees.stream().mapToDouble(Consommation::getQuantite_eau_ml).toArray();
+        String[] eauLabels = new String[consosTriees.size()];
+        for (int i = 0; i < consosTriees.size(); i++) eauLabels[i] = "R" + (i + 1);
+
+        if (eauData.length > 0) {
+            dessinerGraphiqueLigne(cb, writer, doc, eauData, eauLabels, "Entrees", "Eau (ml)", new BaseColor(0, 100, 220));
+        } else {
+            doc.add(new Paragraph("Aucune donnee d'hydratation enregistree.",
+                    new com.itextpdf.text.Font(bf, 10, com.itextpdf.text.Font.ITALIC, BaseColor.GRAY)));
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  PAGE 3 : SOMMEIL
+        // ════════════════════════════════════════════════════════════════════
+        doc.newPage();
+        dessinerBandeauSection(cb, writer, "RECUPERATION & SOMMEIL", bfBold, 770);
+
+        doc.add(new Paragraph("\n"));
+
+        // Table sommeil
+        PdfPTable tableSommeil = creerTableauSection(
+                new String[]{"Indicateur", "Donnee"},
+                new String[][]{
+                        {"Nuits enregistrees", nbNuits + " nuits"},
+                        {"Duree moyenne de sommeil", String.format("%.1f h/nuit", dureeMovh)},
+                        {"Nuits de bonne qualite", nbBonnesNuits + " nuits (Excellent ou Bon)"},
+                        {"Taux de bonne qualite", tauxBonnesNuits + "%"},
+                        {"Objectif sommeil recommande", "7 a 9 heures par nuit (OMS)"}
+                },
+                bfBold, bf
+        );
+        doc.add(tableSommeil);
+        doc.add(new Paragraph(" "));
+
+        // ── Graphique durée de sommeil ──────────────────────────────────────
+        Paragraph titrGraph3 = new Paragraph("Evolution de la duree de sommeil :", new com.itextpdf.text.Font(bfBold, 11, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY));
+        titrGraph3.setSpacingBefore(8);
+        titrGraph3.setSpacingAfter(6);
+        doc.add(titrGraph3);
+
+        List<Sommeil> nuitsTriees = nuits.stream()
+                .filter(s -> s.getDate_coucher() != null && s.getDate_reveil() != null)
+                .sorted(Comparator.comparing(s -> s.getDate_coucher().toLocalDateTime()))
+                .collect(Collectors.toList());
+
+        if (!nuitsTriees.isEmpty()) {
+            double[] sommeilData = nuitsTriees.stream().mapToDouble(s ->
+                    ChronoUnit.MINUTES.between(
+                            s.getDate_coucher().toLocalDateTime(),
+                            s.getDate_reveil().toLocalDateTime()) / 60.0).toArray();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM");
+            String[] sommeilLabels = nuitsTriees.stream()
+                    .map(s -> s.getDate_coucher().toLocalDateTime().format(dtf))
+                    .toArray(String[]::new);
+            dessinerGraphiqueLigne(cb, writer, doc, sommeilData, sommeilLabels, "Nuits", "Heures de sommeil", new BaseColor(170, 0, 220));
+        } else {
+            doc.add(new Paragraph("Aucune donnee de sommeil enregistree.",
+                    new com.itextpdf.text.Font(bf, 10, com.itextpdf.text.Font.ITALIC, BaseColor.GRAY)));
+        }
+
+        // ── Message de clôture ─────────────────────────────────────────────
+        doc.add(new Paragraph("\n"));
+        Paragraph closing = new Paragraph(
+                "Bravo pour votre suivi ! Ce rapport Harmony resume votre parcours de sante.\n" +
+                        "Continuez a tracker, progresser et prendre soin de vous chaque jour.", fontClosing);
+        closing.setAlignment(Element.ALIGN_CENTER);
+        closing.setSpacingBefore(20);
+        doc.add(closing);
+
+        doc.close();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    //  Helpers PDF
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /** Cellule KPI (valeur en gros + label en petit) */
+    private PdfPCell creerCelluleKpi(BaseFont bfBold, BaseFont bf, String label, String valeur) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBorderColor(GRIS_SEPARATEUR);
+        cell.setBorderWidth(1f);
+        cell.setBackgroundColor(VIOLET_VERY_LIGHT);
+        cell.setPadding(12);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        Paragraph p = new Paragraph();
+        p.add(new Phrase(valeur + "\n", new com.itextpdf.text.Font(bfBold, 16, com.itextpdf.text.Font.NORMAL, VIOLET_HARMONY)));
+        p.add(new Phrase(label, new com.itextpdf.text.Font(bf, 9, com.itextpdf.text.Font.NORMAL, new BaseColor(120, 120, 120))));
+        p.setAlignment(Element.ALIGN_CENTER);
+        cell.addElement(p);
+        return cell;
+    }
+
+    /** Tableau de données (2 colonnes : indicateur / valeur) avec en-têtes violets */
+    private PdfPTable creerTableauSection(String[] headers, String[][] lignes,
+                                          BaseFont bfBold, BaseFont bf) throws DocumentException {
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{3f, 2.5f});
+        table.setSpacingAfter(12);
+
+        // En-têtes
+        for (String h : headers) {
+            PdfPCell header = new PdfPCell(new Phrase(h,
+                    new com.itextpdf.text.Font(bfBold, 11, com.itextpdf.text.Font.NORMAL, BaseColor.WHITE)));
+            header.setBackgroundColor(VIOLET_HARMONY);
+            header.setPadding(10);
+            header.setBorder(Rectangle.NO_BORDER);
+            table.addCell(header);
+        }
+
+        // Lignes alternées
+        for (int i = 0; i < lignes.length; i++) {
+            BaseColor bg = (i % 2 == 0) ? new BaseColor(250, 248, 255) : BaseColor.WHITE;
+            for (String val : lignes[i]) {
+                PdfPCell cell = new PdfPCell(new Phrase(val,
+                        new com.itextpdf.text.Font(bf, 10, com.itextpdf.text.Font.NORMAL, new BaseColor(50, 50, 50))));
+                cell.setBackgroundColor(bg);
+                cell.setPadding(9);
+                cell.setBorderColor(GRIS_SEPARATEUR);
+                table.addCell(cell);
+            }
+        }
+        return table;
+    }
+
+    /** Dessine un trait séparateur coloré */
+    private Paragraph traitSeparateur(PdfContentByte cb, PdfWriter writer, Document doc) {
+        Paragraph p = new Paragraph();
+        p.add(new Phrase("_________________________________________" +
+                "__________________________________________________",
+                new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 1,
+                        com.itextpdf.text.Font.NORMAL, VIOLET_LIGHT)));
+        p.setSpacingAfter(4);
+        return p;
+    }
+
+    /** Dessine un bandeau de section violet en haut de page */
+    private void dessinerBandeauSection(PdfContentByte cb, PdfWriter writer,
+                                        String texte, BaseFont bfBold, float yPos) throws DocumentException {
+        cb.saveState();
+        cb.setColorFill(VIOLET_HARMONY);
+        cb.roundRectangle(45, yPos, 505, 44, 6);
+        cb.fill();
+        cb.setColorFill(BaseColor.WHITE);
+        cb.beginText();
+        cb.setFontAndSize(bfBold, 16);
+        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, texte, 297, yPos + 14, 0);
+        cb.endText();
+        cb.restoreState();
+    }
+
+    /**
+     * Dessine un graphique en ligne avec iText 5 PdfContentByte.
+     * Utilise doc.add(new Paragraph(" ")) pour réserver l'espace vertical.
+     */
+    private void dessinerGraphiqueLigne(PdfContentByte cb, PdfWriter writer, Document doc,
+                                        double[] data, String[] labels,
+                                        String axeX, String axeY,
+                                        BaseColor couleurLigne) throws DocumentException {
+        // Position du graphique sur la page
+        float chartX  = 80;
+        float chartW  = 420;
+        float chartH  = 130;
+
+        // On saute l'espace dans le flux iText pour que la suite du texte ne chevauchant pas
+        doc.add(new Paragraph(" "));
+
+        // Position Y courante approximative (le writer connaît la position verticale du curseur)
+        float yBase = writer.getVerticalPosition(false) - chartH - 20;
+        if (yBase < 60) {
+            doc.newPage();
+            yBase = PageSize.A4.getHeight() - 100;
+        }
+
+        float chartY = yBase;
+
+        // Fond blanc avec bordure
+        cb.saveState();
+        cb.setColorFill(BaseColor.WHITE);
+        cb.setColorStroke(GRIS_SEPARATEUR);
+        cb.setLineWidth(0.8f);
+        cb.roundRectangle(chartX - 10, chartY - 10, chartW + 20, chartH + 30, 6);
+        cb.fillStroke();
+
+        // Grille horizontale en gris clair
+        int nbGrilles = 5;
+        cb.setColorStroke(new BaseColor(230, 230, 230));
+        cb.setLineWidth(0.4f);
+        for (int g = 0; g <= nbGrilles; g++) {
+            float y = chartY + (chartH * g / nbGrilles);
+            cb.moveTo(chartX, y);
+            cb.lineTo(chartX + chartW, y);
+            cb.stroke();
+        }
+
+        // Axe X et Y
+        cb.setColorStroke(new BaseColor(180, 180, 180));
+        cb.setLineWidth(0.8f);
+        cb.moveTo(chartX, chartY);
+        cb.lineTo(chartX, chartY + chartH);
+        cb.stroke();
+        cb.moveTo(chartX, chartY);
+        cb.lineTo(chartX + chartW, chartY);
+        cb.stroke();
+
+        if (data == null || data.length == 0) {
+            cb.restoreState();
+            doc.add(new Paragraph(" \n"));
+            return;
+        }
+
+        // Calcul min/max pour l'échelle
+        double maxVal = Arrays.stream(data).max().orElse(1);
+        double minVal = Arrays.stream(data).min().orElse(0);
+        if (maxVal <= 0) maxVal = 1;
+        double range = maxVal - minVal;
+        if (range == 0) range = maxVal;
+
+        // Tracer la ligne de données
+        cb.setColorStroke(couleurLigne);
+        cb.setLineWidth(1.8f);
+        float stepX = data.length > 1 ? chartW / (data.length - 1) : chartW / 2;
+
+        for (int i = 0; i < data.length; i++) {
+            float px = chartX + i * stepX;
+            float py = chartY + (float) ((data[i] - minVal) / range * chartH * 0.85);
+            if (i == 0) cb.moveTo(px, py);
+            else        cb.lineTo(px, py);
+        }
+        cb.stroke();
+
+        // Points de données
+        cb.setColorFill(couleurLigne);
+        for (int i = 0; i < data.length; i++) {
+            float px = chartX + i * stepX;
+            float py = chartY + (float) ((data[i] - minVal) / range * chartH * 0.85);
+            cb.circle(px, py, 3);
+            cb.fill();
+        }
+
+        // Labels axe X (limités à 10 max pour lisibilité)
+        cb.setColorFill(new BaseColor(100, 100, 100));
+        try {
+            BaseFont labelFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            cb.setFontAndSize(labelFont, 7);
+            int step = Math.max(1, data.length / 10);
+            for (int i = 0; i < data.length; i += step) {
+                float px = chartX + i * stepX;
+                cb.beginText();
+                cb.showTextAligned(PdfContentByte.ALIGN_CENTER,
+                        i < labels.length ? labels[i] : ("" + (i + 1)), px, chartY - 12, 0);
+                cb.endText();
+            }
+            // Label axe X
+            cb.beginText();
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, axeX, chartX + chartW / 2, chartY - 22, 0);
+            cb.endText();
+            // Label axe Y (valeur max)
+            cb.setFontAndSize(labelFont, 7);
+            cb.beginText();
+            cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, String.format("%.0f", maxVal), chartX - 5, chartY + chartH - 5, 0);
+            cb.endText();
+            cb.beginText();
+            cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, "0", chartX - 5, chartY, 0);
+            cb.endText();
+        } catch (Exception ignored) {}
+
+        cb.restoreState();
+
+        // Réserver l'espace vertical pour le graphique dans le flux iText
+        for (int sp = 0; sp < 8; sp++) doc.add(new Paragraph(" "));
     }
 
     private void afficherInfo(String message) {
@@ -720,5 +1222,4 @@ public class AccueilActiviteController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-}
+    }}

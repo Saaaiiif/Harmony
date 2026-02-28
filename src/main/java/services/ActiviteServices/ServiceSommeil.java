@@ -96,8 +96,12 @@ public class ServiceSommeil {
              ResultSet rs = stm.executeQuery(qry)) {
 
             while (rs.next()) {
+                // ✅ CORRECTION : utiliser le constructeur 8-args (id_sommeil, user_id, ...)
+                // L'ancien code utilisait le constructeur 7-args dont le 1er int → user_id,
+                // laissant id_sommeil=0 (même bug que Consommation et Activite)
                 Sommeil s = new Sommeil(
                         rs.getInt("id_sommeil"),
+                        rs.getInt("user_id"),
                         rs.getTimestamp("date_coucher"),
                         rs.getTimestamp("date_reveil"),
                         rs.getString("qualite_sommeil"),
@@ -105,7 +109,6 @@ public class ServiceSommeil {
                         rs.getBoolean("cafeine"),
                         rs.getBoolean("bruit")
                 );
-                s.setUser_id(rs.getInt("user_id"));
                 liste.add(s);
             }
 
@@ -187,8 +190,10 @@ public class ServiceSommeil {
             try (ResultSet rs = pstm.executeQuery()) {
 
                 while (rs.next()) {
+                    // ✅ CORRECTION : même fix que afficherTout()
                     Sommeil s = new Sommeil(
                             rs.getInt("id_sommeil"),
+                            rs.getInt("user_id"),
                             rs.getTimestamp("date_coucher"),
                             rs.getTimestamp("date_reveil"),
                             rs.getString("qualite_sommeil"),
@@ -196,7 +201,6 @@ public class ServiceSommeil {
                             rs.getBoolean("cafeine"),
                             rs.getBoolean("bruit")
                     );
-                    s.setUser_id(rs.getInt("user_id"));
                     liste.add(s);
                 }
             }
