@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="16"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ForumControllers.BackOffice.PostsCardController"
+      style="-fx-background-color: white; -fx-background-radius: 14; -fx-border-radius: 14;
+             -fx-border-color: #e5e7eb; -fx-border-width: 1;
+             -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.07),12,0,0,4);">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <Label text="📝" style="-fx-font-size: 22px;"/>
+        <Label text="Gestion des Posts"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="⟳  Rafraîchir"
+                onAction="#handleRefresh"
+                style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-font-size: 12px;
+                       -fx-background-radius: 8; -fx-padding: 7 16; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Séparateur -->
+    <Separator style="-fx-background-color: #f3f4f6;"/>
+
+    <!-- Grid des cards -->
+    <ScrollPane fitToWidth="true"
+                style="-fx-background: transparent; -fx-background-color: transparent;
+                       -fx-border-color: transparent;">
+        <content>
+            <FlowPane fx:id="postsContainer"
+                      hgap="16" vgap="16"
+                      prefWidth="860"
+                      style="-fx-background-color: transparent;">
+                <padding><Insets top="4" bottom="4"/></padding>
+            </FlowPane>
+        </content>
+    </ScrollPane>
+
+</VBox>

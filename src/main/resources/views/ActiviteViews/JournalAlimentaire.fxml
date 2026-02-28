@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" styleClass="main-root-light"
+            stylesheets="@/views/admin-styles.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ActiviteControllers.JournalAlimentaireController">
+    <children>
+
+
+
+        <!-- ===== CONTENU SCROLLABLE ===== -->
+        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+            <content>
+                <VBox spacing="35.0" alignment="TOP_CENTER"
+                      style="-fx-background-color: transparent;">
+                    <padding><Insets bottom="60.0" left="50.0" right="50.0" top="40.0"/></padding>
+                    <children>
+
+                        <!-- ── EN-TÊTE ── -->
+                        <VBox alignment="CENTER" spacing="5.0">
+                            <Label text="🥗 Journal Alimentaire"
+                                   style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #4a148c;"/>
+                            <Label text="Suivez vos repas et vos macros au quotidien"
+                                   style="-fx-text-fill: #8e24aa; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        </VBox>
+
+                        <!-- ── SÉLECTEUR DE DATE ── -->
+                        <HBox alignment="CENTER" spacing="20.0" maxWidth="800.0"
+                              style="-fx-padding: 20; -fx-background-color: rgba(255,255,255,0.9);
+                                     -fx-background-radius: 15;
+                                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                            <Label text="📅 Votre journée du :"
+                                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;"/>
+                            <DatePicker fx:id="dpDateJournal"
+                                        styleClass="innovative-datepicker" prefWidth="250.0"/>
+                        </HBox>
+
+                        <!-- ══════════════════════════════════════════════════════ -->
+                        <!-- ── BARRE DE PROGRESSION OBJECTIF CALORIQUE (NOUVEAU) ── -->
+                        <!-- ══════════════════════════════════════════════════════ -->
+                        <HBox alignment="CENTER_LEFT" spacing="18.0" maxWidth="1000.0"
+                              style="-fx-background-color: white; -fx-background-radius: 16;
+                                     -fx-padding: 16 24;
+                                     -fx-effect: dropshadow(three-pass-box, rgba(106,27,154,0.12), 10, 0, 0, 4);">
+
+                            <!-- Icône -->
+                            <Label text="🎯" style="-fx-font-size: 22px;"/>
+
+                            <!-- Barre + étiquettes -->
+                            <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER_LEFT" spacing="14.0">
+                                    <Label text="Objectif calorique du jour"
+                                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;"/>
+                                    <Label fx:id="lblCaloriesProgress" text="0 / 2150 kcal"
+                                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #424242;"/>
+                                </HBox>
+                                <ProgressBar fx:id="progressCalories" progress="0.0"
+                                             prefWidth="600.0"
+                                             style="-fx-accent: #6a1b9a; -fx-pref-height: 12px;
+                                                    -fx-background-radius: 10; -fx-background-insets: 0;"/>
+                            </VBox>
+
+                            <!-- Calories restantes -->
+                            <Label fx:id="lblCaloriesRestantes" text="2150 kcal restantes"
+                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;
+                                          -fx-min-width: 165;"/>
+                        </HBox>
+
+                        <!-- ── REPAS (INCHANGÉS) ── -->
+                        <VBox spacing="30.0" maxWidth="1000.0">
+
+                            <!-- Petit Déjeuner -->
+                            <VBox styleClass="meal-glass-card" spacing="15">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox>
+                                        <Label text="🌅 Petit Déjeuner" styleClass="meal-title-neon"/>
+                                        <Label fx:id="lblTotPD"
+                                               text="0 kcal | P: 0g | G: 0g | L: 0g"
+                                               style="-fx-text-fill: #8e24aa; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Ajouter Aliment" onAction="#addPetitDej"
+                                            styleClass="btn-neon-add-small"/>
+                                </HBox>
+                                <VBox fx:id="vboxPetitDej" spacing="10"/>
+                            </VBox>
+
+                            <!-- Déjeuner -->
+                            <VBox styleClass="meal-glass-card" spacing="15">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox>
+                                        <Label text="☀️ Déjeuner" styleClass="meal-title-neon"/>
+                                        <Label fx:id="lblTotDej"
+                                               text="0 kcal | P: 0g | G: 0g | L: 0g"
+                                               style="-fx-text-fill: #8e24aa; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Ajouter Aliment" onAction="#addDejeuner"
+                                            styleClass="btn-neon-add-small"/>
+                                </HBox>
+                                <VBox fx:id="vboxDejeuner" spacing="10"/>
+                            </VBox>
+
+                            <!-- Dîner -->
+                            <VBox styleClass="meal-glass-card" spacing="15">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox>
+                                        <Label text="🌙 Dîner" styleClass="meal-title-neon"/>
+                                        <Label fx:id="lblTotDin"
+                                               text="0 kcal | P: 0g | G: 0g | L: 0g"
+                                               style="-fx-text-fill: #8e24aa; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Ajouter Aliment" onAction="#addDiner"
+                                            styleClass="btn-neon-add-small"/>
+                                </HBox>
+                                <VBox fx:id="vboxDiner" spacing="10"/>
+                            </VBox>
+
+                            <!-- Snacks -->
+                            <VBox styleClass="meal-glass-card" spacing="15">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox>
+                                        <Label text="🍪 Snacks" styleClass="meal-title-neon"/>
+                                        <Label fx:id="lblTotSnack"
+                                               text="0 kcal | P: 0g | G: 0g | L: 0g"
+                                               style="-fx-text-fill: #8e24aa; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Ajouter Aliment" onAction="#addSnacks"
+                                            styleClass="btn-neon-add-small"/>
+                                </HBox>
+                                <VBox fx:id="vboxSnacks" spacing="10"/>
+                            </VBox>
+
+                        </VBox>
+
+                        <!-- ── MODULE HYDRATATION (INCHANGÉ) ── -->
+                        <HBox alignment="CENTER" styleClass="water-tracker-neon"
+                              spacing="40.0" maxWidth="1000.0">
+                            <VBox alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
+                                <Label text="💧 Module d'Hydratation"
+                                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0072ff;"/>
+                                <ProgressBar fx:id="waterBar" progress="0.0"
+                                             prefWidth="400.0" styleClass="water-glass-bar"/>
+                            </VBox>
+                            <VBox alignment="CENTER">
+                                <Label fx:id="labelEau" text="0 ml"
+                                       style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #0072ff;"/>
+                            </VBox>
+                            <VBox spacing="10.0">
+                                <Button text="+ 250ml" onAction="#addEau250" styleClass="water-btn-neon"/>
+                                <Button text="+ 500ml" onAction="#addEau500" styleClass="water-btn-neon"/>
+                                <Button text="Reset" onAction="#resetEau"
+                                        style="-fx-background-color: transparent; -fx-text-fill: red; -fx-cursor: hand;"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- ── BILAN MACRONUTRITIONNEL (INCHANGÉ) ── -->
+                        <VBox styleClass="daily-summary-card" maxWidth="800.0"
+                              alignment="CENTER" spacing="15.0">
+                            <Label text="⚡ Bilan Macronutritionnel du Jour"
+                                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                            <HBox alignment="CENTER" spacing="40.0">
+                                <VBox alignment="CENTER" styleClass="summary-circle">
+                                    <Label fx:id="lblDayCal" text="0"
+                                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                    <Label text="KCAL"
+                                           style="-fx-font-size: 10px; -fx-text-fill: #e1bee7;"/>
+                                </VBox>
+                                <VBox alignment="CENTER" styleClass="summary-circle">
+                                    <Label fx:id="lblDayProt" text="0g"
+                                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #ff5252;"/>
+                                    <Label text="PROTÉINES"
+                                           style="-fx-font-size: 10px; -fx-text-fill: #e1bee7;"/>
+                                </VBox>
+                                <VBox alignment="CENTER" styleClass="summary-circle">
+                                    <Label fx:id="lblDayGlu" text="0g"
+                                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #64ffda;"/>
+                                    <Label text="GLUCIDES"
+                                           style="-fx-font-size: 10px; -fx-text-fill: #e1bee7;"/>
+                                </VBox>
+                                <VBox alignment="CENTER" styleClass="summary-circle">
+                                    <Label fx:id="lblDayLip" text="0g"
+                                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #ffeb3b;"/>
+                                    <Label text="LIPIDES"
+                                           style="-fx-font-size: 10px; -fx-text-fill: #e1bee7;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- ── BOUTON ENREGISTRER + HISTORIQUE (INCHANGÉS) ── -->
+                        <VBox alignment="CENTER" spacing="20.0"
+                              style="-fx-padding: 20;">
+                            <Button text="💾 Enregistrer ma journée" onAction="#enregistrerJournee"
+                                    style="-fx-background-color: linear-gradient(to right, #6200ea, #d500f9);
+                                           -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;
+                                           -fx-background-radius: 30; -fx-padding: 15 40; -fx-cursor: hand;"/>
+                            <Separator maxWidth="800.0"
+                                       style="-fx-opacity: 0.3; -fx-background-color: #6a1b9a;"/>
+                            <Label text="🗓️ Historique Complet"
+                                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;"/>
+                            <FlowPane fx:id="flowPaneHistoriqueAliment"
+                                      hgap="25.0" vgap="25.0"
+                                      alignment="CENTER" maxWidth="900.0"/>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+    </children>
+</AnchorPane>

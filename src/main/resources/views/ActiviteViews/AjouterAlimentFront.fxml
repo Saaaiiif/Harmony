@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1080.0" styleClass="main-root-light" stylesheets="@/views/admin-styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ActiviteControllers.AjouterAlimentFrontController">
+   <children>
+      <VBox alignment="CENTER" spacing="25.0" maxWidth="650.0" styleClass="meal-glass-card">
+         <padding>
+            <Insets top="35.0" right="40.0" bottom="35.0" left="40.0"/>
+         </padding>
+         <children>
+
+            <VBox alignment="CENTER" spacing="5">
+               <Label text="🍎 Catalogue Alimentaire Intelligent" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;" />
+               <Label fx:id="labelTitreRepas" text="Ajout au repas..." style="-fx-text-fill: #8e24aa; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" prefWidth="500">
+               <Label text="RECHERCHE D'ALIMENT" styleClass="neon-label" style="-fx-text-fill: #6a1b9a;"/>
+               <TextField fx:id="tfRecherche" promptText="🔍 Tapez le nom d'un aliment (ex: Pomme, Poulet...)" styleClass="neon-input" prefHeight="45.0" style="-fx-text-fill: black;" />
+            </VBox>
+
+            <ListView fx:id="listeResultats" prefHeight="220" prefWidth="500" styleClass="neon-list-view" />
+
+            <HBox spacing="15" alignment="CENTER" prefWidth="500">
+               <children>
+                  <Label text="QUANTITÉ MANGÉE (EN GRAMMES) :" styleClass="neon-label" style="-fx-text-fill: #6a1b9a;"/>
+                  <TextField fx:id="tfQuantiteGrammes" promptText="Ex: 150" styleClass="neon-input" prefWidth="120" prefHeight="45" style="-fx-text-fill: black;" />
+               </children>
+            </HBox>
+
+            <Label fx:id="erreurLabel" textFill="#e74c3c" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+
+            <HBox spacing="30.0" alignment="CENTER">
+               <padding><Insets top="10" /></padding>
+               <children>
+                  <Button text="Annuler" onAction="#goToAliments" style="-fx-background-color: transparent; -fx-text-fill: #8e24aa; -fx-font-weight: bold; -fx-font-size: 16px; -fx-border-color: #8e24aa; -fx-border-radius: 30; -fx-padding: 12 30; -fx-cursor: hand;" />
+                  <Button text="Enregistrer l'aliment" onAction="#validerAjout" styleClass="btn-neon-action" />
+               </children>
+            </HBox>
+
+         </children>
+      </VBox>
+   </children>
+</VBox>
