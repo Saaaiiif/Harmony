@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="controllers.RessourceControllers.SalleFormController"
+         hgap="20" vgap="18"
+         styleClass="modern-form salle-form"
+         prefWidth="420"
+         prefHeight="380">
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="140" prefWidth="140" hgrow="NEVER"/>
+        <ColumnConstraints minWidth="240" prefWidth="240" hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints minHeight="42" prefHeight="42" vgrow="NEVER"/>
+        <RowConstraints minHeight="42" prefHeight="42" vgrow="NEVER"/>
+        <RowConstraints minHeight="80" prefHeight="80" vgrow="NEVER"/>
+        <RowConstraints minHeight="42" prefHeight="42" vgrow="NEVER"/>
+        <RowConstraints minHeight="42" prefHeight="42" vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Label text="Nom *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
+    <TextField fx:id="fieldNom" promptText="Ex: Salle 101, Amphi A..." GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" styleClass="modern-input form-input"/>
+
+    <Label text="Capacité" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
+    <Spinner fx:id="fieldCapacite" prefWidth="120" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="modern-spinner form-spinner"/>
+
+    <Label text="Équipements" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label" GridPane.valignment="TOP"/>
+    <TextArea fx:id="fieldEquipements" promptText="Vidéoprojecteur, Tableau, WiFi..." wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" styleClass="modern-input form-textarea"/>
+
+    <Label text="Disponible" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
+    <CheckBox fx:id="fieldDisponible" text="Salle disponible pour réservation" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="form-checkbox"/>
+
+    <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
+    <TextField fx:id="fieldDescription" promptText="Description optionnelle" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS" styleClass="modern-input form-input"/>
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+</GridPane>

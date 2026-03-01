@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.MeditationControllers.AdminJournalController"
+      spacing="20" styleClass="content-area" stylesheets="@harmonie-style.css">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox spacing="5">
+            <Label text="Journal des Étudiants" styleClass="title-label"/>
+            <Label text="Consulter le bien-être de chaque étudiant et générer un rapport d'analyse"
+                   style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="filter-bar">
+        <TextField fx:id="searchField" promptText="🔍 Rechercher un étudiant..."
+                   styleClass="text-field" HBox.hgrow="ALWAYS" onKeyReleased="#onSearchChanged"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="studentListContainer" spacing="12">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+        </VBox>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false" VBox.vgrow="ALWAYS">
+        <Label text="👤" style="-fx-font-size: 60px;"/>
+        <Label text="Aucun étudiant trouvé" style="-fx-font-size: 16px; -fx-text-fill: #6B7280;"/>
+    </VBox>
+
+</VBox>

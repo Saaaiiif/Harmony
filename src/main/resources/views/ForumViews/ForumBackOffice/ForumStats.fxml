@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="16"
+      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="controllers.ForumControllers.BackOffice.ForumStatsController"
+      style="-fx-background-color: #f4f6f9; -fx-padding: 20;">
+
+    <!-- ── Header ──────────────────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="14"
+          style="-fx-background-color: white; -fx-background-radius: 12;
+                 -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                 -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);
+                 -fx-padding: 16 20;">
+        <Label text="📊" style="-fx-font-size: 26px;"/>
+        <VBox spacing="2">
+            <Label text="Statistiques du Forum"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Label text="Vue d'ensemble de l'activité"
+                   style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="⟳  Rafraîchir" onAction="#handleRefresh"
+                style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-font-size: 12px;
+                       -fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ── KPI Cards ───────────────────────────────────────────────────────── -->
+    <HBox spacing="14">
+
+        <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #7c3aed, #a855f7);
+                     -fx-background-radius: 14; -fx-padding: 22;
+                     -fx-effect: dropshadow(gaussian,rgba(124,58,237,0.3),12,0,0,4);">
+            <Label text="📝" style="-fx-font-size: 28px;"/>
+            <Label fx:id="labelTotalPosts" text="--"
+                   style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Posts"
+                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0ea5e9, #38bdf8);
+                     -fx-background-radius: 14; -fx-padding: 22;
+                     -fx-effect: dropshadow(gaussian,rgba(14,165,233,0.3),12,0,0,4);">
+            <Label text="💬" style="-fx-font-size: 28px;"/>
+            <Label fx:id="labelTotalCommentaires" text="--"
+                   style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Commentaires"
+                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #10b981, #34d399);
+                     -fx-background-radius: 14; -fx-padding: 22;
+                     -fx-effect: dropshadow(gaussian,rgba(16,185,129,0.3),12,0,0,4);">
+            <Label text="🗂" style="-fx-font-size: 28px;"/>
+            <Label fx:id="labelTotalCategories" text="--"
+                   style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Catégories"
+                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f59e0b, #fbbf24);
+                     -fx-background-radius: 14; -fx-padding: 22;
+                     -fx-effect: dropshadow(gaussian,rgba(245,158,11,0.3),12,0,0,4);">
+            <Label text="👤" style="-fx-font-size: 28px;"/>
+            <Label fx:id="labelAuteursActifs" text="--"
+                   style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Auteurs actifs"
+                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+        </VBox>
+
+    </HBox>
+
+    <!-- ── Ligne 1 : Pie + Line ────────────────────────────────────────────── -->
+    <HBox spacing="14">
+
+        <!-- PieChart -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),8,0,0,2);
+                     -fx-padding: 16;">
+            <Label text="🗂  Posts par catégorie"
+                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Separator/>
+            <PieChart fx:id="pieCategories"
+                      prefHeight="270"
+                      labelsVisible="true"
+                      legendVisible="true"
+                      animated="true"
+                      style="-fx-background-color: transparent;"/>
+        </VBox>
+
+        <!-- LineChart -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),8,0,0,2);
+                     -fx-padding: 16;">
+            <Label text="📈  Activité — 7 derniers jours"
+                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Separator/>
+            <LineChart fx:id="linePostsParJour" prefHeight="270"
+                       animated="true" createSymbols="true"
+                       style="-fx-background-color: transparent;">
+                <xAxis>
+                    <CategoryAxis label="Date"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Posts" lowerBound="0" tickUnit="1" autoRanging="true"/>
+                </yAxis>
+            </LineChart>
+        </VBox>
+
+    </HBox>
+
+    <!-- ── Ligne 2 : Bar auteurs + Bar commentaires ─────────────────────────── -->
+    <HBox spacing="14">
+
+        <!-- BarChart Top auteurs -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),8,0,0,2);
+                     -fx-padding: 16;">
+            <Label text="🏆  Top 5 auteurs"
+                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Separator/>
+            <BarChart fx:id="barTopAuteurs" prefHeight="250"
+                      animated="true" legendVisible="false"
+                      style="-fx-background-color: transparent;">
+                <xAxis>
+                    <CategoryAxis label="Auteur"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Posts" lowerBound="0" tickUnit="1" autoRanging="true"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <!-- BarChart Commentaires par post -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-radius: 12; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),8,0,0,2);
+                     -fx-padding: 16;">
+            <Label text="💬  Posts les plus commentés"
+                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Separator/>
+            <BarChart fx:id="barCommentairesParPost" prefHeight="250"
+                      animated="true" legendVisible="false"
+                      style="-fx-background-color: transparent;">
+                <xAxis>
+                    <CategoryAxis label="Post"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Commentaires" lowerBound="0" tickUnit="1" autoRanging="true"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+    </HBox>
+
+</VBox>

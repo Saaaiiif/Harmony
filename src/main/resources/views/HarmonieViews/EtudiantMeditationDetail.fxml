@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.MeditationControllers.EtudiantMeditationDetailController"
+      spacing="20" stylesheets="@harmonie-style.css">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <HBox>
+        <Button text="← Retour aux sessions" styleClass="btn-secondary" onAction="#goBack"/>
+    </HBox>
+
+    <VBox spacing="15" style="-fx-background-color: #F3F0FF; -fx-padding: 20; -fx-background-radius: 12;">
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label fx:id="themeLabel" text="" styleClass="title-label"/>
+            <Label fx:id="durationLabel" text=""
+                   style="-fx-background-color: #7C3AED; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 4 10; -fx-background-radius: 20;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Par" style="-fx-text-fill: #6B7280;"/>
+            <Label fx:id="auteurLabel" text="" style="-fx-font-weight: bold; -fx-text-fill: #1F2937;"/>
+        </HBox>
+    </VBox>
+
+    <VBox fx:id="audioSection" spacing="15"
+          style="-fx-background-color: white; -fx-padding: 18; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.07),8,0,0,2);">
+        <Label text="🎵 Écouter la session"
+               style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button fx:id="playButton" text="▶ Écouter" styleClass="btn-primary" onAction="#playAudio"/>
+            <Label fx:id="audioUrlLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #6B7280;" wrapText="true" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="15" VBox.vgrow="ALWAYS">
+        <Label text="💡 Conseils pour cette session"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1F2937;"/>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+            <VBox fx:id="conseilsContainer" spacing="12">
+                <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            </VBox>
+        </ScrollPane>
+
+        <VBox fx:id="noConseilsState" alignment="CENTER" spacing="10" visible="false" managed="false">
+            <Label text="💭" style="-fx-font-size: 40px;"/>
+            <Label text="Aucun conseil disponible pour cette session"
+                   style="-fx-font-size: 14px; -fx-text-fill: #6B7280;"/>
+        </VBox>
+    </VBox>
+
+</VBox>

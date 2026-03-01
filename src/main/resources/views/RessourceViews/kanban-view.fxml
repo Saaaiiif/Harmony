@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.RessourceControllers.KanbanViewController"
+           styleClass="kanban-view"
+           maxWidth="Infinity" maxHeight="Infinity"
+           style="-fx-background-color: #F4F3FA;"
+           stylesheets="@/views/RessourceViews/ressource-styles.css">
+
+    <VBox maxWidth="Infinity" maxHeight="Infinity" style="-fx-background-color: #F4F3FA;">
+        <!-- Slim header -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-padding: 12 20 8 20; -fx-min-height: 44px; -fx-max-height: 44px;">
+            <Label fx:id="labelConseil" text="Conseil du jour : ..." wrapText="true" styleClass="text-muted"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <MenuButton fx:id="btnExport" text="⬇  Exporter" styleClass="btn-secondary,btn-export-menu">
+                <items>
+                    <MenuItem fx:id="menuExportJson" text="{ }  JSON" onAction="#onExportTachesJson"/>
+                    <MenuItem fx:id="menuExportHtml" text="🌐  HTML" onAction="#handleExportHtml"/>
+                    <MenuItem fx:id="menuExportExcel" text="📊  Excel (.xlsx)" onAction="#handleExportExcel"/>
+                </items>
+            </MenuButton>
+        </HBox>
+
+        <!-- Kanban columns — fill all remaining space -->
+        <HBox VBox.vgrow="ALWAYS" spacing="16"
+              style="-fx-padding: 0 20 20 20;">
+            <VBox fx:id="todoColumn" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+                  spacing="12" styleClass="kanban-column" pickOnBounds="true">
+                <Label text="TODO" styleClass="col-title,col-title-todo"/>
+                <ScrollPane fx:id="todoScroll" VBox.vgrow="ALWAYS"
+                            fitToWidth="true" fitToHeight="false"
+                            styleClass="kanban-scroll">
+                    <VBox fx:id="todoCards" spacing="10"
+                          style="-fx-padding: 4px;"
+                          styleClass="kanban-cards-container"/>
+                </ScrollPane>
+            </VBox>
+            <VBox fx:id="doingColumn" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+                  spacing="12" styleClass="kanban-column" pickOnBounds="true">
+                <Label text="DOING" styleClass="col-title,col-title-doing"/>
+                <ScrollPane fx:id="doingScroll" VBox.vgrow="ALWAYS"
+                            fitToWidth="true" fitToHeight="false"
+                            styleClass="kanban-scroll">
+                    <VBox fx:id="doingCards" spacing="10"
+                          style="-fx-padding: 4px;"
+                          styleClass="kanban-cards-container"/>
+                </ScrollPane>
+            </VBox>
+            <VBox fx:id="doneColumn" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+                  spacing="12" styleClass="kanban-column" pickOnBounds="true">
+                <Label text="DONE" styleClass="col-title,col-title-done"/>
+                <ScrollPane fx:id="doneScroll" VBox.vgrow="ALWAYS"
+                            fitToWidth="true" fitToHeight="false"
+                            styleClass="kanban-scroll">
+                    <VBox fx:id="doneCards" spacing="10"
+                          style="-fx-padding: 4px;"
+                          styleClass="kanban-cards-container"/>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <StackPane fx:id="dialogOverlay" styleClass="task-dialog-overlay" visible="false" pickOnBounds="true" StackPane.alignment="CENTER"/>
+</StackPane>
