@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<BorderPane fx:id="root"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.LibraryControllers.CourseDetailsController"
+            styleClass="front-root">
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+    <top>
+        <HBox spacing="10" styleClass="library-header" BorderPane.alignment="CENTER_LEFT">
+            <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+            <Label fx:id="courseTitle" text="Course" styleClass="section-title"/>
+            <Label fx:id="courseSubject" text="Subject" styleClass="course-subtitle"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="publishLabel" text="Publish" styleClass="publish-label"/>
+            <ToggleButton fx:id="publishToggle" text="" styleClass="switch-toggle"/>
+            <Button fx:id="createNoteBtn" text="Create note" styleClass="action-button"/>
+            <Button fx:id="addFilesBtn" text="Add files" styleClass="action-button"/>
+            <Button fx:id="saveAsLibraryCopyBtn" text="📋 Save as Copy"
+                    styleClass="action-button" visible="false" managed="false"/>
+
+            <Button fx:id="saveToLibraryBtn" text="💾 Save to My Library" styleClass="action-button"
+                    visible="false" managed="false" />
+            <Button fx:id="backBtn" text="Back" styleClass="action-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    styleClass="library-content"
+                    style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+            <TilePane fx:id="filesContainer" hgap="16" vgap="16" prefColumns="3">
+                <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            </TilePane>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <fx:include fx:id="navWheel" source="nav-wheel.fxml"/>
+    </bottom>
+</BorderPane>

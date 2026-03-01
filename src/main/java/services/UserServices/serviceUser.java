@@ -263,9 +263,15 @@ public class serviceUser implements UserServices<user> {
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
                 String storedHashedPassword = rs.getString("user_password");
-                if (PasswordUtils.checkPassword(plainPassword, storedHashedPassword)) {
+                System.out.println(">>> Hash in DB: " + storedHashedPassword);
+                System.out.println(">>> Plain input: " + plainPassword);
+                boolean match = PasswordUtils.checkPassword(plainPassword, storedHashedPassword);
+                System.out.println(">>> Password match: " + match);
+                if (match) {
                     return mapResultSetToUser(rs);
                 }
+            } else {
+                System.out.println(">>> No user found with email: " + email);
             }
         } catch (SQLException e) {
             e.printStackTrace();

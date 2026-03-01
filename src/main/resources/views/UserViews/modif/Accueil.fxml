@@ -79,6 +79,10 @@
                         text="📔  Journal"
                         styleClass="accueil-nav-btn"
                         onAction="#handleJournal"/>
+                <Button fx:id="btnLibrary"
+                        text="📖  Library"
+                        styleClass="accueil-nav-btn"
+                        onAction="#handleLibrary"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 

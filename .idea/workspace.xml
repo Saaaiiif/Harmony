@@ -4,8 +4,56 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="View Mode + Ownership">
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Clean Up before merge">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f25d34bc-76e0-4fab-a7da-646dcb5941cd.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f25d34bc-76e0-4fab-a7da-646dcb5941cd.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/BackLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/BackLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/DB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/FrontLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/LibraryLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/LibraryLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/MainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/NavWheelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/NavWheelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/RootLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/SceneTransitionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SessionManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/interfaces/ThemeAware.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interfaces/ThemeAware.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/interfaces/WheelCyclable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interfaces/WheelCyclable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/model/SubjectRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/LibraryModels/SubjectRow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/CourseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/ImageGenerationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/LibraryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/util/UiPopups.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/UiPopups.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/AccueilController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/AccueilController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/back-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/back-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backg2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backgLIGHT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backgLIGHT2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/course-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/courses-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/courses-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/front-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/hello-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/library-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/library-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/nav-wheel.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/nav-wheel.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/root-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/Inscription.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/Inscription.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/Login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/Login.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/services/TestServiceUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/services/TestServiceUser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +70,7 @@
     </option>
   </component>
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="Gestion-user" />
+    <option name="BRANCH" value="origin/Harmony-Integration-finale-user-forum-activitee-evenements" />
     <option name="OPTIONS">
       <set>
         <option value="ALLOW_UNRELATED_HISTORIES" />
@@ -71,12 +119,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Harmony.executor": "Run",
+    "Application.Launcher.executor": "Run",
     "Application.MainFX.executor": "Run",
     "Application.MainPage.executor": "Run",
     "Application.main.executor": "Run",
     "Application.main2.executor": "Run",
     "Maven.Harmony [clean].executor": "Run",
     "Maven.Harmony [install].executor": "Run",
+    "Maven.Harmony [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -92,7 +142,7 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15527344",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "profiler.jvm",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
     "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
   },
@@ -111,6 +161,7 @@
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\views\LibraryViews" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
@@ -122,9 +173,16 @@
       <recent name="com.example.harmony.services" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Launcher">
     <configuration name="Harmony" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="com.example.harmony.MainPage" />
+      <option name="MAIN_CLASS_NAME" value="controllers.LibraryControllers.MainPage" />
+      <module name="javafx-maven-plugin" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Launcher" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Launcher" />
       <module name="javafx-maven-plugin" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -141,6 +199,10 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Application.Harmony" />
+      <item itemvalue="Application.Launcher" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -188,6 +250,8 @@
       <workItem from="1772106180519" duration="5681000" />
       <workItem from="1772235557136" duration="4970000" />
       <workItem from="1772295086582" duration="9395000" />
+      <workItem from="1772378333285" duration="2237000" />
+      <workItem from="1772380601946" duration="4134000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -285,7 +349,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772306428520</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Clean Up before merge">
+      <option name="closed" value="true" />
+      <created>1772378520891</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1772378520891</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -302,6 +374,7 @@
     <MESSAGE value="Library (Course Cover) 1.0" />
     <MESSAGE value="Library+User 1.0" />
     <MESSAGE value="View Mode + Ownership" />
-    <option name="LAST_COMMIT_MESSAGE" value="View Mode + Ownership" />
+    <MESSAGE value="Clean Up before merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean Up before merge" />
   </component>
 </project>

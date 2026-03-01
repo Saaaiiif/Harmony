@@ -112,33 +112,40 @@ public class LoginController {
         }
         captchaErrorLabel.setVisible(false);
 
-        // 3. Authentification
-        user utilisateur = service.getByEmailAndPassword(email, pass);
+        try {
+            // 3. Authentification
+            System.out.println(">>> Trying auth for: " + email);
+            user utilisateur = service.getByEmailAndPassword(email, pass);
+            System.out.println(">>> User result: " + utilisateur);
 
-        if (utilisateur == null) {
-            renderCaptcha();
-            if (service.isEmailArchived(email)) showArchivedError();
-            else showError("Email ou mot de passe incorrect.");
-            return;
-        }
-
-        // 4. ✅ Vérification biométrique (si un visage a été enregistré)
-        if (utilisateur.getFace_image_path() != null
-                && !utilisateur.getFace_image_path().isEmpty()) {
-
-            boolean faceOk = openFaceVerificationPopup(utilisateur.getFace_image_path());
-
-            if (!faceOk) {
+            if (utilisateur == null) {
                 renderCaptcha();
-                showError("❌ Vérification du visage échouée. Réessayez.");
+                if (service.isEmailArchived(email)) showArchivedError();
+                else showError("Email ou mot de passe incorrect.");
                 return;
             }
+
+            // 4. Vérification biométrique
+            if (utilisateur.getFace_image_path() != null
+                    && !utilisateur.getFace_image_path().isEmpty()) {
+                System.out.println(">>> Face verification required");
+                boolean faceOk = openFaceVerificationPopup(utilisateur.getFace_image_path());
+                if (!faceOk) {
+                    renderCaptcha();
+                    showError("❌ Vérification du visage échouée. Réessayez.");
+                    return;
+                }
+            }
+
+            // 5. Créer la session et rediriger
+            System.out.println(">>> Redirecting user: " + utilisateur.getUser_id());
+            createSessionAndRedirect(utilisateur);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur: " + e.getMessage());
         }
-
-        // 5. Créer la session et rediriger
-        createSessionAndRedirect(utilisateur);
     }
-
     // =========================================================================
     //  POPUP DE VÉRIFICATION BIOMÉTRIQUE
     // =========================================================================

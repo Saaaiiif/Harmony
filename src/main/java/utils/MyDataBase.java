@@ -5,7 +5,7 @@ import java.sql.*;
 public class MyDataBase {
 
     private static MyDataBase instance;
-    final String URL = "jdbc:mysql://localhost:3306/integration-pi?createDatabaseIfNotExist=true";
+    final String URL = "jdbc:mysql://localhost:3306/integration-pi?createDatabaseIfNotExist=false";
     final String USER = "root";
     final String PASS = "";
     private Connection cnx;

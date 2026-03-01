@@ -47,6 +47,9 @@ public class AccueilController {
     private static final String PAGE_FORUM      = "/views/ForumViews/ForumHome.fxml";
     private static final String PAGE_RESSOURCES = "/views/RessourceViews/kanban-view.fxml";
     private static final String PAGE_EVENTS     = "/views/RessourceViews/calendar-view.fxml";
+
+    private static final String PAGE_LIBRARY = "/views/LibraryViews/courses-layout.fxml";
+
     private static final String PAGE_NUTRITION  = null;  // à remplir lors de l'intégration
     // Harmonie
     private static final String PAGE_MEDITATION        = "/views/HarmonieViews/EtudiantMeditation.fxml";
@@ -62,6 +65,8 @@ public class AccueilController {
     // Les 5 autres boutons de navigation (inchangés)
     @FXML private Button btnForum;
     @FXML private Button btnRessources;
+    @FXML private Button btnLibrary;
+
     @FXML private Button btnEvents;
     @FXML private Button btnNutrition;
     @FXML private Button btnMeditation;
@@ -106,6 +111,9 @@ public class AccueilController {
     /**
      * Crée les 4 MenuItems du bouton déroulant "Activités" et leur associe une action.
      */
+
+    @FXML void handleLibrary() { if (!"library".equals(currentPage)) loadContent(PAGE_LIBRARY, "library", btnLibrary); }
+
     private void setupActivityMenuButton() {
         MenuItem itemAccueil   = new MenuItem("🏠  Accueil Activités");
         MenuItem itemAliments  = new MenuItem("🍴  Aliments");
@@ -295,7 +303,12 @@ public class AccueilController {
             ((controllers.MeditationControllers.EtudiantMeditationDetailController) ctrl).setAccueilController(this);
         } else if (ctrl instanceof controllers.MeditationControllers.EtudiantJournalController) {
             ((controllers.MeditationControllers.EtudiantJournalController) ctrl).setAccueilController(this);
+        } else if (ctrl instanceof controllers.LibraryControllers.CoursesLayoutController) {
+            ((controllers.LibraryControllers.CoursesLayoutController) ctrl).setAccueilController(this);
+        } else if (ctrl instanceof controllers.LibraryControllers.LibraryLayoutController) {
+            ((controllers.LibraryControllers.LibraryLayoutController) ctrl).setAccueilController(this);
         }
+
     }
 
     // =========================================================================
@@ -327,7 +340,7 @@ public class AccueilController {
 
     private void updateActiveButton(Button active) {
         // Désactiver tous les boutons standards
-        Button[] allBtns = {btnForum, btnRessources, btnEvents, btnNutrition, btnMeditation, btnJournal};
+        Button[] allBtns = {btnForum, btnRessources, btnEvents, btnNutrition, btnMeditation, btnJournal, btnLibrary};
         for (Button b : allBtns) {
             if (b != null) b.getStyleClass().remove("accueil-nav-btn-active");
         }
@@ -341,7 +354,7 @@ public class AccueilController {
 
     private void updateActiveMenuButton() {
         // Désactiver tous les boutons standards
-        Button[] allBtns = {btnForum, btnRessources, btnEvents, btnNutrition, btnMeditation, btnJournal};
+        Button[] allBtns = {btnForum, btnRessources, btnEvents, btnNutrition, btnMeditation, btnJournal, btnLibrary};
         for (Button b : allBtns) {
             if (b != null) b.getStyleClass().remove("accueil-nav-btn-active");
         }
