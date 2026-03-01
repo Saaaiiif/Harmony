@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.MeditationControllers.EtudiantJournalController"
+      spacing="20" styleClass="content-area" stylesheets="@harmonie-style.css">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Mon Journal d'Humeur" styleClass="title-label"/>
+            <Label text="Exprimez vos émotions et suivez votre bien-être" styleClass="subtitle-label"/>
+        </VBox>
+        <Button fx:id="voiceBtn" text="🎤 Dicter une entrée"
+                onAction="#toggleVoiceRecording"
+                style="-fx-background-color: #7c6daf; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        <Button text="+ Nouvelle Entrée" styleClass="btn-primary" onAction="#showAddForm"/>
+    </HBox>
+
+    <Label fx:id="voiceStatusLabel" text="" visible="false" managed="false"
+           style="-fx-font-size: 13px;"/>
+
+    <VBox fx:id="formSection" visible="false" managed="false"
+          style="-fx-background-color: white; -fx-padding: 18; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.07),8,0,0,2);"
+          spacing="15">
+        <Label fx:id="formTitle" text="Comment vous sentez-vous ?"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;"/>
+
+        <HBox spacing="20">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Humeur" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="humeurCombo" promptText="Sélectionnez votre humeur" prefWidth="300"/>
+                <Label fx:id="humeurError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Date" style="-fx-font-weight: bold;"/>
+                <DatePicker fx:id="datePicker" prefWidth="200"/>
+                <Label fx:id="dateError" styleClass="error-label" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Qu'avez-vous sur le cœur ?" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="contenuArea"
+                      promptText="Écrivez librement vos pensées, émotions, ce qui s'est passé aujourd'hui..."
+                      prefRowCount="5" wrapText="true"
+                      style="-fx-font-size: 13px; -fx-border-color: #D1D5DB; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+            <Label fx:id="contenuError" styleClass="error-label" visible="false" managed="false"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Annuler" styleClass="btn-secondary" onAction="#hideForm"/>
+            <Button fx:id="submitBtn" text="Enregistrer" styleClass="btn-primary" onAction="#saveJournal"/>
+        </HBox>
+    </VBox>
+
+    <HBox spacing="20">
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Entrées ce mois" style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"/>
+            <Label fx:id="monthEntriesLabel" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;"/>
+        </VBox>
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Humeur moyenne" style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"/>
+            <HBox fx:id="avgHumeurContainer" alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="avgHumeurLabel" text="--" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1F2937;"/>
+            </HBox>
+        </VBox>
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;" spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Dernière entrée" style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"/>
+            <Label fx:id="lastEntryLabel" text="--" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1F2937;"/>
+        </VBox>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="journalContainer" spacing="15">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+        </VBox>
+    </ScrollPane>
+
+    <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false" VBox.vgrow="ALWAYS">
+        <Label text="📔" style="-fx-font-size: 60px;"/>
+        <Label text="Votre journal est vide" style="-fx-font-size: 16px; -fx-text-fill: #6B7280;"/>
+        <Label text="Commencez à écrire pour suivre votre bien-être" styleClass="subtitle-label"/>
+        <Button text="Écrire ma première entrée" styleClass="btn-primary" onAction="#showAddForm"/>
+    </VBox>
+
+</VBox>

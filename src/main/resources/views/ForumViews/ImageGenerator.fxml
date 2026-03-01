@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ForumControllers.ImageGeneratorController"
+      stylesheets="@/views/admin-styles.css"
+      styleClass="ai-dialog-root"
+      spacing="0"
+      prefWidth="540">
+
+    <!-- HEADER -->
+    <HBox styleClass="ai-dialog-header" alignment="CENTER_LEFT" spacing="12">
+        <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+        <Label text="✨" style="-fx-font-size: 22px;"/>
+        <VBox spacing="2">
+            <Label text="AI Image Generator" styleClass="ai-dialog-title"/>
+            <Label text="Powered by Pollinations.ai — gratuit, sans clé" styleClass="ai-dialog-subtitle"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#handleClose" styleClass="ai-close-btn"/>
+    </HBox>
+
+    <!-- BODY -->
+    <VBox spacing="16" styleClass="ai-dialog-body">
+        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+        <!-- Prompt area -->
+        <VBox spacing="6">
+            <Label text="Décrivez votre image" styleClass="ai-field-label"/>
+            <TextArea fx:id="promptArea"
+                      promptText="Ex: A futuristic city at sunset, digital art, 4K..."
+                      wrapText="true"
+                      prefHeight="90"
+                      styleClass="ai-prompt-area"/>
+        </VBox>
+
+        <!-- Style selector -->
+        <VBox spacing="6">
+            <Label text="Style (optionnel)" styleClass="ai-field-label"/>
+            <HBox spacing="8" fx:id="styleBox">
+                <Button text="🎨 Artistic"    onAction="#selectStyle" styleClass="style-chip" userData="artistic"/>
+                <Button text="📷 Realistic"   onAction="#selectStyle" styleClass="style-chip" userData="realistic photo"/>
+                <Button text="🖼️ Anime"       onAction="#selectStyle" styleClass="style-chip" userData="anime style"/>
+                <Button text="🌌 Fantasy"     onAction="#selectStyle" styleClass="style-chip" userData="fantasy art"/>
+                <Button text="⚡ None"        onAction="#selectStyle" styleClass="style-chip style-chip-active" userData=""/>
+            </HBox>
+        </VBox>
+
+        <!-- Generate button + loader -->
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <Button text="🚀  Générer"
+                    onAction="#handleGenerate"
+                    styleClass="ai-generate-btn"
+                    fx:id="generateBtn"/>
+            <ProgressIndicator fx:id="loader"
+                               visible="false"
+                               prefWidth="28"
+                               prefHeight="28"/>
+            <Label fx:id="statusLabel"
+                   text=""
+                   styleClass="ai-status-label"/>
+        </HBox>
+
+        <!-- Image result -->
+        <VBox fx:id="resultBox" visible="false" managed="false" spacing="10" alignment="CENTER">
+            <ImageView fx:id="generatedImage"
+                       fitWidth="490"
+                       preserveRatio="true"
+                       styleClass="ai-image-preview"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="📋  Copier l'URL"  onAction="#handleCopyUrl"  styleClass="ai-action-btn"/>
+                <Button text="🔄  Régénérer"     onAction="#handleGenerate"  styleClass="ai-action-btn"/>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</VBox>

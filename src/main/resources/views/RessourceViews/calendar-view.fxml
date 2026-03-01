@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RessourceControllers.CalendarViewController"
+      fx:id="calendarRoot"
+      styleClass="calendar-view"
+      spacing="0"
+      maxWidth="Infinity" maxHeight="Infinity"
+      style="-fx-background-color: #F4F3FA; -fx-padding: 20 24 0 24;"
+      VBox.vgrow="ALWAYS"
+      stylesheets="@/views/RessourceViews/ressource-styles.css">
+
+    <VBox spacing="2" VBox.vgrow="NEVER" style="-fx-padding: 0 0 10 0;">
+        <Label text="Calendrier" styleClass="page-title"/>
+        <Label text="Vue mensuelle des événements" styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox alignment="CENTER" spacing="24" VBox.vgrow="NEVER"
+          style="-fx-padding: 10 0 10 0;">
+        <Button fx:id="btnPrevMonth" text="‹" styleClass="btn-ghost,nav-arrow" onAction="#onPrevMonth"/>
+        <Label fx:id="labelMonthYear" styleClass="month-title"/>
+        <Button fx:id="btnNextMonth" text="›" styleClass="btn-ghost,nav-arrow" onAction="#onNextMonth"/>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="16" VBox.vgrow="NEVER"
+          style="-fx-padding: 4 0 12 0;">
+        <Label fx:id="labelWeather" text="Météo : chargement…" styleClass="text-muted"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <MenuButton fx:id="btnExport" text="⬇  Exporter" styleClass="btn-secondary,btn-export-menu">
+            <items>
+                <MenuItem fx:id="menuExportJson" text="{ }  JSON" onAction="#onExportEvenementsJson"/>
+                <MenuItem fx:id="menuExportHtml" text="🌐  HTML" onAction="#handleExportHtml"/>
+                <MenuItem fx:id="menuExportExcel" text="📊  Excel (.xlsx)" onAction="#handleExportExcel"/>
+            </items>
+        </MenuButton>
+    </HBox>
+
+    <VBox fx:id="calendarMonthBox" VBox.vgrow="ALWAYS" styleClass="calendar-month-grid" maxWidth="Infinity"/>
+</VBox>

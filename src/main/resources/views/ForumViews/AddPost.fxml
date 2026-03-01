@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="controllers.ForumControllers.AddPostController"
+            prefWidth="480"
+            prefHeight="580"
+            stylesheets="@/views/admin-styles.css"
+            style="-fx-background-color: white;">
+
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                style="-fx-background: white; -fx-background-color: white;"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0">
+
+        <VBox spacing="16" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="✏️" style="-fx-font-size: 22px;"/>
+                <Label text="Ajouter un Post"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- TITRE -->
+            <VBox spacing="6">
+                <Label text="Titre"
+                       style="-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 13px;"/>
+                <TextField fx:id="titreField"
+                           promptText="Titre du post..."
+                           style="-fx-background-radius: 8; -fx-border-radius: 8;
+                                  -fx-border-color: #e5e7eb; -fx-padding: 10 14;
+                                  -fx-font-size: 13px;"/>
+            </VBox>
+
+            <!-- CONTENU -->
+            <VBox spacing="6">
+                <Label text="Contenu"
+                       style="-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 13px;"/>
+                <TextArea fx:id="contenuArea"
+                          promptText="Écrivez votre post ici..."
+                          prefHeight="150"
+                          wrapText="true"
+                          style="-fx-background-radius: 8; -fx-border-radius: 8;
+                                 -fx-border-color: #e5e7eb; -fx-font-size: 13px;
+                                 -fx-control-inner-background: white;"/>
+            </VBox>
+
+            <!-- IMAGE -->
+            <VBox spacing="8" alignment="CENTER">
+                <Button fx:id="uploadImageBtn"
+                        text="📸  Choisir une image"
+                        onAction="#handleUploadImage"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #f3f4f6; -fx-text-fill: #374151;
+                               -fx-background-radius: 8; -fx-border-radius: 8;
+                               -fx-border-color: #d1d5db; -fx-padding: 10;
+                               -fx-font-size: 13px; -fx-cursor: hand;"/>
+
+                <ImageView fx:id="previewImageView"
+                           fitWidth="380"
+                           preserveRatio="true"
+                           visible="false"
+                           style="-fx-background-radius: 8;"/>
+            </VBox>
+
+            <!-- BOUTON TRADUIRE -->
+            <Button text="🌍  Traduire le contenu en anglais"
+                    onAction="#handleTranslate"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #ede9fe; -fx-text-fill: #7c3aed;
+                           -fx-background-radius: 8; -fx-border-radius: 8;
+                           -fx-font-weight: bold; -fx-padding: 10;
+                           -fx-font-size: 13px; -fx-cursor: hand;"/>
+
+            <Separator/>
+
+            <!-- ACTIONS -->
+            <HBox spacing="12">
+                <Button fx:id="backBtn"
+                        text="← Annuler"
+                        onAction="#handleBack"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #f3f4f6; -fx-text-fill: #6b7280;
+                               -fx-background-radius: 8; -fx-border-radius: 8;
+                               -fx-padding: 12; -fx-font-size: 13px; -fx-cursor: hand;"/>
+
+                <Button text="Publier ✓"
+                        onAction="#handleAddPost"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                               -fx-background-radius: 8; -fx-border-radius: 8;
+                               -fx-font-weight: bold; -fx-padding: 12;
+                               -fx-font-size: 13px; -fx-cursor: hand;"/>
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+
+</AnchorPane>
