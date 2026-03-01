@@ -4,22 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Library+User 1.0">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/SessionManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/grid-view-svgrepo-com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/list-view-svgrepo-com.png" afterDir="false" />
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="View Mode + Ownership">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/CourseDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/CoursesLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/LibraryLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/LibraryLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/LibraryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/course-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/course-details.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/courses-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/courses-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/library-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/library-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +187,7 @@
       <workItem from="1771244070971" duration="980000" />
       <workItem from="1772106180519" duration="5681000" />
       <workItem from="1772235557136" duration="4970000" />
-      <workItem from="1772295086582" duration="8029000" />
+      <workItem from="1772295086582" duration="9395000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -291,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772237803411</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="View Mode + Ownership">
+      <option name="closed" value="true" />
+      <created>1772306428520</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1772306428520</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -307,6 +301,7 @@
     <MESSAGE value="Library CRUD 1.1(bug fixes)" />
     <MESSAGE value="Library (Course Cover) 1.0" />
     <MESSAGE value="Library+User 1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="Library+User 1.0" />
+    <MESSAGE value="View Mode + Ownership" />
+    <option name="LAST_COMMIT_MESSAGE" value="View Mode + Ownership" />
   </component>
 </project>
