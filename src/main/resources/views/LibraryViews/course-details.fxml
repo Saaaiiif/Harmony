@@ -23,9 +23,10 @@
             <Button fx:id="addFilesBtn" text="Add files" styleClass="action-button"/>
             <Button fx:id="saveAsLibraryCopyBtn" text="📋 Save as Copy"
                     styleClass="action-button" visible="false" managed="false"/>
-
             <Button fx:id="saveToLibraryBtn" text="💾 Save to My Library" styleClass="action-button"
-                    visible="false" managed="false" />
+                    visible="false" managed="false"/>
+            <Button fx:id="reportBtn" text="⚑ Report"
+                    styleClass="action-button report-btn" visible="false" managed="false"/>
             <Button fx:id="backBtn" text="Back" styleClass="action-button"/>
         </HBox>
     </top>

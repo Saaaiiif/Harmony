@@ -12,7 +12,7 @@ public class LibraryService {
     public record CourseCardRow(int id, String title, String subjectName, String coverImagePath, int saves) {}
 
     public List<CourseCardRow> listPublishedCourses() throws Exception {
-        return searchPublishedCourses("", null);
+        return searchPublishedCourses("", null, "Newest");
     }
 
     public boolean isCourseSaved(int userId, int courseId) throws Exception {
@@ -61,7 +61,7 @@ public class LibraryService {
         }
     }
 
-    public List<CourseCardRow> searchPublishedCourses(String keyword, String subjectName) throws Exception {
+    public List<CourseCardRow> searchPublishedCourses(String keyword, String subjectName, String sort) throws Exception {
         List<CourseCardRow> out = new ArrayList<>();
 
         boolean hasKeyword = keyword != null && !keyword.isBlank();
@@ -75,7 +75,12 @@ public class LibraryService {
 
         if (hasKeyword) sql.append("AND LOWER(c.title) LIKE ? ");
         if (hasSubject) sql.append("AND LOWER(s.name) = LOWER(?) ");
-        sql.append("ORDER BY c.id DESC");
+        if (sort == null) sort = "Newest";
+        switch (sort) {
+            case "Most Saved" -> sql.append("ORDER BY c.saves DESC");
+            case "Relevant"   -> sql.append("ORDER BY CASE WHEN LOWER(c.title) LIKE ? THEN 0 ELSE 1 END, c.saves DESC");
+            default           -> sql.append("ORDER BY c.id DESC"); // Newest
+        }
 
         try (Connection conn = DB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
@@ -83,6 +88,10 @@ public class LibraryService {
             int idx = 1;
             if (hasKeyword) ps.setString(idx++, "%" + keyword.toLowerCase() + "%");
             if (hasSubject) ps.setString(idx++, subjectName);
+            // Relevant sort adds a second keyword bind for the CASE expression
+            if ("Relevant".equals(sort)) {
+                ps.setString(idx++, hasKeyword ? "%" + keyword.toLowerCase() + "%" : "%");
+            }
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

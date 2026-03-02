@@ -28,14 +28,18 @@ public class LibraryLayoutController implements ThemeAware {
     @FXML private BorderPane root;
 
     // Recommended section
-    @FXML private VBox  recommendedSection;
-    @FXML private HBox  recommendedContainer;   // horizontal strip — cards added here
-    @FXML private Label recommendedTitle;
+    @FXML private VBox       recommendedSection;
+    @FXML private HBox       recommendedContainer;   // horizontal strip — cards added here
+    @FXML private Label      recommendedTitle;
+    @FXML private ScrollPane recommendedScrollPane;
+
+
 
     // All-courses swappable wrapper
     @FXML private VBox coursesWrapper;          // setViewMode() swaps its single child
 
     // Filters / controls
+    @FXML private ComboBox<String> sortFilter;
     @FXML private TextField        searchField;
     @FXML private ComboBox<String> subjectFilter;
     @FXML private ImageView        libraryHeaderIcon;
@@ -79,6 +83,9 @@ public class LibraryLayoutController implements ThemeAware {
         gridViewBtn.getStyleClass().add("view-toggle-btn-active");
 
         Platform.runLater(() -> {
+            sortFilter.setItems(FXCollections.observableArrayList("Newest", "Most Saved", "Relevant"));
+            sortFilter.setValue("Newest");
+            sortFilter.valueProperty().addListener((obs, o, n) -> applyFilters());
             loadSubjectFilter();
             loadPublishedCourses();
             loadRecommendedCourses();
@@ -123,6 +130,20 @@ public class LibraryLayoutController implements ThemeAware {
 
             recommendedSection.setVisible(true);
             recommendedSection.setManaged(true);
+
+            // Set up edge fades once the section is visible and laid out
+
+
+            // Redirect vertical mouse-wheel events to horizontal scrolling on the strip
+            recommendedScrollPane.addEventFilter(javafx.scene.input.ScrollEvent.SCROLL, e -> {
+                if (e.getDeltaY() != 0) {
+                    double delta = -e.getDeltaY() * 3;
+                    double newVal = recommendedScrollPane.getHvalue()
+                            + delta / (recommendedContainer.getWidth() - recommendedScrollPane.getViewportBounds().getWidth());
+                    recommendedScrollPane.setHvalue(Math.max(0, Math.min(1, newVal)));
+                    e.consume();
+                }
+            });
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -241,7 +262,8 @@ public class LibraryLayoutController implements ThemeAware {
         listContainer.getChildren().clear();
 
         try {
-            var rows = libraryService.searchPublishedCourses(keyword, subject);
+            String sort = sortFilter != null ? sortFilter.getValue() : "Newest";
+            var rows = libraryService.searchPublishedCourses(keyword, subject, sort);
 
             if (rows.isEmpty()) {
                 VBox empty = makeEmptyState("No courses match your search.");
@@ -266,9 +288,17 @@ public class LibraryLayoutController implements ThemeAware {
     // Card builders
     // ─────────────────────────────────────────────────────────────────────────
 
+    /**
+     * Overlays left and right LinearGradient fades on the recommended strip.
+     * The gradient color matches the page background so it blends seamlessly.
+     * Fades update their opacity as the user scrolls so:
+     *   - left  fade is invisible at HValue=0  (already at start)
+     *   - right fade is invisible at HValue=1  (already at end)
+     */
+
     /** Smaller card used exclusively in the horizontal recommended strip. */
     private StackPane makeRecommendedCard(int courseId, String title, String subjectName, String coverImagePath, int saves) {
-        final double W = 160, H = 95;
+        final double W = 160, H = 95, RADIUS = 14;
 
         VBox cardBody = new VBox(0);
         cardBody.getStyleClass().add("course-card");
@@ -277,22 +307,27 @@ public class LibraryLayoutController implements ThemeAware {
         cardBody.setPrefWidth(W);
         cardBody.setMaxWidth(W);
 
-        // Card CSS uses 14px border-radius — clip image so top corners are rounded,
-        // extend clip below image height so bottom arc is hidden behind the info section.
-        double radius = 14;
-
         Image img = loadCoverImage(coverImagePath);
         if (img != null) {
-            ImageView iv = new ImageView(img);
-            iv.setFitWidth(W);
-            iv.setFitHeight(H);
-            iv.setPreserveRatio(false);
-            iv.getStyleClass().add("course-card-image");
-            javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(W, H + radius);
-            clip.setArcWidth(radius * 2);
-            clip.setArcHeight(radius * 2);
-            iv.setClip(clip);
-            cardBody.getChildren().add(iv);
+            // Rectangle with ImagePattern gives true rounded corners on the image itself —
+            // ImageView.setClip() is ignored when CSS redraws the node, so this is the
+            // only reliable approach in JavaFX.
+            javafx.scene.shape.Rectangle imgRect = new javafx.scene.shape.Rectangle(W, H);
+            imgRect.setArcWidth(RADIUS * 2);
+            imgRect.setArcHeight(RADIUS * 2);
+            imgRect.setFill(new javafx.scene.paint.ImagePattern(img));
+            // Clip the bottom corners back to straight by wrapping in a StackPane
+            // whose bottom half hides the arc — we extend the rect height slightly.
+            javafx.scene.shape.Rectangle imgRectFull = new javafx.scene.shape.Rectangle(W, H + RADIUS);
+            imgRectFull.setArcWidth(RADIUS * 2);
+            imgRectFull.setArcHeight(RADIUS * 2);
+            imgRectFull.setFill(new javafx.scene.paint.ImagePattern(img));
+            StackPane imageHolder = new StackPane(imgRectFull);
+            imageHolder.setMinSize(W, H);
+            imageHolder.setPrefSize(W, H);
+            imageHolder.setMaxSize(W, H);
+            imageHolder.setClip(new javafx.scene.shape.Rectangle(W, H));
+            cardBody.getChildren().add(imageHolder);
         } else {
             StackPane placeholder = new StackPane();
             placeholder.getStyleClass().add("course-card-image-placeholder");

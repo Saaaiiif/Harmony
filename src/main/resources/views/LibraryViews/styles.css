@@ -1506,3 +1506,227 @@
     -fx-background-insets: 0;
     -fx-background-radius: 999;
 }
+.recommended-fade-left {
+    -fx-min-width: 60px;
+    -fx-max-width: 60px;
+    -fx-pref-width: 60px;
+    -fx-min-height: 0;
+    -fx-max-height: Infinity;
+    -fx-background-color: linear-gradient(to right, rgb(13, 11, 20), transparent);
+}
+
+.recommended-fade-right {
+    -fx-min-width: 60px;
+    -fx-max-width: 60px;
+    -fx-pref-width: 60px;
+    -fx-min-height: 0;
+    -fx-max-height: Infinity;
+    -fx-background-color: linear-gradient(to left, rgb(13, 11, 20), transparent);
+}
+
+.light-mode .recommended-fade-left {
+    -fx-background-color: linear-gradient(to right, rgba(205, 157, 241, 0.75), transparent);
+    -fx-opacity: 0.3;
+}
+
+.light-mode .recommended-fade-right {
+    -fx-background-color: linear-gradient(to left, rgba(205, 157, 241, 0.75), transparent);
+    -fx-opacity: 0.3;
+}
+
+
+.report-btn {
+    -fx-background-color: rgba(180, 50, 50, 0.35);
+}
+
+.report-btn:hover {
+    -fx-background-color: rgba(220, 60, 60, 0.55);
+    -fx-effect: dropshadow(gaussian, rgba(200, 50, 50, 0.3), 10, 0, 0, 0);
+}
+
+.light-mode .report-btn {
+    -fx-background-color: rgba(200, 60, 60, 0.25);
+}
+
+.light-mode .report-btn:hover {
+    -fx-background-color: rgba(200, 60, 60, 0.45);
+}
+
+/* Already-reported state — inherits action-button shape, muted color */
+.report-btn-done {
+    -fx-background-color: rgba(120, 120, 120, 0.2);
+    -fx-opacity: 0.6;
+}
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: #7a7a7a;
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.light-mode .dialog-pane .header-panel .label {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   gestion-ressources.css — uses the same colours as styles.css light-mode
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Badge (report count) ────────────────────────────────────────────────── */
+.gr-badge {
+    -fx-background-color: rgba(238, 237, 246, 0.8);
+    -fx-background-radius: 10;
+    -fx-border-color: #cd9df1;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 4 14;
+    -fx-min-width: 64;
+}
+
+.gr-badge-number {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cd9df1;
+    -fx-alignment: center;
+}
+
+.gr-badge-text {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 10px;
+    -fx-text-fill: #7a7a7a;
+    -fx-alignment: center;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.gr-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.gr-table > .column-header-background {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.gr-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #cd9df1 transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-size: 36;
+}
+
+.gr-table .column-header .label {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cd9df1;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.gr-table .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #cd9df1 transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.gr-table .table-row-cell {
+    -fx-background-color: rgba(238, 237, 246, 0.6);
+    -fx-border-color: transparent transparent rgba(122, 122, 122, 0.15) transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 52px;
+}
+
+.gr-table .table-row-cell:odd {
+    -fx-background-color: rgba(238, 237, 246, 0.35);
+}
+
+.gr-table .table-row-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.15);
+}
+
+.gr-table .table-row-cell:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.25);
+}
+
+.gr-table .table-cell {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 13px;
+    -fx-text-fill: #3b3b3b;
+    -fx-border-color: transparent;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Scrollbar */
+.gr-table .scroll-bar:vertical {
+    -fx-pref-width: 8;
+    -fx-background-color: transparent;
+}
+.gr-table .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(205, 157, 241, 0.55);
+    -fx-background-radius: 999;
+}
+.gr-table .scroll-bar:vertical .track,
+.gr-table .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+.gr-table .scroll-bar:vertical .increment-button,
+.gr-table .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.gr-table .scroll-bar:vertical .increment-arrow,
+.gr-table .scroll-bar:vertical .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+.gr-table .corner {
+    -fx-background-color: transparent;
+}
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.gr-status-published {
+    -fx-background-color: rgba(52, 199, 89, 0.15);
+    -fx-text-fill: #1a7f37;
+    -fx-background-radius: 20;
+    -fx-padding: 3 12;
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.gr-status-unpublished {
+    -fx-background-color: rgba(205, 157, 241, 0.2);
+    -fx-text-fill: #7a4fa0;
+    -fx-background-radius: 20;
+    -fx-padding: 3 12;
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.gr-empty-title {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7a7a7a;
+}
+
+.gr-empty-subtitle {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 13px;
+    -fx-text-fill: #9a9a9a;
+}
+
+.gr-placeholder {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 13px;
+    -fx-text-fill: #9a9a9a;
+}

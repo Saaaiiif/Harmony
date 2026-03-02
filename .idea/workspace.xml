@@ -4,56 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Clean Up before merge">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f25d34bc-76e0-4fab-a7da-646dcb5941cd.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f25d34bc-76e0-4fab-a7da-646dcb5941cd.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Integration FULL 1.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/BackLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/BackLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/DB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/FrontLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/FrontLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/LibraryLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/LibraryLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/NavWheelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/NavWheelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/RootLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/RootLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SceneTransitionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/SceneTransitionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/SessionManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/interfaces/ThemeAware.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interfaces/ThemeAware.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/interfaces/WheelCyclable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interfaces/WheelCyclable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/model/SubjectRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/LibraryModels/SubjectRow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/ImageGenerationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/LibraryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/harmony/util/UiPopups.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/UiPopups.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/AccueilController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/AccueilController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/back-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/back-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backg2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backg2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backgLIGHT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/backgLIGHT2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/backgLIGHT2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/course-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/courses-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/courses-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/front-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/front-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/hello-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/library-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/library-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/nav-wheel.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/nav-wheel.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/root-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/root-layout.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/harmony/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/Inscription.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/Inscription.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/Login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/Login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/services/TestServiceUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/services/TestServiceUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/remember.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/LibraryLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/LibraryLayoutController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/DashboardAdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/modifControl/DashboardAdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/LibraryServices/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/LibraryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/library-layout.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/library-layout.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/DashboardAdmin.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/DashboardAdmin.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +42,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Library" />
+        <entry key="$PROJECT_DIR$" value="Resources" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -131,9 +93,9 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "Resources",
+    "git-widget-placeholder": "PreProd",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources",
+    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/java/controllers/LibraryControllers",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -154,11 +116,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\controllers\LibraryControllers" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\com\example\harmony\user" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\icons" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\views\LibraryViews" />
@@ -357,7 +319,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772378520891</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Integration FULL 1.0">
+      <option name="closed" value="true" />
+      <created>1772407643070</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1772407643070</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -375,6 +345,7 @@
     <MESSAGE value="Library+User 1.0" />
     <MESSAGE value="View Mode + Ownership" />
     <MESSAGE value="Clean Up before merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="Clean Up before merge" />
+    <MESSAGE value="Integration FULL 1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="Integration FULL 1.0" />
   </component>
 </project>

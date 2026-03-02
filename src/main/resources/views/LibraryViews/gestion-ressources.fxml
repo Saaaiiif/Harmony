@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<BorderPane fx:id="root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.LibraryControllers.GestionRessourcesController"
+            styleClass="front-root light-mode">
+
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+
+    <!-- ══ TOP — mirrors library-layout header ═══════════════════════════ -->
+    <top>
+        <VBox>
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="library-header">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="🚩" style="-fx-font-size: 24;"/>
+                <Label text="Gestion Ressources" styleClass="section-title"/>
+                <TextField fx:id="searchField"
+                           promptText="Rechercher un cours…"
+                           prefWidth="220"
+                           styleClass="search-field"/>
+                <ComboBox fx:id="filterStatus"
+                          promptText="Tous les statuts"
+                          prefWidth="160"
+                          styleClass="subject-filter"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <!-- Report count badge -->
+                <VBox alignment="CENTER" styleClass="gr-badge" spacing="0">
+                    <Label fx:id="reportedCountLabel" text="0" styleClass="gr-badge-number"/>
+                    <Label text="signalés" styleClass="gr-badge-text"/>
+                </VBox>
+                <Button fx:id="btnRefresh" onAction="#handleRefresh"
+                        text="↻  Actualiser"
+                        styleClass="action-button"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ══ CENTER — table inside library-content scroll ═════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    styleClass="library-content"
+                    style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+            <VBox spacing="0">
+                <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                <Label text="Cours signalés" styleClass="recommended-title"
+                       style="-fx-padding: 0 0 12 0;"/>
+
+                <!-- Empty state -->
+                <VBox fx:id="emptyState" alignment="CENTER" spacing="10"
+                      visible="false" managed="false" style="-fx-padding: 60 0;">
+                    <Label text="✅" style="-fx-font-size: 44;"/>
+                    <Label text="Aucun cours signalé" styleClass="gr-empty-title"/>
+                    <Label text="Tous les cours respectent les règles de la communauté."
+                           styleClass="gr-empty-subtitle"/>
+                </VBox>
+
+                <!-- Table -->
+                <TableView fx:id="reportedTable"
+                           styleClass="gr-table"
+                           VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="colCourse"  text="Cours"        prefWidth="220"/>
+                        <TableColumn fx:id="colSubject" text="Matière"      prefWidth="140"/>
+                        <TableColumn fx:id="colAuthor"  text="Auteur"       prefWidth="140"/>
+                        <TableColumn fx:id="colReports" text="Signalements" prefWidth="110"/>
+                        <TableColumn fx:id="colStatus"  text="Statut"       prefWidth="110"/>
+                        <TableColumn fx:id="colActions" text="Actions"      prefWidth="160"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Chargement…" styleClass="gr-placeholder"/>
+                    </placeholder>
+                </TableView>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

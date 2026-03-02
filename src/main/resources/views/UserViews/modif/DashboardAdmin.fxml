@@ -47,95 +47,105 @@
                         styleClass="sidebar-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
                 <VBox spacing="4">
 
-            <!-- ── Dashboard ─────────────────────────────────────────── -->
-            <Button fx:id="btnDashboard" onAction="#handleDashboard"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Dashboard">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="🏠" />
-                </graphic>
-            </Button>
+                    <!-- ── Dashboard ─────────────────────────────────────────── -->
+                    <Button fx:id="btnDashboard" onAction="#handleDashboard"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Dashboard">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🏠" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Utilisateurs ───────────────────────────────── -->
-            <Button fx:id="btnGestionUsers" onAction="#handleGestionUsers"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Utilisateurs">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="👥" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Utilisateurs ───────────────────────────────── -->
+                    <Button fx:id="btnGestionUsers" onAction="#handleGestionUsers"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Utilisateurs">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="👥" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Sport ──────────────────────────────────────── -->
-            <Button fx:id="btnGestionSport" onAction="#handleGestionSport"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Sport">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="⚡" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Sport ──────────────────────────────────────── -->
+                    <Button fx:id="btnGestionSport" onAction="#handleGestionSport"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Sport">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="⚡" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Nutrition ──────────────────────────────────── -->
-            <Button fx:id="btnGestionNutrition" onAction="#handleGestionNutrition"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Nutrition">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="🍏" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Nutrition ──────────────────────────────────── -->
+                    <Button fx:id="btnGestionNutrition" onAction="#handleGestionNutrition"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Nutrition">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🍏" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Forum ──────────────────────────────────────── -->
-            <Button fx:id="btnForum"
-                    onAction="#handleForum"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Forum">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="💬" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Forum ──────────────────────────────────────── -->
+                    <Button fx:id="btnForum"
+                            onAction="#handleForum"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Forum">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="💬" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Événements ────────────────────────────── -->
-            <Button fx:id="btnRessources" onAction="#handleGestionRessources"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Événements">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="📚" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Événements ────────────────────────────── -->
+                    <Button fx:id="btnRessources" onAction="#handleGestionRessources"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Événements">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📚" />
+                        </graphic>
+                    </Button>
 
-            <Button fx:id="btnEevents"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Evenements">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="🎉" />
-                </graphic>
-            </Button>
+                    <Button fx:id="btnEevents"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Evenements">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🎉" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Gestion Méditation ─────────────────────────────────── -->
-            <Button fx:id="btnGestionMeditation" onAction="#handleGestionMeditation"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Gestion Méditation">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="🧘" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Ressources ─────────────────────────────────── -->
+                    <Button fx:id="btnGestionRessources" onAction="#handleCoursesSignales"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Ressources">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📖" />
+                        </graphic>
+                    </Button>
 
-            <!-- ── Journal Étudiants ──────────────────────────────────── -->
-            <Button fx:id="btnJournalEtudiants" onAction="#handleJournalEtudiants"
-                    styleClass="sidebar-item"
-                    prefWidth="240" prefHeight="42"
-                    text="  Journal Étudiants">
-                <graphic>
-                    <Label style="-fx-font-size: 18;" text="📔" />
-                </graphic>
-            </Button>
+                    <!-- ── Gestion Méditation ─────────────────────────────────── -->
+                    <Button fx:id="btnGestionMeditation" onAction="#handleGestionMeditation"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Méditation">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🧘" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Journal Étudiants ──────────────────────────────────── -->
+                    <Button fx:id="btnJournalEtudiants" onAction="#handleJournalEtudiants"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Journal Étudiants">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📔" />
+                        </graphic>
+                    </Button>
 
                 </VBox>
             </ScrollPane>

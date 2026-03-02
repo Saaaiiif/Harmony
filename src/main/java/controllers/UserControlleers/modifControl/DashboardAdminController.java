@@ -54,6 +54,7 @@ public class DashboardAdminController {
     @FXML private Button    btnGestionMeditation;
     @FXML private Button    btnJournalEtudiants;
     @FXML private Button    btnRessources;
+    @FXML private Button    btnGestionRessources;
     @FXML private Button    btnLogout;
 
     @FXML private StackPane profileZone;
@@ -231,6 +232,13 @@ public class DashboardAdminController {
         loadContent("/views/RessourceViews/admin-backoffice.fxml", "gestionRessources");
     }
 
+    /** Cours signalés — modération des cours reportés */
+    @FXML
+    void handleCoursesSignales() {
+        if ("coursesSignales".equals(currentPage)) return;
+        loadContent("/views/LibraryViews/gestion-ressources.fxml", "coursesSignales");
+    }
+
     /**
      * Charge un FXML dans le StackPane contentArea avec un fade transition.
      * Met à jour le bouton actif dans la sidebar.
@@ -275,6 +283,7 @@ public class DashboardAdminController {
         if (btnGestionMeditation  != null) btnGestionMeditation.getStyleClass().setAll("sidebar-item");
         if (btnJournalEtudiants   != null) btnJournalEtudiants.getStyleClass().setAll("sidebar-item");
         if (btnRessources         != null) btnRessources.getStyleClass().setAll("sidebar-item");
+        if (btnGestionRessources  != null) btnGestionRessources.getStyleClass().setAll("sidebar-item");
 
         switch (pageKey) {
             case "dashboard"          -> btnDashboard.getStyleClass().setAll("sidebar-item", "sidebar-item-active");
@@ -284,6 +293,7 @@ public class DashboardAdminController {
             case "gestionMeditation"  -> { if (btnGestionMeditation != null) btnGestionMeditation.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
             case "journalEtudiants"   -> { if (btnJournalEtudiants  != null) btnJournalEtudiants.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
             case "gestionRessources" -> { if (btnRessources        != null) btnRessources.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
+            case "coursesSignales"   -> { if (btnGestionRessources != null) btnGestionRessources.getStyleClass().setAll("sidebar-item", "sidebar-item-active"); }
         }
     }
 

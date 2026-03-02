@@ -37,6 +37,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import services.LibraryServices.ReportService;
+import models.UserModels.Session;
 
 import org.fxmisc.richtext.model.StyledDocument;
 import services.LibraryServices.LibraryService;
@@ -54,8 +56,9 @@ public class CourseDetailsController implements ThemeAware {
     @FXML private Label publishLabel;
     @FXML private Button saveToLibraryBtn;
     @FXML private Button saveAsLibraryCopyBtn;
-
+    @FXML private Button reportBtn;
     private boolean isOwner = true;
+    private final ReportService reportService = new ReportService();
 
     private final CourseService courseService = new CourseService();
 
@@ -123,6 +126,7 @@ public class CourseDetailsController implements ThemeAware {
             } catch (Exception ex) { ex.printStackTrace(); }
         }
         refreshFiles(); // ← AFTER isOwner is set
+        setupReportButton(); // ← AFTER origin and isOwner are both set
 
         // ── publish toggle ────────────────────────────────────────
         if (publishToggle != null) {
@@ -220,8 +224,100 @@ public class CourseDetailsController implements ThemeAware {
         if (saveAsLibraryCopyBtn != null) {
             saveAsLibraryCopyBtn.setOnAction(e -> saveAsLibraryCopy());
         }
+    }
 
+    private void showReportDialog() {
+        ChoiceBox<String> reasonBox = new ChoiceBox<>();
+        reasonBox.getItems().addAll(
+                "Inappropriate content",
+                "Misleading information",
+                "Spam or advertisement",
+                "Plagiarized content",
+                "Other"
+        );
+        reasonBox.setValue("Inappropriate content");
+        reasonBox.setMaxWidth(Double.MAX_VALUE);
+        reasonBox.getStyleClass().add("subject-filter");
 
+        TextArea detailsArea = new TextArea();
+        detailsArea.setPromptText("Additional details (optional)…");
+        detailsArea.setPrefRowCount(3);
+        detailsArea.setWrapText(true);
+
+        Label reasonLabel = new Label("Reason");
+        reasonLabel.getStyleClass().add("recommended-title");
+        reasonLabel.setStyle("-fx-font-size: 13px;");
+
+        Label detailsLabel = new Label("Details");
+        detailsLabel.getStyleClass().add("recommended-title");
+        detailsLabel.setStyle("-fx-font-size: 13px;");
+
+        VBox dialogContent = new VBox(8, reasonLabel, reasonBox, detailsLabel, detailsArea);
+        dialogContent.setPadding(new Insets(4, 0, 0, 0));
+
+        Dialog<Boolean> dialog = new Dialog<>();
+        dialog.setTitle("Report Course");
+        dialog.setHeaderText("Report \"" + courseTitle.getText() + "\"");
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Apply the same styled popup used everywhere in the app
+        Stage owner = (Stage) root.getScene().getWindow();
+        dialog.initOwner(owner);
+        UiPopups.styleDialog(dialog, isDarkModeNow(), getClass());
+
+        dialog.setResultConverter(btn -> btn == ButtonType.OK);
+
+        dialog.showAndWait().ifPresent(confirmed -> {
+            if (!confirmed) return;
+            try {
+                int userId = Session.getInstance().getUser().getUser_id();
+                boolean submitted = reportService.submitReport(
+                        userId,
+                        courseId,
+                        reasonBox.getValue(),
+                        detailsArea.getText()
+                );
+                if (submitted) {
+                    reportBtn.setText("⚑ Reported");
+                    reportBtn.setDisable(true);
+                    reportBtn.getStyleClass().remove("report-btn");
+                    reportBtn.getStyleClass().add("report-btn-done");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void setupReportButton() {
+        // Only show in Library view, and never on the user's own courses
+        if (origin != Origin.LIBRARY || isOwner) {
+            reportBtn.setVisible(false);
+            reportBtn.setManaged(false);
+            return;
+        }
+
+        try {
+            int userId = Session.getInstance().getUser().getUser_id();
+            boolean alreadyReported = reportService.hasReported(userId, courseId);
+            if (alreadyReported) {
+                reportBtn.setText("⚑ Reported");
+                reportBtn.setDisable(true);
+                reportBtn.getStyleClass().setAll("action-button", "report-btn-done");
+            } else {
+                reportBtn.getStyleClass().setAll("action-button", "report-btn");
+                reportBtn.setOnAction(e -> showReportDialog());
+            }
+
+            reportBtn.setVisible(true);
+            reportBtn.setManaged(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            reportBtn.setVisible(false);
+            reportBtn.setManaged(false);
+        }
     }
     public void setAccueilController(AccueilController accueilController) {
         this.accueilController = accueilController;

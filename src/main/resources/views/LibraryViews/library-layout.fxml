@@ -46,6 +46,10 @@
                     <!-- Grid / List toggle -->
                     <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0 20 8 20;">
                         <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Sort by" styleClass="recommended-title"
+                               style="-fx-font-size: 12px; -fx-opacity: 0.7; -fx-padding: 0 4 0 0;"/>
+                        <ComboBox fx:id="sortFilter" prefWidth="120" styleClass="subject-filter"/>
+                        <Region style="-fx-min-width: 10;"/>
                         <Button fx:id="gridViewBtn" styleClass="view-toggle-btn" contentDisplay="GRAPHIC_ONLY">
                             <graphic>
                                 <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
@@ -95,18 +99,29 @@
                                 Right padding of 24 is handled on the HBox so the
                                 fade-out edge has space.
                             -->
-                            <ScrollPane fx:id="recommendedScrollPane"
-                                        styleClass="recommended-scroll"
-                                        fitToHeight="true"
-                                        hbarPolicy="ALWAYS"
-                                        vbarPolicy="NEVER"
-                                        style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
-                                <HBox fx:id="recommendedContainer" spacing="14">
-                                    <padding>
-                                        <Insets top="4" right="32" bottom="8" left="4"/>
-                                    </padding>
-                                </HBox>
-                            </ScrollPane>
+                            <!-- StackPane lets us overlay fade rectangles on the edges -->
+                            <StackPane fx:id="recommendedStripWrapper">
+                                <ScrollPane fx:id="recommendedScrollPane"
+                                            styleClass="recommended-scroll"
+                                            fitToHeight="true"
+                                            hbarPolicy="ALWAYS"
+                                            vbarPolicy="NEVER"
+                                            style="-fx-background-color: transparent; -fx-control-inner-background: transparent;"
+                                            StackPane.alignment="CENTER">
+                                    <HBox fx:id="recommendedContainer" spacing="14">
+                                        <padding>
+                                            <Insets top="4" right="32" bottom="8" left="4"/>
+                                        </padding>
+                                    </HBox>
+                                </ScrollPane>
+                                <!-- Left and right fade overlays — styled via CSS -->
+                                <Region styleClass="recommended-fade-left"
+                                        mouseTransparent="true"
+                                        StackPane.alignment="CENTER_LEFT"/>
+                                <Region styleClass="recommended-fade-right"
+                                        mouseTransparent="true"
+                                        StackPane.alignment="CENTER_RIGHT"/>
+                            </StackPane>
                         </VBox>
 
                         <!-- ══════════════════════════════════════════
@@ -131,12 +146,6 @@
         </BorderPane>
     </center>
 
-    <bottom>
-        <StackPane pickOnBounds="false" styleClass="nav-wheel-bottom-wrap">
-            <StackPane fx:id="wheelZone" prefWidth="200" maxWidth="200" prefHeight="120" styleClass="nav-wheel-host">
-                <StackPane fx:id="navWheelContainer" prefHeight="160"/>
-            </StackPane>
-        </StackPane>
-    </bottom>
+
 
 </BorderPane>
