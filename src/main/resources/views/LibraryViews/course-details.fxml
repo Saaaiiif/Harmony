@@ -2,8 +2,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import java.net.URL?>
+
 <BorderPane fx:id="root"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.LibraryControllers.CourseDetailsController"
@@ -11,6 +13,7 @@
     <stylesheets>
         <URL value="@styles.css"/>
     </stylesheets>
+
     <top>
         <HBox spacing="10" styleClass="library-header" BorderPane.alignment="CENTER_LEFT">
             <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
@@ -28,6 +31,20 @@
             <Button fx:id="reportBtn" text="⚑ Report"
                     styleClass="action-button report-btn" visible="false" managed="false"/>
             <Button fx:id="backBtn" text="Back" styleClass="action-button"/>
+            <Button fx:id="gridViewBtn" styleClass="view-toggle-btn" contentDisplay="GRAPHIC_ONLY">
+                <graphic>
+                    <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                        <image><Image url="@/grid-view-svgrepo-com.png"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="listViewBtn" styleClass="view-toggle-btn" contentDisplay="GRAPHIC_ONLY">
+                <graphic>
+                    <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                        <image><Image url="@/list-view-svgrepo-com.png"/></image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
     </top>
 
@@ -35,9 +52,72 @@
         <ScrollPane fitToWidth="true"
                     styleClass="library-content"
                     style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
-            <TilePane fx:id="filesContainer" hgap="16" vgap="16" prefColumns="3">
-                <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-            </TilePane>
+            <VBox spacing="0">
+
+                <!-- ── Course files ─────────────────────────────────────── -->
+                <VBox fx:id="filesWrapper">
+                    <TilePane fx:id="filesContainer" hgap="16" vgap="16" prefColumns="3">
+                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+                    </TilePane>
+                </VBox>
+
+                <!-- ── Books strip ──────────────────────────────────────── -->
+                <VBox fx:id="booksSection" visible="false" managed="false"
+                      styleClass="recommended-section">
+                    <padding><Insets top="20" right="0" bottom="0" left="24"/></padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-padding: 0 24 10 0;">
+                        <Label text="📚" style="-fx-font-size: 16;"/>
+                        <Label text="Related Books" styleClass="recommended-title"/>
+                        <Label text="›  ›  ›" styleClass="recommended-scroll-hint"/>
+                    </HBox>
+
+                    <StackPane>
+                        <ScrollPane fx:id="booksScrollPane"
+                                    styleClass="recommended-scroll"
+                                    fitToHeight="true"
+                                    hbarPolicy="ALWAYS"
+                                    vbarPolicy="NEVER"
+                                    style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+                            <HBox fx:id="booksContainer" spacing="14">
+                                <padding><Insets top="4" right="32" bottom="8" left="4"/></padding>
+                            </HBox>
+                        </ScrollPane>
+                        <Region styleClass="recommended-fade-left"  mouseTransparent="true" StackPane.alignment="CENTER_LEFT"/>
+                        <Region styleClass="recommended-fade-right" mouseTransparent="true" StackPane.alignment="CENTER_RIGHT"/>
+                    </StackPane>
+                </VBox>
+
+                <!-- ── Videos strip ─────────────────────────────────────── -->
+                <VBox fx:id="videosSection" visible="false" managed="false"
+                      styleClass="recommended-section">
+                    <padding><Insets top="20" right="0" bottom="24" left="24"/></padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-padding: 0 24 10 0;">
+                        <Label text="▶" style="-fx-font-size: 16; -fx-text-fill: #cd9df1;"/>
+                        <Label text="Related Videos" styleClass="recommended-title"/>
+                        <Label text="›  ›  ›" styleClass="recommended-scroll-hint"/>
+                    </HBox>
+
+                    <StackPane>
+                        <ScrollPane fx:id="videosScrollPane"
+                                    styleClass="recommended-scroll"
+                                    fitToHeight="true"
+                                    hbarPolicy="ALWAYS"
+                                    vbarPolicy="NEVER"
+                                    style="-fx-background-color: transparent; -fx-control-inner-background: transparent;">
+                            <HBox fx:id="videosContainer" spacing="14">
+                                <padding><Insets top="4" right="32" bottom="8" left="4"/></padding>
+                            </HBox>
+                        </ScrollPane>
+                        <Region styleClass="recommended-fade-left"  mouseTransparent="true" StackPane.alignment="CENTER_LEFT"/>
+                        <Region styleClass="recommended-fade-right" mouseTransparent="true" StackPane.alignment="CENTER_RIGHT"/>
+                    </StackPane>
+                </VBox>
+
+            </VBox>
         </ScrollPane>
     </center>
 

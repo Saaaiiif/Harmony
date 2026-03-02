@@ -247,7 +247,16 @@ public class CoursesLayoutController{
         row.setAlignment(Pos.CENTER_LEFT);
         row.getStyleClass().add("course-list-item");
         row.setPrefWidth(Double.MAX_VALUE);
-        row.setOnMouseClicked(e -> openCourse(courseId, title, subjectName));
+        row.setOnMouseClicked(e -> {
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+                openCourse(courseId, title, subjectName);
+            }
+        });
+        if (!isSaved) {
+            row.setOnContextMenuRequested(e ->
+                    showCourseContextMenu(row, courseId, title, subjectName, e.getScreenX(), e.getScreenY())
+            );
+        }
         return row;
     }
 
@@ -651,7 +660,16 @@ public class CoursesLayoutController{
             wrapper.getChildren().add(deleteBtn);
         }
 
-        wrapper.setOnMouseClicked(e -> openCourse(courseId, title, subjectName));
+        wrapper.setOnMouseClicked(e -> {
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+                openCourse(courseId, title, subjectName);
+            }
+        });
+        if (!isSaved) {
+            wrapper.setOnContextMenuRequested(e ->
+                    showCourseContextMenu(wrapper, courseId, title, subjectName, e.getScreenX(), e.getScreenY())
+            );
+        }
 
         return wrapper;
     }
@@ -783,6 +801,268 @@ public class CoursesLayoutController{
         int r = a % n;
         return (r < 0) ? (r + n) : r;
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Right-click context menu for owned courses
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void showCourseContextMenu(javafx.scene.Node anchor, int courseId,
+                                       String title, String subjectName,
+                                       double screenX, double screenY) {
+        ContextMenu menu = new ContextMenu();
+        menu.getStyleClass().add("course-context-menu");
+
+        MenuItem renameItem   = new MenuItem("✏  Rename");
+        MenuItem regenItem    = new MenuItem("🎨  Regenerate picture");
+        MenuItem changeImgItem = new MenuItem("🖼  Change picture");
+        MenuItem subjectItem  = new MenuItem("📂  Change subject");
+        MenuItem deleteItem   = new MenuItem("🗑  Delete");
+
+        renameItem.getStyleClass().add("context-menu-item");
+        regenItem.getStyleClass().add("context-menu-item");
+        changeImgItem.getStyleClass().add("context-menu-item");
+        subjectItem.getStyleClass().add("context-menu-item");
+        deleteItem.getStyleClass().add("context-menu-item-danger");
+
+        renameItem.setOnAction(e    -> renameCourse(courseId, title));
+        regenItem.setOnAction(e     -> regenerateCoverImage(courseId, title, subjectName));
+        changeImgItem.setOnAction(e -> changeCoverImage(courseId));
+        subjectItem.setOnAction(e   -> changeCourseSubject(courseId, title, subjectName));
+        deleteItem.setOnAction(e    -> confirmAndDeleteCourse(courseId, title));
+
+        menu.getItems().addAll(renameItem, regenItem, changeImgItem, subjectItem,
+                new SeparatorMenuItem(), deleteItem);
+
+        // Apply app stylesheet — must be done via the skin's scene after show
+        menu.setOnShown(e -> {
+            try {
+                javafx.scene.Scene menuScene = menu.getSkin().getNode().getScene();
+                if (menuScene != null) {
+                    String css = getClass().getResource("/views/LibraryViews/styles.css").toExternalForm();
+                    if (!menuScene.getStylesheets().contains(css))
+                        menuScene.getStylesheets().add(css);
+                }
+            } catch (Exception ignored) {}
+        });
+
+        menu.show(anchor, screenX, screenY);
+    }
+
+    private void renameCourse(int courseId, String currentTitle) {
+        Stage owner = getOwnerStage();
+        UiPopups.prompt(owner, "Rename Course", "New name:", currentTitle, isDarkModeNow(), getClass())
+                .ifPresent(newTitle -> {
+                    String t = newTitle.trim();
+                    if (t.isEmpty()) return;
+                    try (Connection conn = DB.getConnection();
+                         PreparedStatement ps = conn.prepareStatement(
+                                 "UPDATE courses SET title = ? WHERE id = ?")) {
+                        ps.setString(1, t);
+                        ps.setInt(2, courseId);
+                        ps.executeUpdate();
+                        loadCourses();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        UiPopups.showError(owner, "Failed to rename course.", isDarkModeNow(), getClass());
+                    }
+                });
+    }
+
+    private void regenerateCoverImage(int courseId, String title, String subjectName) {
+        Stage owner = getOwnerStage();
+        boolean ok = UiPopups.confirm(owner,
+                "Regenerate the cover image for \"" + title + "\"?",
+                isDarkModeNow(), getClass());
+        if (!ok) return;
+
+        Thread worker = new Thread(() -> {
+            try {
+                byte[] imageBytes = imageGenerationService.generateCourseImage(title, subjectName);
+                if (imageBytes == null) throw new Exception("No image returned");
+
+                java.nio.file.Path coversDir = java.nio.file.Paths.get("C:/wamp64/www/covers");
+                java.nio.file.Files.createDirectories(coversDir);
+                String filename = "cover_gen_" + System.currentTimeMillis() + ".png";
+                java.nio.file.Path dest = coversDir.resolve(filename);
+                java.nio.file.Files.write(dest, imageBytes);
+
+                try (Connection conn = DB.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "UPDATE courses SET cover_image_path = ? WHERE id = ?")) {
+                    ps.setString(1, filename);
+                    ps.setInt(2, courseId);
+                    ps.executeUpdate();
+                }
+                Platform.runLater(this::loadCourses);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Platform.runLater(() ->
+                        UiPopups.showError(owner, "Failed to regenerate image.", isDarkModeNow(), getClass())
+                );
+            }
+        });
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    private void changeCoverImage(int courseId) {
+        Stage owner = getOwnerStage();
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Select cover image");
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.webp")
+        );
+        File file = fc.showOpenDialog(owner);
+        if (file == null) return;
+
+        try {
+            java.nio.file.Path coversDir = java.nio.file.Paths.get("C:/wamp64/www/covers");
+            java.nio.file.Files.createDirectories(coversDir);
+            String filename = "cover_" + System.currentTimeMillis()
+                    + file.getName().substring(file.getName().lastIndexOf('.'));
+            java.nio.file.Files.copy(file.toPath(), coversDir.resolve(filename),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+            try (Connection conn = DB.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                         "UPDATE courses SET cover_image_path = ? WHERE id = ?")) {
+                ps.setString(1, filename);
+                ps.setInt(2, courseId);
+                ps.executeUpdate();
+            }
+            loadCourses();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            UiPopups.showError(owner, "Failed to update cover image.", isDarkModeNow(), getClass());
+        }
+    }
+
+    private void changeCourseSubject(int courseId, String title, String currentSubjectName) {
+        Stage owner = getOwnerStage();
+
+        ObservableList<SubjectRow> allSubjects;
+        try {
+            allSubjects = FXCollections.observableArrayList(courseService.listSubjects());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            UiPopups.showError(owner, "Failed to load subjects.", isDarkModeNow(), getClass());
+            return;
+        }
+
+        Label header = new Label("Change subject for \"" + title + "\"");
+        header.getStyleClass().add("section-title");
+        header.setStyle("-fx-font-size: 16px;");
+
+        Label subjectLabel = new Label("Subject");
+        subjectLabel.getStyleClass().add("recommended-title");
+        subjectLabel.setStyle("-fx-font-size: 13px;");
+
+        // TextField + ListView avoids ComboBox popup positioning bugs inside modals
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search subjects\u2026");
+        searchField.getStyleClass().add("search-field");
+
+        FilteredList<SubjectRow> filtered = new FilteredList<>(allSubjects, s -> true);
+        ListView<SubjectRow> listView = new ListView<>(filtered);
+        listView.setPrefHeight(160);
+        listView.getStyleClass().add("subject-list-view");
+        listView.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(SubjectRow s, boolean empty) {
+                super.updateItem(s, empty);
+                setText(empty || s == null ? null : s.name());
+            }
+        });
+
+        // Pre-select current subject
+        allSubjects.stream()
+                .filter(s -> s.name().equalsIgnoreCase(currentSubjectName))
+                .findFirst()
+                .ifPresent(s -> {
+                    listView.getSelectionModel().select(s);
+                    listView.scrollTo(s);
+                });
+
+        searchField.textProperty().addListener((obs, o, n) -> {
+            String q = n == null ? "" : n.trim().toLowerCase();
+            filtered.setPredicate(s -> q.isEmpty() || s.name().toLowerCase().contains(q));
+        });
+
+        Button saveBtn = new Button("Save");
+        saveBtn.getStyleClass().add("action-button");
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.getStyleClass().add("action-button");
+
+        HBox buttons = new HBox(10, saveBtn, cancelBtn);
+        buttons.setAlignment(Pos.CENTER_RIGHT);
+
+        VBox box = new VBox(10, header, subjectLabel, searchField, listView, buttons);
+        box.setPadding(new Insets(18));
+
+        Stage popup = UiPopups.buildModalNoTitleBar(owner, box, 380, 360, false, isDarkModeNow(), getClass());
+
+        cancelBtn.setOnAction(e -> popup.close());
+        saveBtn.setOnAction(e -> {
+            SubjectRow selected = listView.getSelectionModel().getSelectedItem();
+            String typed = searchField.getText() == null ? "" : searchField.getText().trim();
+
+            // If nothing selected but user typed something, resolve or create the subject
+            if (selected == null && !typed.isEmpty()) {
+                boolean exists = allSubjects.stream().anyMatch(s -> s.name().equalsIgnoreCase(typed));
+                if (!exists) {
+                    boolean ok = UiPopups.confirm(popup,
+                            "Subject \"" + typed + "\" doesn't exist. Create it?",
+                            isDarkModeNow(), getClass());
+                    if (!ok) return;
+                    try (Connection conn = DB.getConnection();
+                         PreparedStatement ps = conn.prepareStatement(
+                                 "INSERT INTO subject (name) VALUES (?)",
+                                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                        ps.setString(1, typed);
+                        ps.executeUpdate();
+                        try (java.sql.ResultSet keys = ps.getGeneratedKeys()) {
+                            if (keys.next()) selected = new SubjectRow(keys.getInt(1), typed);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        UiPopups.showError(popup, "Failed to create subject.", isDarkModeNow(), getClass());
+                        return;
+                    }
+                } else {
+                    selected = allSubjects.stream()
+                            .filter(s -> s.name().equalsIgnoreCase(typed))
+                            .findFirst().orElse(null);
+                }
+            }
+
+            if (selected == null) {
+                UiPopups.showWarning(popup, "Please select or enter a subject.", isDarkModeNow(), getClass());
+                return;
+            }
+
+            final int subjectId = selected.id();
+            try (Connection conn = DB.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                         "UPDATE courses SET subjectid = ? WHERE id = ?")) {
+                ps.setInt(1, subjectId);
+                ps.setInt(2, courseId);
+                ps.executeUpdate();
+                popup.close();
+                loadCourses();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                UiPopups.showError(popup, "Failed to change subject.", isDarkModeNow(), getClass());
+            }
+        });
+
+        // Double-click on list item saves immediately
+        listView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2 && listView.getSelectionModel().getSelectedItem() != null)
+                saveBtn.fire();
+        });
+
+        popup.showAndWait();
+    }
+
 
 
 

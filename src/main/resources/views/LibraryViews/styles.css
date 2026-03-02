@@ -1730,3 +1730,296 @@
     -fx-font-size: 13px;
     -fx-text-fill: #9a9a9a;
 }
+/* ─── Recommended Section ──────────────────────────────────────────────── */
+
+.recommended-title {
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(255, 255, 255, 0.75);
+}
+
+.light-mode .recommended-title {
+    -fx-text-fill: #7a7a7a;
+}
+
+/* Chevron hint next to the title — muted, slightly animated feel via opacity */
+.recommended-scroll-hint {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(205, 157, 241, 0.55);
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+}
+
+.light-mode .recommended-scroll-hint {
+    -fx-text-fill: rgba(160, 100, 220, 0.5);
+}
+
+/* Inner horizontal scroll pane */
+.recommended-scroll,
+.recommended-scroll > .viewport,
+.recommended-scroll > .viewport > .content {
+    -fx-background-color: transparent;
+}
+
+.recommended-scroll .corner {
+    -fx-background-color: transparent;
+}
+
+.recommended-scroll .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+    -fx-opacity: 0;
+}
+
+/* Keep horizontal scrollbar always visible as a scroll cue */
+.recommended-scroll .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 6;
+    -fx-min-height: 6;
+    -fx-max-height: 6;
+}
+
+.recommended-scroll .scroll-bar:horizontal .increment-button,
+.recommended-scroll .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+}
+
+.recommended-scroll .scroll-bar:horizontal .increment-arrow,
+.recommended-scroll .scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+.recommended-scroll .scroll-bar:horizontal .track,
+.recommended-scroll .scroll-bar:horizontal .track-background {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+}
+
+.light-mode .recommended-scroll .scroll-bar:horizontal .track,
+.light-mode .recommended-scroll .scroll-bar:horizontal .track-background {
+    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+}
+
+.recommended-scroll .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(205, 157, 241, 0.75);
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+}
+
+.light-mode .recommended-scroll .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(214, 123, 253, 0.65);
+    -fx-background-insets: 0;
+    -fx-background-radius: 999;
+}
+
+/* ─── Recommended strip edge fades ─────────────────────────────────────── */
+/* These Region nodes sit on top of the ScrollPane (mouseTransparent).      */
+/* The gradient goes from the page background color → transparent,          */
+/* matching backg2.png dark average and backgLIGHT2.png light average.      */
+
+.recommended-fade-left {
+    -fx-min-width: 60px;
+    -fx-max-width: 60px;
+    -fx-pref-width: 60px;
+    -fx-min-height: 0;
+    -fx-max-height: Infinity;
+    -fx-background-color: linear-gradient(to right, rgb(13, 11, 20), transparent);
+}
+
+.recommended-fade-right {
+    -fx-min-width: 60px;
+    -fx-max-width: 60px;
+    -fx-pref-width: 60px;
+    -fx-min-height: 0;
+    -fx-max-height: Infinity;
+    -fx-background-color: linear-gradient(to left, rgb(13, 11, 20), transparent);
+}
+
+.light-mode .recommended-fade-left {
+    -fx-background-color: linear-gradient(to right, rgb(232, 227, 245), transparent);
+}
+
+.light-mode .recommended-fade-right {
+    -fx-background-color: linear-gradient(to left, rgb(232, 227, 245), transparent);
+}
+
+/* ─── Report button ─────────────────────────────────────────────────────── */
+/* Extends action-button — only overrides colors                             */
+
+.report-btn {
+    -fx-background-color: rgba(180, 50, 50, 0.35);
+}
+
+.report-btn:hover {
+    -fx-background-color: rgba(220, 60, 60, 0.55);
+    -fx-effect: dropshadow(gaussian, rgba(200, 50, 50, 0.3), 10, 0, 0, 0);
+}
+
+.light-mode .report-btn {
+    -fx-background-color: rgba(200, 60, 60, 0.25);
+}
+
+.light-mode .report-btn:hover {
+    -fx-background-color: rgba(200, 60, 60, 0.45);
+}
+
+/* Already-reported state — inherits action-button shape, muted color */
+.report-btn-done {
+    -fx-background-color: rgba(120, 120, 120, 0.2);
+    -fx-opacity: 0.6;
+}
+
+/* ─── Dialog header — remove default white background ───────────────────── */
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.light-mode .dialog-pane .header-panel .label {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+/* ─── Course right-click context menu ───────────────────────────────────── */
+
+.course-context-menu {
+    -fx-background-color: rgba(25, 23, 30, 0.97);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 20, 0.2, 0, 6);
+}
+
+.course-context-menu .separator {
+    -fx-padding: 2 0 2 0;
+}
+
+.course-context-menu .separator .line {
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0.5 0 0 0;
+}
+
+.context-menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 13px;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.context-menu-item:hover, .context-menu-item:focused {
+    -fx-background-color: rgba(205, 157, 241, 0.18);
+    -fx-text-fill: #ffffff;
+}
+
+.context-menu-item-danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 100, 100, 0.85);
+    -fx-font-family: "SF Pro Text";
+    -fx-font-size: 13px;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.context-menu-item-danger:hover, .context-menu-item-danger:focused {
+    -fx-background-color: rgba(220, 60, 60, 0.2);
+    -fx-text-fill: rgba(255, 120, 120, 1.0);
+}
+
+.light-mode .course-context-menu {
+    -fx-background-color: rgba(238, 237, 246, 0.98);
+    -fx-border-color: rgba(0, 0, 0, 0.08);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.15, 0, 6);
+}
+
+.light-mode .context-menu-item {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+.light-mode .context-menu-item:hover, .light-mode .context-menu-item:focused {
+    -fx-background-color: rgba(205, 157, 241, 0.2);
+    -fx-text-fill: rgba(30, 30, 30, 1.0);
+}
+
+.light-mode .context-menu-item-danger {
+    -fx-text-fill: rgba(200, 40, 40, 0.85);
+}
+
+.light-mode .context-menu-item-danger:hover, .light-mode .context-menu-item-danger:focused {
+    -fx-background-color: rgba(210, 50, 50, 0.1);
+    -fx-text-fill: rgb(200, 40, 40);
+}
+.subject-list-view {
+    -fx-background-color: rgba(18, 18, 18, 0.45);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5px;
+    -fx-padding: 4;
+}
+
+.subject-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.88);
+    -fx-font-size: 13px;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 8;
+}
+
+.subject-list-view .list-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.18);
+}
+
+.subject-list-view .list-cell:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-text-fill: #ffffff;
+}
+
+.light-mode .subject-list-view {
+    -fx-background-color: rgba(255, 255, 255, 0.65);
+    -fx-border-color: rgba(0, 0, 0, 0.10);
+}
+
+.light-mode .subject-list-view .list-cell {
+    -fx-text-fill: rgba(30, 30, 30, 0.88);
+}
+
+.light-mode .subject-list-view .list-cell:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.20);
+}
+
+.light-mode .subject-list-view .list-cell:selected {
+    -fx-background-color: rgba(205, 157, 241, 0.35);
+    -fx-text-fill: rgba(30, 30, 30, 0.95);
+}
+
+
+
+
+
+
+
+

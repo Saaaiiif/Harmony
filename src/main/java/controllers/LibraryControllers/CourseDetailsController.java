@@ -23,6 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -42,6 +43,7 @@ import models.UserModels.Session;
 
 import org.fxmisc.richtext.model.StyledDocument;
 import services.LibraryServices.LibraryService;
+import services.LibraryServices.SuggestionsService;
 
 public class CourseDetailsController implements ThemeAware {
     @FXML private BorderPane root;
@@ -57,10 +59,26 @@ public class CourseDetailsController implements ThemeAware {
     @FXML private Button saveToLibraryBtn;
     @FXML private Button saveAsLibraryCopyBtn;
     @FXML private Button reportBtn;
+
+    // ── Suggestions strips ────────────────────────────────────────────────────
+    @FXML private VBox        booksSection;
+    @FXML private HBox        booksContainer;
+    @FXML private ScrollPane  booksScrollPane;
+    @FXML private VBox        videosSection;
+    @FXML private HBox        videosContainer;
+    @FXML private ScrollPane  videosScrollPane;
+
+    // ── View toggle ───────────────────────────────────────────────────────────
+    @FXML private Button gridViewBtn;
+    @FXML private Button listViewBtn;
+    @FXML private VBox   filesWrapper;
+    private boolean isGridView = true;
+    private final VBox listContainer = new VBox(8);
     private boolean isOwner = true;
     private final ReportService reportService = new ReportService();
 
     private final CourseService courseService = new CourseService();
+    private final SuggestionsService suggestionsService = new SuggestionsService();
 
     private int courseId;
     private AccueilController accueilController;
@@ -127,6 +145,7 @@ public class CourseDetailsController implements ThemeAware {
         }
         refreshFiles(); // ← AFTER isOwner is set
         setupReportButton(); // ← AFTER origin and isOwner are both set
+        loadSuggestions(courseTitle.getText(), courseSubject.getText());
 
         // ── publish toggle ────────────────────────────────────────
         if (publishToggle != null) {
@@ -172,6 +191,11 @@ public class CourseDetailsController implements ThemeAware {
         if (navWheelController != null) navWheelController.setActiveIndex(5);
         if (navWheelController != null) navWheelController.setOnNavigate(this::handleNavigation);
         wirePublishToggle();
+
+        // Grid / List toggle
+        gridViewBtn.getStyleClass().add("view-toggle-btn-active");
+        gridViewBtn.setOnAction(e -> setViewMode(true));
+        listViewBtn.setOnAction(e -> setViewMode(false));
 
         backBtn.setOnAction(e -> {
             if (accueilController == null) return;
@@ -324,7 +348,7 @@ public class CourseDetailsController implements ThemeAware {
     }
     private void saveToUserLibrary() {
         int currentUserId = Session.getInstance().getUser().getUser_id();
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         try {
             LibraryService libraryService =
@@ -355,7 +379,7 @@ public class CourseDetailsController implements ThemeAware {
 
 
     private void onAddFiles() {
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Select files");
@@ -413,24 +437,117 @@ public class CourseDetailsController implements ThemeAware {
         return false;
     }
 
+    private void setViewMode(boolean grid) {
+        isGridView = grid;
+        gridViewBtn.getStyleClass().remove("view-toggle-btn-active");
+        listViewBtn.getStyleClass().remove("view-toggle-btn-active");
+        if (grid) gridViewBtn.getStyleClass().add("view-toggle-btn-active");
+        else      listViewBtn.getStyleClass().add("view-toggle-btn-active");
+
+        filesWrapper.getChildren().clear();
+        if (grid) {
+            filesWrapper.getChildren().add(filesContainer);
+        } else {
+            listContainer.setPadding(new Insets(8, 24, 24, 24));
+            filesWrapper.getChildren().add(listContainer);
+        }
+        refreshFiles();
+    }
+
     private void refreshFiles() {
         try {
             List<CourseService.CourseFileRow> files = courseService.listCourseFiles(courseId);
             filesContainer.getChildren().clear();
+            listContainer.getChildren().clear();
 
             if (files.isEmpty()) {
                 Label empty = new Label("No files yet");
                 empty.getStyleClass().add("empty-state-label");
-                filesContainer.getChildren().add(empty);
+                if (isGridView) filesContainer.getChildren().add(empty);
+                else            listContainer.getChildren().add(empty);
                 return;
             }
 
             for (CourseService.CourseFileRow f : files) {
-                filesContainer.getChildren().add(makeFileCard(f));
+                if (isGridView) filesContainer.getChildren().add(makeFileCard(f));
+                else            listContainer.getChildren().add(makeFileListItem(f));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private HBox makeFileListItem(CourseService.CourseFileRow f) {
+        // Thumbnail (small)
+        StackPane thumb = new StackPane();
+        thumb.setMinSize(56, 56); thumb.setPrefSize(56, 56); thumb.setMaxSize(56, 56);
+        thumb.getStyleClass().add("course-card-image-placeholder");
+
+        String ext = f.originalName() != null && f.originalName().contains(".")
+                ? f.originalName().substring(f.originalName().lastIndexOf(".") + 1).toUpperCase()
+                : "FILE";
+        Label extLbl = new Label(fileIcon(f.originalName(), f.mimeType()));
+        extLbl.setStyle("-fx-font-size: 22px;");
+        thumb.getChildren().add(extLbl);
+
+        // Info
+        Label nameLbl = new Label(stripExt(f.originalName() == null ? "" : f.originalName()));
+        nameLbl.getStyleClass().add("course-title");
+        nameLbl.setStyle("-fx-font-size: 14px;");
+
+        String size = f.sizeBytes() > 0
+                ? (f.sizeBytes() < 1024 * 1024
+                ? (f.sizeBytes() / 1024) + " KB"
+                : String.format("%.1f MB", f.sizeBytes() / (1024.0 * 1024)))
+                : "";
+        Label metaLbl = new Label(ext + (size.isEmpty() ? "" : "  •  " + size));
+        metaLbl.getStyleClass().add("course-subtitle");
+
+        VBox info = new VBox(3, nameLbl, metaLbl);
+        info.setAlignment(Pos.CENTER_LEFT);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button openBtn = new Button("Open");
+        openBtn.getStyleClass().add("action-button");
+        openBtn.setOnAction(e -> {
+            e.consume();
+            String n = f.originalName() == null ? "" : f.originalName().toLowerCase();
+            boolean isNote = n.endsWith(".rtfx") || n.endsWith(".txt") || n.endsWith(".md")
+                    || (f.mimeType() != null && f.mimeType().startsWith("text"));
+            if (isNote) openNoteEditor(f);
+            else        openFilePopup(f);
+        });
+
+        HBox row = new HBox(14, thumb, info, spacer, openBtn);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.getStyleClass().add("course-list-item");
+        row.setPrefWidth(Double.MAX_VALUE);
+        row.setOnMouseClicked(e -> {
+            if (e.getTarget() instanceof Button) return;
+            String n = f.originalName() == null ? "" : f.originalName().toLowerCase();
+            boolean isNote = n.endsWith(".rtfx") || n.endsWith(".txt") || n.endsWith(".md")
+                    || (f.mimeType() != null && f.mimeType().startsWith("text"));
+            if (isNote) openNoteEditor(f);
+            else        openFilePopup(f);
+        });
+        return row;
+    }
+
+    private String fileIcon(String name, String mime) {
+        if (name == null) return "📄";
+        String n = name.toLowerCase();
+        if (n.endsWith(".pdf"))  return "📕";
+        if (n.endsWith(".rtfx") || n.endsWith(".txt") || n.endsWith(".md")) return "📝";
+        if (n.endsWith(".jpg") || n.endsWith(".png") || n.endsWith(".jpeg")) return "🖼";
+        if (n.endsWith(".mp4") || n.endsWith(".mov") || n.endsWith(".avi")) return "🎬";
+        if (n.endsWith(".mp3") || n.endsWith(".wav")) return "🎵";
+        if (n.endsWith(".zip") || n.endsWith(".rar")) return "🗜";
+        if (n.endsWith(".ppt") || n.endsWith(".pptx")) return "📊";
+        if (n.endsWith(".doc") || n.endsWith(".docx")) return "📃";
+        if (n.endsWith(".xls") || n.endsWith(".xlsx")) return "📈";
+        return "📄";
     }
 
     private StackPane makeFileCard(CourseService.CourseFileRow f) {
@@ -553,7 +670,7 @@ public class CourseDetailsController implements ThemeAware {
 
 
     private void confirmAndDeleteFromCard(long fileId) {
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         if (!UiPopups.confirm(owner, "Delete this file?", isDarkModeNow(), getClass())) return;
 
@@ -578,7 +695,7 @@ public class CourseDetailsController implements ThemeAware {
 
 
     private void openFilePopup(CourseService.CourseFileRow f) {
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         Label title = new Label(f.originalName());
         title.getStyleClass().add("section-title");
@@ -908,7 +1025,7 @@ public class CourseDetailsController implements ThemeAware {
     }
 
     private void onCreateNote() {
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         Task<CourseService.CourseFileRow> task = new Task<>() {
             @Override
@@ -1030,7 +1147,7 @@ public class CourseDetailsController implements ThemeAware {
     }
 
     private void openNoteEditor(CourseService.CourseFileRow f) {
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         TextField nameField = new TextField(stripExt(f.originalName() == null ? "note.rtfx" : f.originalName()));
         nameField.setPromptText("Note name");
@@ -1867,7 +1984,7 @@ public class CourseDetailsController implements ThemeAware {
     }
     private void saveAsLibraryCopy() {
         int currentUserId = Session.getInstance().getUser().getUser_id();
-        Stage owner = (Stage) filesContainer.getScene().getWindow();
+        Stage owner = (Stage) root.getScene().getWindow();
 
         TextInputDialog dialog = new TextInputDialog(courseTitle.getText() + " (copy)");
         dialog.setTitle("Save as Copy");
@@ -1939,4 +2056,202 @@ public class CourseDetailsController implements ThemeAware {
         }
     }
 
+
+    // =========================================================================
+    //  SUGGESTIONS — Open Library + YouTube
+    // =========================================================================
+
+    private void loadSuggestions(String title, String subject) {
+        String query = (subject != null && !subject.isBlank()) ? subject : title;
+        if (query == null || query.isBlank()) return;
+
+        Task<Void> task = new Task<>() {
+            @Override protected Void call() {
+                // Books
+                var books = suggestionsService.fetchBooks(query, 10);
+                Platform.runLater(() -> {
+                    booksContainer.getChildren().clear();
+                    if (!books.isEmpty()) {
+                        for (var b : books) booksContainer.getChildren().add(makeBookCard(b));
+                        booksSection.setVisible(true);
+                        booksSection.setManaged(true);
+                        wireHorizontalScroll(booksScrollPane, booksContainer);
+                    }
+                });
+
+                // Videos
+                var videos = suggestionsService.fetchVideos(query, 10);
+                Platform.runLater(() -> {
+                    videosContainer.getChildren().clear();
+                    if (!videos.isEmpty()) {
+                        for (var v : videos) videosContainer.getChildren().add(makeVideoCard(v));
+                        videosSection.setVisible(true);
+                        videosSection.setManaged(true);
+                        wireHorizontalScroll(videosScrollPane, videosContainer);
+                    }
+                });
+
+                return null;
+            }
+        };
+        new Thread(task, "suggestions-loader").start();
+    }
+
+    private VBox makeBookCard(SuggestionsService.BookResult book) {
+        final double W = 160, H = 220, RADIUS = 10;
+
+        VBox card = new VBox(0);
+        card.getStyleClass().add("course-card");
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setMinWidth(W); card.setPrefWidth(W); card.setMaxWidth(W);
+        card.setStyle("-fx-cursor: hand;");
+
+        StackPane imageHolder = new StackPane();
+        imageHolder.setPrefSize(W, H); imageHolder.setMinSize(W, H); imageHolder.setMaxSize(W, H);
+
+        // Placeholder while loading
+        imageHolder.getStyleClass().add("course-card-image-placeholder");
+        Label icon = new Label("📖"); icon.setStyle("-fx-font-size: 28px;");
+        imageHolder.getChildren().add(icon);
+
+        // Load image on background thread
+        if (book.coverUrl() != null) {
+            Task<Image> imgTask = new Task<>() {
+                @Override protected Image call() throws Exception {
+                    java.net.HttpURLConnection conn =
+                            (java.net.HttpURLConnection) new java.net.URL(book.coverUrl()).openConnection();
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    conn.setRequestProperty("User-Agent", "HarmonyApp/1.0");
+                    try (java.io.InputStream is = conn.getInputStream()) {
+                        byte[] data = is.readAllBytes();
+                        return new Image(new java.io.ByteArrayInputStream(data), W, H, false, true);
+                    } finally { conn.disconnect(); }
+                }
+            };
+            imgTask.setOnSucceeded(e -> {
+                Image img = imgTask.getValue();
+                if (img != null && !img.isError()) {
+                    javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(W, H);
+                    rect.setArcWidth(RADIUS * 2); rect.setArcHeight(RADIUS * 2);
+                    rect.setFill(new javafx.scene.paint.ImagePattern(img));
+                    imageHolder.getChildren().setAll(rect);
+                }
+            });
+            new Thread(imgTask, "book-img-loader").start();
+        }
+
+        card.getChildren().add(imageHolder);
+
+        VBox info = new VBox(2);
+        info.setPadding(new Insets(8, 10, 8, 10));
+
+        Label titleLbl = new Label(book.title());
+        titleLbl.getStyleClass().add("course-title");
+        titleLbl.setStyle("-fx-font-size: 11px;");
+        titleLbl.setWrapText(false);
+        titleLbl.setMaxWidth(W - 20);
+        info.getChildren().add(titleLbl);
+
+        if (book.author() != null) {
+            Label authorLbl = new Label(book.author());
+            authorLbl.getStyleClass().add("course-subtitle");
+            authorLbl.setStyle("-fx-font-size: 10px;");
+            authorLbl.setMaxWidth(W - 20);
+            info.getChildren().add(authorLbl);
+        }
+        card.getChildren().add(info);
+
+        card.setOnMouseClicked(e -> openInBrowser(book.openLibUrl()));
+        return card;
+    }
+
+    private VBox makeVideoCard(SuggestionsService.VideoResult video) {
+        final double W = 240, H = 135, RADIUS = 10;
+
+        VBox card = new VBox(0);
+        card.getStyleClass().add("course-card");
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setMinWidth(W); card.setPrefWidth(W); card.setMaxWidth(W);
+        card.setStyle("-fx-cursor: hand;");
+
+        StackPane imageHolder = new StackPane();
+        imageHolder.setPrefSize(W, H); imageHolder.setMinSize(W, H); imageHolder.setMaxSize(W, H);
+        imageHolder.getStyleClass().add("course-card-image-placeholder");
+
+        // Play overlay — always visible
+        Label play = new Label("▶");
+        play.setStyle("-fx-font-size: 28px; -fx-text-fill: white;"
+                + "-fx-background-color: rgba(0,0,0,0.45); -fx-background-radius: 50;"
+                + "-fx-padding: 6 10 6 14;");
+
+        // Load thumbnail on background thread
+        if (video.thumbnailUrl() != null) {
+            Task<Image> imgTask = new Task<>() {
+                @Override protected Image call() throws Exception {
+                    java.net.HttpURLConnection conn =
+                            (java.net.HttpURLConnection) new java.net.URL(video.thumbnailUrl()).openConnection();
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    conn.setRequestProperty("User-Agent", "HarmonyApp/1.0");
+                    try (java.io.InputStream is = conn.getInputStream()) {
+                        byte[] data = is.readAllBytes();
+                        return new Image(new java.io.ByteArrayInputStream(data), W, H, false, true);
+                    } finally { conn.disconnect(); }
+                }
+            };
+            imgTask.setOnSucceeded(e -> {
+                Image img = imgTask.getValue();
+                if (img != null && !img.isError()) {
+                    javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(W, H);
+                    rect.setArcWidth(RADIUS * 2); rect.setArcHeight(RADIUS * 2);
+                    rect.setFill(new javafx.scene.paint.ImagePattern(img));
+                    imageHolder.getChildren().setAll(rect, play);
+                }
+            });
+            new Thread(imgTask, "video-img-loader").start();
+        }
+
+        imageHolder.getChildren().add(play);
+        card.getChildren().add(imageHolder);
+
+        VBox info = new VBox(2);
+        info.setPadding(new Insets(8, 10, 8, 10));
+
+        Label titleLbl = new Label(video.title());
+        titleLbl.getStyleClass().add("course-title");
+        titleLbl.setStyle("-fx-font-size: 11px;");
+        titleLbl.setWrapText(false);
+        titleLbl.setMaxWidth(W - 20);
+        info.getChildren().add(titleLbl);
+
+        if (video.channelName() != null) {
+            Label channelLbl = new Label(video.channelName());
+            channelLbl.getStyleClass().add("course-subtitle");
+            channelLbl.setStyle("-fx-font-size: 10px;");
+            info.getChildren().add(channelLbl);
+        }
+        card.getChildren().add(info);
+
+        card.setOnMouseClicked(e -> openInBrowser(video.videoUrl()));
+        return card;
+    }
+
+    private void wireHorizontalScroll(ScrollPane sp, HBox container) {
+        sp.addEventFilter(javafx.scene.input.ScrollEvent.SCROLL, e -> {
+            if (e.getDeltaY() != 0) {
+                double delta  = -e.getDeltaY() * 3;
+                double newVal = sp.getHvalue()
+                        + delta / (container.getWidth() - sp.getViewportBounds().getWidth());
+                sp.setHvalue(Math.max(0, Math.min(1, newVal)));
+                e.consume();
+            }
+        });
+    }
+
+    private void openInBrowser(String url) {
+        if (url == null) return;
+        try { java.awt.Desktop.getDesktop().browse(new java.net.URI(url)); }
+        catch (Exception e) { e.printStackTrace(); }
+    }
 }

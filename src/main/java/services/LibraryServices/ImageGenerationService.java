@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ImageGenerationService {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell";
 
 
