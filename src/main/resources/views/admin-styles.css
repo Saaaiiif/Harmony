@@ -2663,3 +2663,84 @@
     -fx-text-fill: #92400e;
     -fx-font-style: italic;
 }
+/* ─── MenuButton.accueil-nav-btn — match regular nav buttons exactly ─────── */
+
+.accueil-nav-btn.menu-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* The label inside carries the visible text — must match Button text-fill */
+.accueil-nav-btn.menu-button .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(220, 210, 240, 0.78);
+    -fx-font-family: "SF UI Text", "Segoe UI", sans-serif;
+    -fx-font-size: 12.5px;
+    -fx-padding: 8 11 8 11;
+}
+
+.light-mode .accueil-nav-btn.menu-button .label {
+    -fx-text-fill: #5b5573;
+}
+
+/* Hover state */
+.accueil-nav-btn.menu-button:hover {
+    -fx-background-color: rgba(205, 157, 241, 0.13);
+    -fx-background-radius: 8px;
+    -fx-translate-y: -1px;
+}
+
+.accueil-nav-btn.menu-button:hover .label {
+    -fx-text-fill: #cd9df1;
+    -fx-background-color: transparent;
+}
+
+.light-mode .accueil-nav-btn.menu-button:hover {
+    -fx-background-color: rgba(124, 58, 237, 0.10);
+}
+
+.light-mode .accueil-nav-btn.menu-button:hover .label {
+    -fx-text-fill: #7c3aed;
+}
+
+/* Active state */
+.accueil-nav-btn.menu-button.accueil-nav-btn-active {
+    -fx-background-color: rgba(139, 92, 246, 0.18);
+    -fx-border-color: transparent transparent rgba(139,92,246,0.6) transparent;
+    -fx-border-width: 0 0 2.5 0;
+    -fx-background-radius: 0;
+}
+
+.accueil-nav-btn.menu-button.accueil-nav-btn-active .label {
+    -fx-text-fill: #c084fc;
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+}
+
+.light-mode .accueil-nav-btn.menu-button.accueil-nav-btn-active {
+    -fx-background-color: rgba(124, 58, 237, 0.10);
+    -fx-border-color: transparent transparent #7c3aed transparent;
+}
+
+.light-mode .accueil-nav-btn.menu-button.accueil-nav-btn-active .label {
+    -fx-text-fill: #7c3aed;
+}
+
+/* Hide the dropdown arrow completely */
+.accueil-nav-btn.menu-button .arrow-button {
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+.accueil-nav-btn.menu-button .arrow {
+    -fx-shape: "";
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+    -fx-background-color: transparent;
+}

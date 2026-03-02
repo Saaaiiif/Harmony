@@ -65,10 +65,7 @@
                         styleClass="accueil-nav-btn"
                         onAction="#handleEvents"/>
 
-                <Button fx:id="btnNutrition"
-                        text="🥗  Nutrition"
-                        styleClass="accueil-nav-btn"
-                        onAction="#handleNutrition"/>
+
 
                 <Button fx:id="btnMeditation"
                         text="🧘  Méditation"

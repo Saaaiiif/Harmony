@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Init PreProd">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="41424219-4545-4af1-bc85-ffde90f6092d" name="Changes" comment="Final Integration">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remember.dat" beforeDir="false" afterPath="$PROJECT_DIR$/remember.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/course-details.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/modif/Accueil.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/admin-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/admin-styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,56 +72,56 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Harmony.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Launcher.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainFX.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainPage.executor&quot;: &quot;Run&quot;,
-    &quot;Application.main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.main2.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Harmony [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Harmony [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Harmony [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;PreProd&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/saifa/IdeaProjects/Template01/src/main/java/controllers/LibraryControllers&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.runner&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Harmony.executor": "Run",
+    "Application.Launcher.executor": "Run",
+    "Application.MainFX.executor": "Run",
+    "Application.MainPage.executor": "Run",
+    "Application.main.executor": "Run",
+    "Application.main2.executor": "Run",
+    "Maven.Harmony [clean].executor": "Run",
+    "Maven.Harmony [install].executor": "Run",
+    "Maven.Harmony [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "PreProd",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/saifa/IdeaProjects/Template01/src/main/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\controllers\LibraryControllers" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\controllers\LibraryControllers" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\com\example\harmony\user" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\upnext" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\controllers\LibraryControllers" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\java\services\LibraryServices" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\views\LibraryViews" />
       <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources\com\example\harmony" />
-      <recent name="C:\Users\saifa\IdeaProjects\Template01\src\main\resources" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.example.harmony.user" />
@@ -213,7 +209,7 @@
       <workItem from="1772295086582" duration="9395000" />
       <workItem from="1772378333285" duration="2237000" />
       <workItem from="1772380601946" duration="4134000" />
-      <workItem from="1772418310971" duration="3428000" />
+      <workItem from="1772418310971" duration="6572000" />
     </task>
     <task id="LOCAL-00001" summary="Background">
       <option name="closed" value="true" />
@@ -335,7 +331,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772413024649</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Final Integration">
+      <option name="closed" value="true" />
+      <created>1772421883527</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1772421883528</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -355,6 +359,7 @@
     <MESSAGE value="Clean Up before merge" />
     <MESSAGE value="Integration FULL 1.0" />
     <MESSAGE value="Init PreProd" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init PreProd" />
+    <MESSAGE value="Final Integration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final Integration" />
   </component>
 </project>

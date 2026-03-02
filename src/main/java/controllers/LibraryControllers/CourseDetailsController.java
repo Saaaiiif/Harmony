@@ -481,14 +481,46 @@ public class CourseDetailsController implements ThemeAware {
         // Thumbnail (small)
         StackPane thumb = new StackPane();
         thumb.setMinSize(56, 56); thumb.setPrefSize(56, 56); thumb.setMaxSize(56, 56);
+        thumb.setAlignment(javafx.geometry.Pos.CENTER);
         thumb.getStyleClass().add("course-card-image-placeholder");
 
         String ext = f.originalName() != null && f.originalName().contains(".")
                 ? f.originalName().substring(f.originalName().lastIndexOf(".") + 1).toUpperCase()
                 : "FILE";
-        Label extLbl = new Label(fileIcon(f.originalName(), f.mimeType()));
-        extLbl.setStyle("-fx-font-size: 22px;");
-        thumb.getChildren().add(extLbl);
+
+        // Use custom note icon for note file types; emoji fallback for everything else
+        String fn = f.originalName() == null ? "" : f.originalName().toLowerCase();
+        boolean isNoteFile = fn.endsWith(".rtfx") || fn.endsWith(".txt") || fn.endsWith(".md")
+                || (f.mimeType() != null && f.mimeType().startsWith("text"));
+        javafx.scene.Node iconNode;
+        if (isNoteFile) {
+            try {
+                java.io.InputStream stream = getClass().getResourceAsStream("/note.png");
+                if (stream != null) {
+                    javafx.scene.image.ImageView iv = new javafx.scene.image.ImageView(
+                            new javafx.scene.image.Image(stream));
+                    iv.setFitWidth(34);
+                    iv.setFitHeight(34);
+                    iv.setPreserveRatio(true);
+                    iv.setOpacity(0.3);
+                    StackPane.setAlignment(iv, javafx.geometry.Pos.CENTER);
+                    iconNode = iv;
+                } else {
+                    Label fb = new Label("📝");
+                    fb.setStyle("-fx-font-size: 22px;");
+                    iconNode = fb;
+                }
+            } catch (Exception _ex) {
+                Label fb = new Label("📝");
+                fb.setStyle("-fx-font-size: 22px;");
+                iconNode = fb;
+            }
+        } else {
+            Label extLbl = new Label(fileIcon(f.originalName(), f.mimeType()));
+            extLbl.setStyle("-fx-font-size: 22px;");
+            iconNode = extLbl;
+        }
+        thumb.getChildren().add(iconNode);
 
         // Info
         Label nameLbl = new Label(stripExt(f.originalName() == null ? "" : f.originalName()));
@@ -645,6 +677,23 @@ public class CourseDetailsController implements ThemeAware {
                     note.setMaxHeight(thumbH);
                     note.getStyleClass().add("nav-wheel-label");
                     return note;
+                }
+
+                // .rtfx note file — show the note icon as card thumbnail
+                if (lowerName.endsWith(".rtfx")) {
+                    try {
+                        java.io.InputStream stream = getClass().getResourceAsStream("/note.png");
+                        if (stream != null) {
+                            javafx.scene.image.ImageView iv = new javafx.scene.image.ImageView(
+                                    new javafx.scene.image.Image(stream));
+                            iv.setFitWidth(thumbW * 0.55);
+                            iv.setFitHeight(thumbH * 0.55);
+                            iv.setPreserveRatio(true);
+                            iv.setOpacity(0.3);
+                            StackPane.setAlignment(iv, javafx.geometry.Pos.CENTER);
+                            return iv;
+                        }
+                    } catch (Exception _ignored) {}
                 }
 
                 Label no = new Label("No preview");
@@ -1170,17 +1219,11 @@ public class CourseDetailsController implements ThemeAware {
         Spinner<Integer> sizeSpinner = new Spinner<>(8, 72, 14);
         sizeSpinner.setEditable(true);
 
-        Button alignLeft = new Button("Left");
-        Button alignCenter = new Button("Center");
-        Button alignRight = new Button("Right");
-        Button alignJustify = new Button("Justify");
-        alignLeft.getStyleClass().add("action-button");
-        alignCenter.getStyleClass().add("action-button");
-        alignRight.getStyleClass().add("action-button");
-        alignJustify.getStyleClass().add("action-button");
-
-        Button findBtn = new Button("Find");
-        findBtn.getStyleClass().add("action-button");
+        Button alignLeft    = makeIconBtn("/align-left.png",                   "Align left");
+        Button alignCenter  = makeIconBtn("/align-center.png",                 "Align center");
+        Button alignRight   = makeIconBtn("/align-right.png",                  "Align right");
+        Button alignJustify = makeIconBtn("/justify.png",                      "Justify");
+        Button findBtn      = makeIconBtn("/search-interface-symbol-light.png","Find");
 
         Button save = new Button("Save");
         Button saveAsNew = new Button("Save as New");
@@ -1210,9 +1253,10 @@ public class CourseDetailsController implements ThemeAware {
 
         final String[] currentTextCss = { sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue())) };
         final String[] currentParCss = { sanitizeCss(alignCss("left")) };
+        final javafx.scene.paint.Color[] currentColor = { null };
 
         Runnable applyFontToSelectionOrTyping = () -> {
-            currentTextCss[0] = sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue()));
+            currentTextCss[0] = sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue(), currentColor[0]));
             int start = area.getSelection().getStart();
             int end = area.getSelection().getEnd();
             if (start != end) {
@@ -1280,6 +1324,39 @@ public class CourseDetailsController implements ThemeAware {
             if (!loading.get()) dirty.set(true);
         });
 
+        // ── Caret position listener: sync toolbar to the style under the caret ──────
+        area.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
+            if (loading.get()) return;
+            int pos = newPos.intValue();
+            int len = area.getLength();
+            if (len == 0) return;
+            // Read style of the character just before caret (what the user "just typed")
+            int readPos = (pos > 0) ? Math.min(pos - 1, len - 1) : 0;
+            String css = area.getStyleOfChar(readPos);
+            if (css == null || css.isBlank()) return;
+
+            // Sync font family
+            String fam = extractFontFamily(css);
+            if (fam != null && fontBox.getItems().contains(fam)) {
+                fontBox.setValue(fam);
+            }
+            // Sync font size
+            Integer sz = extractFontSizePx(css);
+            if (sz != null) {
+                sizeSpinner.getValueFactory().setValue(sz);
+            }
+            // Sync color
+            java.util.regex.Matcher cm = java.util.regex.Pattern
+                    .compile("-fx-fill:\s*(#[0-9a-fA-F]{6})").matcher(css);
+            if (cm.find()) {
+                currentColor[0] = javafx.scene.paint.Color.web(cm.group(1));
+            } else {
+                currentColor[0] = null;
+            }
+            // Update the active CSS so next typed character inherits this style
+            currentTextCss[0] = sanitizeCss(css);
+        });
+
         final String initialName = nameField.getText();
         nameField.textProperty().addListener((obs, o, n) -> {
             if (!loading.get() && !java.util.Objects.equals(o, n)) dirty.set(true);
@@ -1312,6 +1389,24 @@ public class CourseDetailsController implements ThemeAware {
                 UiPopups.showInfo(owner, "Not found", isDarkModeNow(), getClass());
             }
         });
+        // Word-style font color: "A" label + swatch bar underneath
+        javafx.scene.paint.Color[] swatchColor = { javafx.scene.paint.Color.RED };
+        javafx.scene.shape.Rectangle colorSwatch = new javafx.scene.shape.Rectangle(16, 4);
+        colorSwatch.setFill(swatchColor[0]);
+        colorSwatch.setArcWidth(2); colorSwatch.setArcHeight(2);
+
+        Label colorIcon = new Label("A");
+        colorIcon.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        VBox colorBtnContent = new VBox(1, colorIcon, colorSwatch);
+        colorBtnContent.setAlignment(Pos.CENTER);
+
+        Button colorBtn = new Button();
+        colorBtn.setGraphic(colorBtnContent);
+        colorBtn.setTooltip(new Tooltip("Font color  |  right-click to pick"));
+        colorBtn.getStyleClass().add("action-button");
+        colorBtn.setStyle("-fx-padding: 4 8 4 8;");
+
         if (!isOwner) {
             fontBox.setDisable(true);
             sizeSpinner.setDisable(true);
@@ -1319,7 +1414,64 @@ public class CourseDetailsController implements ThemeAware {
             alignCenter.setDisable(true);
             alignRight.setDisable(true);
             alignJustify.setDisable(true);
+            colorBtn.setDisable(true);
         }
+
+        // Left-click: apply current swatch color to selection
+        colorBtn.setOnAction(ev -> {
+            currentColor[0] = swatchColor[0];
+            currentTextCss[0] = sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue(), currentColor[0]));
+            int s = area.getSelection().getStart(), en = area.getSelection().getEnd();
+            if (s != en) area.setStyle(s, en, currentTextCss[0]);
+            area.requestFocus();
+        });
+
+        // Right-click: open color picker popup
+        colorBtn.setOnContextMenuRequested(ev -> {
+            javafx.scene.control.ColorPicker picker = new javafx.scene.control.ColorPicker(swatchColor[0]);
+            picker.setPrefWidth(210);
+
+            Label pickerLabel = new Label("Font color");
+            pickerLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+
+            Button applyColorBtn = new Button("Apply");
+            applyColorBtn.getStyleClass().add("action-button");
+            Button clearColorBtn = new Button("Clear color");
+            clearColorBtn.getStyleClass().add("action-button");
+
+            HBox colorBtns = new HBox(8, applyColorBtn, clearColorBtn);
+            colorBtns.setAlignment(Pos.CENTER_RIGHT);
+
+            VBox colorContent = new VBox(10, pickerLabel, picker, colorBtns);
+            colorContent.setPadding(new Insets(14));
+
+            Stage colorStage = UiPopups.buildModalNoTitleBar(
+                    (Stage) colorBtn.getScene().getWindow(),
+                    colorContent, 260, 165, false, isDarkModeNow(), getClass()
+            );
+
+            applyColorBtn.setOnAction(e2 -> {
+                swatchColor[0] = picker.getValue();
+                colorSwatch.setFill(swatchColor[0]);
+                currentColor[0] = swatchColor[0];
+                currentTextCss[0] = sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue(), currentColor[0]));
+                int s = area.getSelection().getStart(), en = area.getSelection().getEnd();
+                if (s != en) area.setStyle(s, en, currentTextCss[0]);
+                colorStage.close();
+                area.requestFocus();
+            });
+
+            clearColorBtn.setOnAction(e2 -> {
+                swatchColor[0] = javafx.scene.paint.Color.RED;
+                colorSwatch.setFill(swatchColor[0]);
+                currentColor[0] = null;
+                currentTextCss[0] = sanitizeCss(buildTextCss(fontBox.getValue(), sizeSpinner.getValue(), null));
+                colorStage.close();
+                area.requestFocus();
+            });
+
+            colorStage.showAndWait();
+        });
 
         HBox topRow = new HBox(
                 10,
@@ -1328,6 +1480,7 @@ public class CourseDetailsController implements ThemeAware {
                 new Label("Font:"), fontBox,
                 new Label("Size:"), sizeSpinner,
                 alignLeft, alignCenter, alignRight, alignJustify,
+                colorBtn,
                 findBtn
         );
         HBox.setHgrow(topRow.getChildren().get(2), Priority.ALWAYS);
@@ -1387,6 +1540,14 @@ public class CourseDetailsController implements ThemeAware {
                                                 }
                                                 if (sz != null) {
                                                     sizeSpinner.getValueFactory().setValue(sz);
+                                                }
+                                                // Restore color
+                                                java.util.regex.Matcher ccm = java.util.regex.Pattern
+                                                        .compile("-fx-fill:\\s*(#[0-9a-fA-F]{6})").matcher(css);
+                                                if (ccm.find()) {
+                                                    currentColor[0] = javafx.scene.paint.Color.web(ccm.group(1));
+                                                } else {
+                                                    currentColor[0] = null;
                                                 }
                                             }
                                         }
@@ -1704,47 +1865,324 @@ public class CourseDetailsController implements ThemeAware {
     }
 
     private static String buildTextCss(String family, Integer size) {
+        return buildTextCss(family, size, null);
+    }
+
+    private static String buildTextCss(String family, Integer size, javafx.scene.paint.Color color) {
         String fam = (family == null || family.isBlank())
                 ? javafx.scene.text.Font.getDefault().getFamily()
                 : family;
         int sz = (size == null ? 14 : size);
-        return "-fx-font-family: '" + fam.replace("'", "") + "'; -fx-font-size: " + sz + "px;";
+        String css = "-fx-font-family: '" + fam.replace("'", "") + "'; -fx-font-size: " + sz + "px;";
+        if (color != null) {
+            css += " -fx-fill: " + toWebHex(color) + ";";
+        }
+        return css;
+    }
+
+    private static String toWebHex(javafx.scene.paint.Color c) {
+        return String.format("#%02x%02x%02x",
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255));
     }
 
     private static String alignCss(String align) {
         return "-fx-text-alignment: " + align + ";";
     }
 
+    // ── PDF export helpers ────────────────────────────────────────────────────
+
+    /** Represents a single styled run of text within a paragraph. */
+    private static class TextRun {
+        final String text;
+        final String fontFamily; // null → Helvetica fallback
+        final float  fontSize;
+        final boolean bold, italic;
+        final float[] rgb;   // null → black
+        TextRun(String t, String ff, float sz, boolean b, boolean i, float[] c) {
+            text = t; fontFamily = ff; fontSize = sz; bold = b; italic = i; rgb = c;
+        }
+    }
+
+    /** Parse inline CSS into a TextRun (text content supplied separately). */
+    private static TextRun parseSegmentCss(String text, String css) {
+        float size = 12f;
+        boolean bold = false, italic = false;
+        float[] rgb = null;
+        String fontFamily = null;
+
+        if (css != null && !css.isBlank()) {
+            // font-family (quoted form: -fx-font-family: 'Arial';)
+            java.util.regex.Matcher fm = java.util.regex.Pattern
+                    .compile("-fx-font-family:\\s*'([^']+)'").matcher(css);
+            if (fm.find()) {
+                fontFamily = fm.group(1).trim();
+            } else {
+                java.util.regex.Matcher fm2 = java.util.regex.Pattern
+                        .compile("-fx-font-family:\\s*([^;]+)").matcher(css);
+                if (fm2.find()) fontFamily = fm2.group(1).replace("\"","").trim();
+            }
+
+            // font-size
+            java.util.regex.Matcher m = java.util.regex.Pattern
+                    .compile("-fx-font-size:\\s*([0-9.]+)px").matcher(css);
+            if (m.find()) size = Float.parseFloat(m.group(1));
+
+            // bold / italic via -fx-font-weight / -fx-font-style
+            if (css.contains("-fx-font-weight: bold") || css.contains("-fx-font-weight:bold"))
+                bold = true;
+            if (css.contains("-fx-font-style: italic") || css.contains("-fx-font-style:italic"))
+                italic = true;
+
+            // color from -fx-fill: #rrggbb
+            java.util.regex.Matcher cm = java.util.regex.Pattern
+                    .compile("-fx-fill:\\s*(#[0-9a-fA-F]{6})").matcher(css);
+            if (cm.find()) {
+                String hex = cm.group(1);
+                rgb = new float[]{
+                        Integer.parseInt(hex.substring(1,3),16)/255f,
+                        Integer.parseInt(hex.substring(3,5),16)/255f,
+                        Integer.parseInt(hex.substring(5,7),16)/255f
+                };
+            }
+        }
+        return new TextRun(text, fontFamily, size, bold, italic, rgb);
+    }
+
+    /**
+     * Resolve the best available PDF font for the given family + bold/italic flags.
+     * Tries to embed the system TrueType font first; falls back to Helvetica variants.
+     */
+    private static final java.util.Map<String, org.apache.pdfbox.pdmodel.font.PDFont> FONT_CACHE =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    private static org.apache.pdfbox.pdmodel.font.PDFont resolvePdfFont(
+            org.apache.pdfbox.pdmodel.PDDocument doc, String family, boolean bold, boolean italic) {
+
+        // Build a cache key
+        String key = (family == null ? "Helvetica" : family) + "|" + bold + "|" + italic;
+        if (FONT_CACHE.containsKey(key)) return FONT_CACHE.get(key);
+
+        // Try to find a matching TrueType font file on the system
+        if (family != null && !family.isBlank()) {
+            try {
+                // JavaFX Font lookup → get the actual file path via AWT
+                java.awt.Font[] awtFonts = java.awt.GraphicsEnvironment
+                        .getLocalGraphicsEnvironment().getAllFonts();
+                int awtStyle = (bold ? java.awt.Font.BOLD : 0) | (italic ? java.awt.Font.ITALIC : 0);
+                java.awt.Font best = null;
+                for (java.awt.Font f : awtFonts) {
+                    if (f.getFamily().equalsIgnoreCase(family) && f.getStyle() == awtStyle) {
+                        best = f; break;
+                    }
+                }
+                // Fallback: any font of that family
+                if (best == null) {
+                    for (java.awt.Font f : awtFonts) {
+                        if (f.getFamily().equalsIgnoreCase(family)) { best = f; break; }
+                    }
+                }
+                if (best != null) {
+                    // Derive and stream the font bytes via AWT font2D
+                    java.io.File fontFile = findFontFile(best.getFontName(java.util.Locale.ENGLISH));
+                    if (fontFile != null && fontFile.exists()) {
+                        org.apache.pdfbox.pdmodel.font.PDFont embedded =
+                                org.apache.pdfbox.pdmodel.font.PDType0Font.load(doc, fontFile);
+                        FONT_CACHE.put(key, embedded);
+                        return embedded;
+                    }
+                }
+            } catch (Exception ignored) { /* fall through to standard14 */ }
+        }
+
+        // Fallback: standard 14 Helvetica variants
+        org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName name;
+        if (bold && italic) name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_BOLD_OBLIQUE;
+        else if (bold)      name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_BOLD;
+        else if (italic)    name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_OBLIQUE;
+        else                name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA;
+        org.apache.pdfbox.pdmodel.font.PDFont fallback =
+                new org.apache.pdfbox.pdmodel.font.PDType1Font(name);
+        FONT_CACHE.put(key, fallback);
+        return fallback;
+    }
+
+    /** Try common OS font directories to find a .ttf/.otf file matching the AWT font name. */
+    private static java.io.File findFontFile(String awtFontName) {
+        String[] dirs = {
+                System.getProperty("user.home") + "/AppData/Local/Microsoft/Windows/Fonts",
+                "C:/Windows/Fonts",
+                "/usr/share/fonts",
+                "/Library/Fonts",
+                System.getProperty("user.home") + "/Library/Fonts"
+        };
+        // Normalise: "Arial Bold" → "arialbd", try common patterns
+        String nameLower = awtFontName.toLowerCase(java.util.Locale.ENGLISH).replace(" ", "");
+        for (String dir : dirs) {
+            java.io.File d = new java.io.File(dir);
+            if (!d.isDirectory()) continue;
+            for (java.io.File f : d.listFiles() != null ? d.listFiles() : new java.io.File[0]) {
+                String fn = f.getName().toLowerCase(java.util.Locale.ENGLISH);
+                if ((fn.endsWith(".ttf") || fn.endsWith(".otf")) &&
+                        (fn.replace("-","").replace("_","").startsWith(nameLower.substring(0, Math.min(4, nameLower.length()))))) {
+                    return f;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Convenience overload used by measureWidth / lineWidth helpers (no doc needed). */
+    private static org.apache.pdfbox.pdmodel.font.PDFont resolvePdfFont(boolean bold, boolean italic) {
+        org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName name;
+        if (bold && italic) name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_BOLD_OBLIQUE;
+        else if (bold)      name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_BOLD;
+        else if (italic)    name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA_OBLIQUE;
+        else                name = org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA;
+        return new org.apache.pdfbox.pdmodel.font.PDType1Font(name);
+    }
+
+    /**
+     * Collect all styled segments for a paragraph.
+     * InlineCssTextArea stores per-character style; we merge consecutive chars
+     * that share the same CSS into runs.
+     */
+    private static List<TextRun> buildRunsForParagraph(
+            org.fxmisc.richtext.InlineCssTextArea area, int parIndex) {
+
+        List<TextRun> runs = new java.util.ArrayList<>();
+
+        // Compute the absolute start offset of this paragraph in the document
+        int parStart = 0;
+        for (int i = 0; i < parIndex; i++) {
+            parStart += area.getParagraph(i).length() + 1; // +1 for the newline
+        }
+        String parText = area.getParagraph(parIndex).getText();
+        int parLen = parText.length();
+
+        if (parLen == 0) return runs;
+
+        // Walk character by character, grouping consecutive chars with the same CSS into runs
+        String currentCss = area.getStyleOfChar(parStart);
+        int runStart = 0;
+
+        for (int i = 1; i < parLen; i++) {
+            String css = area.getStyleOfChar(parStart + i);
+            if (!css.equals(currentCss)) {
+                runs.add(parseSegmentCss(parText.substring(runStart, i), currentCss));
+                runStart = i;
+                currentCss = css;
+            }
+        }
+        // flush last run
+        runs.add(parseSegmentCss(parText.substring(runStart), currentCss));
+
+        return runs;
+    }
+
+    /**
+     * Measure the pixel width of a string in points for the given font+size.
+     * Falls back gracefully for chars the font can't encode.
+     */
+    private static float measureWidth(String text, org.apache.pdfbox.pdmodel.font.PDFont font,
+                                      float size) {
+        try {
+            return font.getStringWidth(text) / 1000f * size;
+        } catch (Exception e) {
+            // approximate: 0.5 em per character
+            return text.length() * size * 0.5f;
+        }
+    }
+
+    /**
+     * Word-wrap a list of styled runs to fit within maxWidth points,
+     * returning lines where each line is itself a list of runs.
+     */
+    private static List<List<TextRun>> wrapRuns(List<TextRun> runs, float maxWidth) {
+        List<List<TextRun>> lines = new java.util.ArrayList<>();
+        List<TextRun> currentLine = new java.util.ArrayList<>();
+        float currentWidth = 0;
+
+        for (TextRun run : runs) {
+            org.apache.pdfbox.pdmodel.font.PDFont font = resolvePdfFont(run.bold, run.italic);
+            // split run on spaces to word-wrap
+            String[] words = run.text.split("(?<= )|(?= )"); // keep spaces attached
+            StringBuilder buf = new StringBuilder();
+            for (String word : words) {
+                float ww = measureWidth(buf + word, font, run.fontSize);
+                if (currentWidth + ww > maxWidth && currentWidth > 0 && !buf.isEmpty()) {
+                    // flush buf as a run on current line
+                    currentLine.add(new TextRun(buf.toString(), run.fontFamily, run.fontSize, run.bold, run.italic, run.rgb));
+                    lines.add(currentLine);
+                    currentLine = new java.util.ArrayList<>();
+                    currentWidth = 0;
+                    buf = new StringBuilder();
+                    // start new buf with this word (trimmed leading space)
+                    word = word.stripLeading();
+                }
+                buf.append(word);
+                currentWidth += measureWidth(word, font, run.fontSize);
+            }
+            if (!buf.isEmpty()) {
+                currentLine.add(new TextRun(buf.toString(), run.fontFamily, run.fontSize, run.bold, run.italic, run.rgb));
+            }
+        }
+        if (!currentLine.isEmpty()) lines.add(currentLine);
+        return lines;
+    }
+
+    /** Compute the total width of a wrapped line in points. */
+    private static float lineWidth(List<TextRun> line) {
+        float w = 0;
+        for (TextRun r : line)
+            w += measureWidth(r.text, resolvePdfFont(r.bold, r.italic), r.fontSize);
+        return w;
+    }
+
+    /** Tallest font size on the line — used as line leading. */
+    private static float lineLeading(List<TextRun> line) {
+        float max = 12f;
+        for (TextRun r : line) if (r.fontSize > max) max = r.fontSize;
+        return max * 1.35f;
+    }
+
     private byte[] exportNoteToPdf(org.fxmisc.richtext.InlineCssTextArea area) throws Exception {
+        FONT_CACHE.clear(); // fresh per export so fonts are embedded in this document
         org.apache.pdfbox.pdmodel.PDDocument pdfDoc = new org.apache.pdfbox.pdmodel.PDDocument();
+
+        float margin     = 50f;
+        float pageH      = new org.apache.pdfbox.pdmodel.PDPage().getMediaBox().getHeight();
+        float pageW      = new org.apache.pdfbox.pdmodel.PDPage().getMediaBox().getWidth();
+        float usableW    = pageW - 2 * margin;
+        float yStart     = pageH - margin;
+
         org.apache.pdfbox.pdmodel.PDPage page = new org.apache.pdfbox.pdmodel.PDPage();
         pdfDoc.addPage(page);
-
-        float margin = 50;
-        float yStart = page.getMediaBox().getHeight() - margin;
-        float usableWidth = page.getMediaBox().getWidth() - 2 * margin;
-        float leading = 14.5f;
-        float y = yStart;
-
-        org.apache.pdfbox.pdmodel.font.PDFont font =
-                new org.apache.pdfbox.pdmodel.font.PDType1Font(
-                        org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA
-                );
-        float fontSize = 12f;
-
         org.apache.pdfbox.pdmodel.PDPageContentStream cs =
                 new org.apache.pdfbox.pdmodel.PDPageContentStream(pdfDoc, page);
 
+        float y = yStart;
+
         for (int p = 0; p < area.getParagraphs().size(); p++) {
-            String parText = area.getParagraph(p).getText();
             String parCss = area.getParagraph(p).getParagraphStyle();
+            String align  = extractAlignmentFromCss(parCss);
 
-            String align = extractAlignmentFromCss(parCss);
+            List<TextRun> runs = buildRunsForParagraph(area, p);
 
-            List<String> lines = wrapText(parText, font, fontSize, usableWidth);
-            if (lines.isEmpty()) lines = java.util.List.of("");
+            // Empty paragraph → just advance one blank line
+            if (runs.isEmpty()) {
+                y -= 14.5f;
+                if (y < margin) { cs.close(); page = new org.apache.pdfbox.pdmodel.PDPage(); pdfDoc.addPage(page);
+                    cs = new org.apache.pdfbox.pdmodel.PDPageContentStream(pdfDoc, page); y = yStart; }
+                continue;
+            }
 
-            for (String line : lines) {
+            List<List<TextRun>> wrappedLines = wrapRuns(runs, usableW);
+            if (wrappedLines.isEmpty()) wrappedLines.add(java.util.List.of(new TextRun("", null, 12f, false, false, null)));
+
+            for (List<TextRun> line : wrappedLines) {
+                float leading = lineLeading(line);
                 y -= leading;
 
                 if (y < margin) {
@@ -1755,17 +2193,43 @@ public class CourseDetailsController implements ThemeAware {
                     y = yStart - leading;
                 }
 
-                float lineWidth = font.getStringWidth(line) / 1000f * fontSize;
+                // compute x start based on alignment
+                float lw = lineWidth(line);
                 float x = margin;
+                if ("center".equals(align))  x = margin + Math.max(0, (usableW - lw) / 2f);
+                else if ("right".equals(align)) x = margin + Math.max(0, usableW - lw);
 
-                if ("center".equals(align)) x = margin + Math.max(0, (usableWidth - lineWidth) / 2f);
-                else if ("right".equals(align)) x = margin + Math.max(0, usableWidth - lineWidth);
+                // draw each run on this line
+                for (TextRun run : line) {
+                    if (run.text.isEmpty()) continue;
+                    org.apache.pdfbox.pdmodel.font.PDFont font = resolvePdfFont(pdfDoc, run.fontFamily, run.bold, run.italic);
 
-                cs.beginText();
-                cs.setFont(font, fontSize);
-                cs.newLineAtOffset(x, y);
-                cs.showText(line);
-                cs.endText();
+                    // set color
+                    if (run.rgb != null) {
+                        cs.setNonStrokingColor(run.rgb[0], run.rgb[1], run.rgb[2]);
+                    } else {
+                        cs.setNonStrokingColor(0f, 0f, 0f); // black
+                    }
+
+                    // encode safely — skip chars the font can't handle
+                    String safe = run.text.chars()
+                            .filter(c -> {
+                                try { font.encode(String.valueOf((char)c)); return true; }
+                                catch (Exception ex) { return false; }
+                            })
+                            .collect(StringBuilder::new, (sb,c) -> sb.append((char)c), StringBuilder::append)
+                            .toString();
+
+                    if (!safe.isEmpty()) {
+                        cs.beginText();
+                        cs.setFont(font, run.fontSize);
+                        cs.newLineAtOffset(x, y);
+                        cs.showText(safe);
+                        cs.endText();
+                    }
+
+                    x += measureWidth(run.text, font, run.fontSize);
+                }
             }
         }
 
@@ -1860,6 +2324,29 @@ public class CourseDetailsController implements ThemeAware {
         if (e.isEmpty()) return b;
         if (!e.startsWith(".")) e = "." + e;
         return b + e;
+    }
+
+    private Button makeIconBtn(String resourcePath, String tooltip) {
+        Button btn = new Button();
+        try {
+            java.io.InputStream stream = getClass().getResourceAsStream(resourcePath);
+            if (stream != null) {
+                ImageView iv = new ImageView(new Image(stream));
+                iv.setFitWidth(16);
+                iv.setFitHeight(16);
+                iv.setPreserveRatio(true);
+                btn.setGraphic(iv);
+            } else {
+                // fallback to tooltip text if image not found
+                btn.setText(tooltip);
+            }
+        } catch (Exception e) {
+            btn.setText(tooltip);
+        }
+        btn.setTooltip(new Tooltip(tooltip));
+        btn.getStyleClass().add("action-button");
+        btn.setStyle("-fx-padding: 5 8 5 8;");
+        return btn;
     }
 
     private static boolean isBlankCss(String css) {
