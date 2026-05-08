@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!--<AnchorPane xmlns="http://javafx.com/javafx"-->
+<!--            xmlns:fx="http://javafx.com/fxml"-->
+<!--            fx:controller="controllers.Forum.AddCategorieController"-->
+<!--            prefHeight="400.0" prefWidth="600.0">-->
+
+<!--</AnchorPane>-->
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ForumControllers.AddCategorieController"
+      spacing="15"
+      alignment="CENTER"
+      styleClass="add-categorie-root"
+      stylesheets="@/views/admin-styles.css">
+
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+    <Label text="Ajouter une Catégorie"
+           styleClass="form-title"/>
+
+    <TextField fx:id="nomField"
+               promptText="Nom de la catégorie"/>
+
+    <TextArea fx:id="descriptionField"
+              promptText="Description"
+              prefHeight="120"/>
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Annuler"
+                fx:id="cancelBtn"/>
+
+        <Button text="Ajouter"
+                fx:id="saveBtn"
+                styleClass="save-btn"/>
+        <Button text="Retour" fx:id="backBtn" onAction="#handleBack" styleClass="back-button"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.RessourceControllers.EventFormController"
+      spacing="0" styleClass="event-dialog-root">
+
+    <GridPane fx:id="formGrid" hgap="16" vgap="18" styleClass="event-form-grid">
+        <columnConstraints>
+            <ColumnConstraints minWidth="130" prefWidth="130" maxWidth="130" halignment="RIGHT"/>
+            <ColumnConstraints hgrow="ALWAYS" fillWidth="true"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="40" prefHeight="40" vgrow="NEVER"/>
+            <RowConstraints minHeight="88" prefHeight="88" vgrow="NEVER"/>
+            <RowConstraints minHeight="44" prefHeight="44" vgrow="NEVER"/>
+            <RowConstraints minHeight="44" prefHeight="44" vgrow="NEVER"/>
+            <RowConstraints minHeight="40" prefHeight="40" vgrow="NEVER"/>
+            <RowConstraints minHeight="160" prefHeight="160" vgrow="NEVER"/>
+            <RowConstraints minHeight="40" prefHeight="40" vgrow="NEVER"/>
+            <RowConstraints minHeight="40" prefHeight="40" vgrow="NEVER"/>
+        </rowConstraints>
+
+        <!-- ROW 0: Titre -->
+        <Label text="Titre *" styleClass="form-label"
+               GridPane.rowIndex="0" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <TextField fx:id="fieldTitre" promptText="Titre de l'événement"
+                   styleClass="modern-input" maxHeight="36"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER"/>
+
+        <!-- ROW 1: Description -->
+        <Label text="Description" styleClass="form-label"
+               GridPane.rowIndex="1" GridPane.columnIndex="0"
+               GridPane.valignment="TOP"/>
+        <TextArea fx:id="fieldDescription" promptText="Description"
+                  styleClass="modern-input" prefRowCount="4" maxHeight="80"
+                  wrapText="true"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1"
+                  maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP"/>
+
+        <!-- ROW 2: Date début + Heure -->
+        <Label text="Date début *" styleClass="form-label"
+               GridPane.rowIndex="2" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <HBox spacing="8" alignment="CENTER_LEFT" maxHeight="36"
+              GridPane.rowIndex="2" GridPane.columnIndex="1"
+              GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER">
+            <DatePicker fx:id="fieldDateDebut" styleClass="modern-input"
+                        prefWidth="160" maxHeight="36"/>
+            <Label text="Heure" styleClass="form-label-inline"/>
+            <Spinner fx:id="fieldHeureDebut" prefWidth="64" minHeight="36" prefHeight="36" maxHeight="36"
+                     styleClass="modern-spinner"/>
+            <Label text=":" styleClass="time-separator"/>
+            <Spinner fx:id="fieldMinuteDebut" prefWidth="64" minHeight="36" prefHeight="36" maxHeight="36"
+                     styleClass="modern-spinner"/>
+        </HBox>
+
+        <!-- ROW 3: Date fin + Heure -->
+        <Label text="Date fin *" styleClass="form-label"
+               GridPane.rowIndex="3" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <HBox spacing="8" alignment="CENTER_LEFT" maxHeight="36"
+              GridPane.rowIndex="3" GridPane.columnIndex="1"
+              GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER">
+            <DatePicker fx:id="fieldDateFin" styleClass="modern-input"
+                        prefWidth="160" maxHeight="36"/>
+            <Label text="Heure" styleClass="form-label-inline"/>
+            <Spinner fx:id="fieldHeureFin" prefWidth="64" minHeight="36" prefHeight="36" maxHeight="36"
+                     styleClass="modern-spinner"/>
+            <Label text=":" styleClass="time-separator"/>
+            <Spinner fx:id="fieldMinuteFin" prefWidth="64" minHeight="36" prefHeight="36" maxHeight="36"
+                     styleClass="modern-spinner"/>
+        </HBox>
+
+        <!-- ROW 4: Type -->
+        <Label text="Type *" styleClass="form-label"
+               GridPane.rowIndex="4" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <ComboBox fx:id="fieldType" styleClass="modern-input" maxHeight="36"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1"
+                  maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER"/>
+
+        <!-- ROW 5: Lieu (Mode + TextField + Salle choice) -->
+        <Label text="Lieu" styleClass="form-label"
+               GridPane.rowIndex="5" GridPane.columnIndex="0"
+               GridPane.valignment="TOP"/>
+        <VBox fx:id="lieuContainer" spacing="12" GridPane.rowIndex="5" GridPane.columnIndex="1"
+              GridPane.hgrow="ALWAYS" GridPane.valignment="TOP">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <ComboBox fx:id="fieldMode" promptText="Mode" prefWidth="160" maxHeight="36" styleClass="modern-input"/>
+                <Label text="Présentiel / En ligne" styleClass="form-label-inline"/>
+            </HBox>
+            <TextField fx:id="fieldLieu"
+                       promptText="Amphithéâtre, Salle 101..."
+                       styleClass="modern-input" maxWidth="Infinity" maxHeight="36"/>
+            <VBox fx:id="salleChoiceBox" visible="false" managed="false" spacing="8" styleClass="salle-choice-box"
+                  VBox.vgrow="NEVER">
+                <Label text="Dans quelle salle ?" styleClass="form-label-inline"/>
+                <ComboBox fx:id="fieldSalle" promptText="Choisir une salle..." maxWidth="Infinity" maxHeight="36" styleClass="modern-input"/>
+                <Label fx:id="salleEmptyLabel" text="Aucune salle disponible. L'administrateur doit d'abord en ajouter." visible="false" managed="false" styleClass="form-empty-hint" wrapText="true"/>
+            </VBox>
+        </VBox>
+
+        <!-- ROW 6: Priorité -->
+        <Label text="Priorité (1-10)" styleClass="form-label"
+               GridPane.rowIndex="6" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <HBox alignment="CENTER_LEFT" GridPane.rowIndex="6" GridPane.columnIndex="1"
+              GridPane.valignment="CENTER" GridPane.hgrow="ALWAYS">
+            <Spinner fx:id="fieldPriorite" prefWidth="110" minHeight="36" prefHeight="36" maxHeight="36"
+                     styleClass="modern-spinner"/>
+        </HBox>
+
+        <!-- ROW 7: Rappel -->
+        <Label text="Rappel actif" styleClass="form-label"
+               GridPane.rowIndex="7" GridPane.columnIndex="0"
+               GridPane.valignment="CENTER"/>
+        <HBox alignment="CENTER_LEFT" GridPane.rowIndex="7" GridPane.columnIndex="1"
+              GridPane.valignment="CENTER">
+            <CheckBox fx:id="fieldRappelActif" text="Activer les rappels"
+                      styleClass="modern-checkbox"/>
+        </HBox>
+    </GridPane>
+
+    <Region prefHeight="20" VBox.vgrow="NEVER"/>
+</VBox>

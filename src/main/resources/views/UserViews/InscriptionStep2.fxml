@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    InscriptionStep2.fxml  —  Étape 2/3 d'inscription
+    Style 100% identique à l'original.
+
+    Modifications :
+      ① fx:id="btnCreateAccount" sur le bouton → désactivable pendant la vérif image
+      ② Libellé "Continuer →" (et non "Créer mon compte") car ce bouton navigue
+         vers Step3 ; c'est Step3 qui crée réellement le compte
+      ③ Couleur bouton : violet (cohérent avec la suite, pas encore la validation finale)
+      ④ Zone verificationRow (HBox) ajoutée dans la section Photo de profil
+         (visible=false / managed=false par défaut)
+      ⑤ Note de sécurité mise à jour pour mentionner l'analyse d'image
+-->
+<AnchorPane prefHeight="700.0" prefWidth="931.0"
+            style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.UserControlleers.InscriptionStep2Controller">
+
+    <ScrollPane fitToWidth="true" layoutX="196.0" layoutY="25.0"
+                prefHeight="650" prefWidth="560.0"
+                style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;">
+
+        <VBox alignment="TOP_CENTER" spacing="20"
+              style="-fx-background-color: white; -fx-background-radius: 20;
+                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 25, 0, 0, 10);">
+            <padding>
+                <Insets bottom="35" left="45" right="45" top="35" />
+            </padding>
+
+            <!-- ── Titre ──────────────────────────────────────────────────── -->
+            <VBox alignment="CENTER" spacing="8">
+                <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                       text="Informations complémentaires" />
+                <Label style="-fx-font-size: 14; -fx-text-fill: #6B7280;"
+                       text="Étape 2 sur 3" />
+            </VBox>
+
+            <!-- ── Section PHOTO DE PROFIL ────────────────────────────────── -->
+            <VBox spacing="15"
+                  style="-fx-background-color: #F3E8FF; -fx-padding: 20; -fx-background-radius: 12;">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-font-size: 24;" text="📷" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                           text="Photo de profil" />
+                    <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" text="(optionnel)" />
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="20">
+
+                    <!-- Avatar / Aperçu -->
+                    <StackPane fx:id="avatarStackPane" prefHeight="90" prefWidth="90"
+                               style="-fx-background-color: linear-gradient(to bottom right, #A78BFA, #8B5CF6);
+                                      -fx-background-radius: 45;
+                                      -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.4), 10, 0, 0, 4);">
+                        <Label fx:id="avatarInitialLabel"
+                               style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: white;"
+                               text="U" />
+                        <ImageView fx:id="profileImageView"
+                                   fitHeight="90" fitWidth="90"
+                                   pickOnBounds="true" preserveRatio="false"
+                                   visible="false"
+                                   style="-fx-background-radius: 45;" />
+                    </StackPane>
+
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+
+                        <!-- Nom fichier / statut -->
+                        <Label fx:id="imageStatusLabel"
+                               style="-fx-text-fill: #9CA3AF; -fx-font-size: 11;"
+                               text="Aucune image sélectionnée" />
+
+                        <!-- Boutons Choisir / Supprimer -->
+                        <HBox spacing="10">
+                            <Button onAction="#handleChooseImage"
+                                    prefHeight="38" prefWidth="160"
+                                    style="-fx-background-color: #8B5CF6; -fx-text-fill: white;
+                                           -fx-font-size: 13; -fx-font-weight: bold;
+                                           -fx-background-radius: 10; -fx-cursor: hand;"
+                                    text="📂 Choisir une image" />
+                            <Button onAction="#handleRemoveImage"
+                                    prefHeight="38" prefWidth="120"
+                                    style="-fx-background-color: #F3F4F6; -fx-text-fill: #6B7280;
+                                           -fx-font-size: 13; -fx-background-radius: 10;
+                                           -fx-cursor: hand; -fx-border-color: #D1D5DB;
+                                           -fx-border-width: 1; -fx-border-radius: 10;"
+                                    text="🗑 Supprimer" />
+                        </HBox>
+
+                        <!-- ═══════════════════════════════════════════════════
+                             ZONE DE VÉRIFICATION (cachée par défaut)
+                             Affichée quand une image est en cours d'analyse
+                             ou que le résultat est disponible.
+                             ═══════════════════════════════════════════════════ -->
+                        <HBox fx:id="verificationRow"
+                              alignment="CENTER_LEFT" spacing="8"
+                              visible="false" managed="false"
+                              style="-fx-background-color: #EEF2FF;
+                                     -fx-background-radius: 8;
+                                     -fx-padding: 8 12 8 12;
+                                     -fx-border-color: #C7D2FE;
+                                     -fx-border-width: 1;
+                                     -fx-border-radius: 8;">
+                            <ProgressIndicator fx:id="verificationSpinner"
+                                               prefWidth="18" prefHeight="18"
+                                               visible="false"
+                                               style="-fx-progress-color: #6366F1;" />
+                            <Label fx:id="verificationLabel"
+                                   prefWidth="250"
+                                   style="-fx-font-size: 11; -fx-font-weight: bold;
+                                          -fx-text-fill: #3B82F6; -fx-wrap-text: true;"
+                                   text=""
+                                   wrapText="true" />
+                        </HBox>
+                        <!-- ═══════════════════════════════════════════════════ -->
+
+                        <Label style="-fx-font-size: 10; -fx-text-fill: #6B7280;"
+                               text="Formats acceptés : JPG, PNG, GIF, BMP" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- ── Section SANTÉ ──────────────────────────────────────────── -->
+            <VBox spacing="18"
+                  style="-fx-background-color: #F0F9FF; -fx-padding: 20; -fx-background-radius: 12;">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-font-size: 24;" text="🏥" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                           text="Informations de santé" />
+                </HBox>
+
+                <VBox spacing="6">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                           text="Sexe *" />
+                    <ComboBox fx:id="sexeCombo" prefHeight="45" prefWidth="410"
+                              style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                     -fx-border-width: 1; -fx-border-radius: 10;
+                                     -fx-background-radius: 10; -fx-font-size: 14;" />
+                </VBox>
+
+                <HBox spacing="15">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                               text="Poids (kg) *" />
+                        <TextField fx:id="poidsField" prefHeight="45" promptText="Ex: 70.5"
+                                   style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                          -fx-border-width: 1; -fx-border-radius: 10;
+                                          -fx-background-radius: 10; -fx-font-size: 14; -fx-padding: 12;" />
+                        <Label fx:id="errorPoids"
+                               style="-fx-text-fill: #EF4444; -fx-font-size: 11;" visible="false" />
+                    </VBox>
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                               text="Taille (cm) *" />
+                        <TextField fx:id="tailleField" prefHeight="45" promptText="Ex: 175"
+                                   style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                          -fx-border-width: 1; -fx-border-radius: 10;
+                                          -fx-background-radius: 10; -fx-font-size: 14; -fx-padding: 12;" />
+                        <Label fx:id="errorTaille"
+                               style="-fx-text-fill: #EF4444; -fx-font-size: 11;" visible="false" />
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="6">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                           text="Niveau d'activité physique *" />
+                    <ComboBox fx:id="niveauActiviteCombo" prefHeight="45" prefWidth="410"
+                              style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                     -fx-border-width: 1; -fx-border-radius: 10;
+                                     -fx-background-radius: 10; -fx-font-size: 14;" />
+                    <Label style="-fx-font-size: 10; -fx-text-fill: #3B82F6;"
+                           text="💡 Utilisé pour personnaliser vos recommandations" />
+                </VBox>
+            </VBox>
+
+            <!-- ── Section SCOLAIRE ───────────────────────────────────────── -->
+            <VBox spacing="18"
+                  style="-fx-background-color: #FEF3C7; -fx-padding: 20; -fx-background-radius: 12;">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label style="-fx-font-size: 24;" text="🎓" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                           text="Informations scolaires" />
+                </HBox>
+
+                <VBox spacing="6">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                           text="Niveau scolaire *" />
+                    <ComboBox fx:id="niveauScolaireCombo" prefHeight="45" prefWidth="410"
+                              style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                     -fx-border-width: 1; -fx-border-radius: 10;
+                                     -fx-background-radius: 10; -fx-font-size: 14;" />
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                           text="Établissement scolaire *" />
+                    <TextField fx:id="etablissementField" prefHeight="45" prefWidth="410"
+                               promptText="Ex: Université Paris-Saclay"
+                               style="-fx-background-color: white; -fx-border-color: #E5E7EB;
+                                      -fx-border-width: 1; -fx-border-radius: 10;
+                                      -fx-background-radius: 10; -fx-font-size: 14; -fx-padding: 12;" />
+                    <Label fx:id="errorEtablissement"
+                           style="-fx-text-fill: #EF4444; -fx-font-size: 11;" visible="false" />
+                </VBox>
+            </VBox>
+
+            <!-- ── Boutons d'action ────────────────────────────────────────── -->
+            <HBox alignment="CENTER" spacing="15">
+                <!-- Retour vers Step1 -->
+                <Button onAction="#handleRetour" prefHeight="50" prefWidth="195"
+                        style="-fx-background-color: #F3F4F6; -fx-text-fill: #374151;
+                               -fx-font-size: 15; -fx-font-weight: bold;
+                               -fx-background-radius: 12; -fx-cursor: hand;
+                               -fx-border-color: #D1D5DB; -fx-border-width: 2; -fx-border-radius: 12;"
+                        text="← Retour" />
+
+                <!--
+                    ① fx:id="btnCreateAccount" : désactivé pendant la vérif image
+                    ② Libellé "Continuer →" : navigue vers Step3 (ne crée PAS le compte)
+                    ③ Violet pour différencier du bouton vert de Step3 (création finale)
+                -->
+                <Button fx:id="btnCreateAccount"
+                        onAction="#handleCreateAccount" prefHeight="50" prefWidth="195"
+                        style="-fx-background-color: linear-gradient(to right, #8B5CF6, #7C3AED);
+                               -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;
+                               -fx-background-radius: 12; -fx-cursor: hand;
+                               -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.4), 15, 0, 0, 5);"
+                        text="Continuer →" />
+            </HBox>
+
+            <!-- ── Note de sécurité ────────────────────────────────────────── -->
+            <HBox alignment="CENTER_LEFT" spacing="8"
+                  style="-fx-background-color: #EDE9FE; -fx-padding: 12; -fx-background-radius: 8;">
+                <Label style="-fx-font-size: 16;" text="🔒" />
+                <Label prefWidth="400"
+                       style="-fx-font-size: 11; -fx-text-fill: #6D28D9; -fx-wrap-text: true;"
+                       text="Vos données sont chiffrées et sécurisées. Les images sont vérifiées automatiquement. L'étape suivante enregistrera votre visage pour la connexion biométrique."
+                       wrapText="true" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

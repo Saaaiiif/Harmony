@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="controllers.ForumControllers.BackOffice.ForumBackDashboardController"
+            prefWidth="1100"
+            prefHeight="650"
+            styleClass="back-root"
+            stylesheets="/views/admin-styles.css">
+
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="modern-topbar">
+            <padding><Insets top="15" right="30" bottom="15" left="30"/></padding>
+
+            <Button text="←" onAction="#handleBack" styleClass="back-button"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="🛠 Back Office Forum" styleClass="topbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- ✅ Bouton Contenu (retour aux cards) -->
+            <Button text="📋  Contenu"
+                    onAction="#showContenu"
+                    style="-fx-background-color: rgba(255,255,255,0.18); -fx-text-fill: white;
+                           -fx-font-size: 12px; -fx-font-weight: bold;
+                           -fx-background-radius: 8; -fx-padding: 7 14; -fx-cursor: hand;"/>
+
+            <!-- ✅ Bouton Statistiques -->
+            <Button text="📊  Statistiques"
+                    onAction="#showStats"
+                    style="-fx-background-color: rgba(255,255,255,0.32); -fx-text-fill: white;
+                           -fx-font-size: 12px; -fx-font-weight: bold;
+                           -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 1.5;
+                           -fx-background-radius: 8; -fx-border-radius: 8;
+                           -fx-padding: 7 14; -fx-cursor: hand;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane fx:id="contentArea">
+            <ScrollPane fitToWidth="true"
+                        style="-fx-background: transparent; -fx-background-color: transparent;">
+                <content>
+                    <VBox spacing="20">
+                        <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                        <fx:include source="CategoriesCards.fxml"/>
+                        <fx:include source="PostsCards.fxml"/>
+                        <fx:include source="CommentairesCards.fxml"/>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </StackPane>
+    </center>
+
+</BorderPane>

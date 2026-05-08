@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RessourceControllers.AdminBackofficeController"
+      style="-fx-background-color: #F4F3FA;"
+      prefWidth="1100" prefHeight="650"
+      stylesheets="@ressource-styles.css">
+
+    <!-- Page header -->
+    <VBox style="-fx-padding: 28px 28px 0 28px;" spacing="4">
+        <HBox alignment="CENTER_LEFT">
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label text="Backoffice Administrateur" styleClass="backoffice-page-title"/>
+                <Label text="Gestion des salles, événements, demandes et tâches" styleClass="backoffice-page-subtitle"/>
+            </VBox>
+            <HBox styleClass="backoffice-info-badge" alignment="CENTER">
+                <Label fx:id="labelExternalStats" styleClass="backoffice-info-text" text="Chargement..."/>
+            </HBox>
+        </HBox>
+        <Separator styleClass="backoffice-header-sep"/>
+    </VBox>
+
+    <!-- Toolbar: single search (filters by active tab) -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="backoffice-toolbar" style="-fx-padding: 16px 28px 8px 28px;">
+        <TextField fx:id="searchField" promptText="🔍  Rechercher..." styleClass="backoffice-search"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Tab pane -->
+    <VBox style="-fx-padding: 0 28px 28px 28px;" VBox.vgrow="ALWAYS" spacing="0">
+        <TabPane fx:id="adminTabPane" styleClass="backoffice-tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+            <Tab text="🏛  Salles" styleClass="backoffice-tab" closable="false">
+                <VBox styleClass="backoffice-tab-content" spacing="16" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="backoffice-toolbar">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="＋  Ajouter" styleClass="btn-primary" onAction="#onAjouterSalle"/>
+                        <Button fx:id="btnModifierSalle" text="✎  Modifier" styleClass="btn-secondary" onAction="#onModifierSalle"/>
+                        <Button fx:id="btnSupprimerSalle" text="🗑  Supprimer" styleClass="btn-danger" onAction="#onSupprimerSalle"/>
+                    </HBox>
+                    <VBox styleClass="backoffice-table-card" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="salleTable" styleClass="backoffice-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colSalleNom" text="Nom" prefWidth="160"/>
+                                <TableColumn fx:id="colSalleCapacite" text="Capacité" prefWidth="90"/>
+                                <TableColumn fx:id="colSalleEquipements" text="Équipements" prefWidth="180"/>
+                                <TableColumn fx:id="colSalleDisponible" text="Disponible" prefWidth="100"/>
+                                <TableColumn fx:id="colSalleDescription" text="Description" prefWidth="250"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="📋  Tâches" styleClass="backoffice-tab" closable="false">
+                <VBox styleClass="backoffice-tab-content" spacing="16" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="backoffice-toolbar">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAjouterTache" text="＋  Ajouter" styleClass="btn-primary" onAction="#handleAjouterTache"/>
+                        <Button fx:id="btnModifierTache" text="✎  Modifier" styleClass="btn-secondary" onAction="#handleModifierTache"/>
+                        <Button fx:id="btnSupprimerTache" text="🗑  Supprimer" styleClass="btn-danger" onAction="#handleSupprimerTache"/>
+                    </HBox>
+                    <VBox styleClass="backoffice-table-card" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tachesTable" styleClass="backoffice-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colTacheNom" text="Nom" prefWidth="260"/>
+                                <TableColumn fx:id="colTacheDeadline" text="Deadline" prefWidth="130"/>
+                                <TableColumn fx:id="colTacheStatut" text="Statut" prefWidth="120"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="📅  Événements" styleClass="backoffice-tab" closable="false">
+                <VBox styleClass="backoffice-tab-content" spacing="16" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="backoffice-toolbar">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="＋  Ajouter" styleClass="btn-primary" onAction="#onAjouterEvent"/>
+                        <Button fx:id="btnModifierEvent" text="✎  Modifier" styleClass="btn-secondary" onAction="#onModifierEvent"/>
+                        <Button fx:id="btnSupprimerEvent" text="🗑  Supprimer" styleClass="btn-danger" onAction="#onSupprimerEvent"/>
+                    </HBox>
+                    <VBox styleClass="backoffice-table-card" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="eventsTable" styleClass="backoffice-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colEventTitre" text="Titre" prefWidth="140"/>
+                                <TableColumn fx:id="colEventDateDebut" text="Date début" prefWidth="115"/>
+                                <TableColumn fx:id="colEventDateFin" text="Date fin" prefWidth="115"/>
+                                <TableColumn fx:id="colEventLieu" text="Lieu" prefWidth="90"/>
+                                <TableColumn fx:id="colEventSalle" text="Salle" prefWidth="90"/>
+                                <TableColumn fx:id="colEventStatut" text="Statut" prefWidth="95"/>
+                                <TableColumn fx:id="colEventType" text="Type" prefWidth="85"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="📨  Demandes de salles" styleClass="backoffice-tab" closable="false">
+                <VBox styleClass="backoffice-tab-content" spacing="16" VBox.vgrow="ALWAYS">
+                    <Label fx:id="demandeNotificationLabel" styleClass="admin-notification" visible="false" managed="false"/>
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="backoffice-toolbar">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAccepterDemande" text="Accepter" styleClass="btn-admin btn-confirm" onAction="#onAccepterDemande"/>
+                        <Button fx:id="btnRefuserDemande" text="Refuser" styleClass="btn-admin btn-reject" onAction="#onRefuserDemande"/>
+                    </HBox>
+                    <Label text="Les utilisateurs ayant indiqué &quot;Esprit&quot; comme lieu doivent sélectionner une salle. Vérifiez la disponibilité puis accepter ou refuser." styleClass="admin-hint"/>
+                    <VBox styleClass="backoffice-table-card" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="demandesTable" styleClass="backoffice-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colDemandeTitre" text="Événement" prefWidth="150"/>
+                                <TableColumn fx:id="colDemandeDateDebut" text="Date début" prefWidth="120"/>
+                                <TableColumn fx:id="colDemandeDateFin" text="Date fin" prefWidth="120"/>
+                                <TableColumn fx:id="colDemandeSalle" text="Salle demandée" prefWidth="140"/>
+                                <TableColumn fx:id="colDemandeType" text="Type" prefWidth="90"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </VBox>
+</VBox>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane prefHeight="830" prefWidth="1440"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.UserControlleers.modifControl.DashboardAdminController">
+
+    <stylesheets>/views/admin-styles.css</stylesheets>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         LEFT  — Sidebar collapsible (72 px ↔ 260 px)
+         ══════════════════════════════════════════════════════════════════ -->
+    <left>
+        <VBox fx:id="sidebar" prefWidth="260" minWidth="260" maxWidth="260"
+              styleClass="sidebar">
+
+            <!-- ── Logo ─────────────────────────────────────────────── -->
+            <HBox alignment="CENTER_LEFT" spacing="10"
+                  style="-fx-padding: 0 0 18 4;">
+                <Label style="-fx-font-size: 28; -fx-text-fill: #8B5CF6;" text="⚡" />
+                <Label styleClass="sidebar-logo-text"
+                       style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                       text="Harmony" />
+            </HBox>
+
+            <Separator opacity="0.2" />
+            <Region prefHeight="8" />
+
+            <!-- ── Section label ─────────────────────────────────────── -->
+            <Label styleClass="sidebar-section-title" text="NAVIGATION" />
+
+            <!-- Nav items wrapped in ScrollPane so logout/profile always stay visible -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        styleClass="sidebar-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                <VBox spacing="4">
+
+                    <!-- ── Dashboard ─────────────────────────────────────────── -->
+                    <Button fx:id="btnDashboard" onAction="#handleDashboard"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Dashboard">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🏠" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Utilisateurs ───────────────────────────────── -->
+                    <Button fx:id="btnGestionUsers" onAction="#handleGestionUsers"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Utilisateurs">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="👥" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Sport ──────────────────────────────────────── -->
+                    <Button fx:id="btnGestionSport" onAction="#handleGestionSport"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Sport">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="⚡" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Nutrition ──────────────────────────────────── -->
+                    <Button fx:id="btnGestionNutrition" onAction="#handleGestionNutrition"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Nutrition">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🍏" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Forum ──────────────────────────────────────── -->
+                    <Button fx:id="btnForum"
+                            onAction="#handleForum"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Forum">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="💬" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Événements ────────────────────────────── -->
+                    <Button fx:id="btnRessources" onAction="#handleGestionRessources"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Événements">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📚" />
+                        </graphic>
+                    </Button>
+
+                    <Button fx:id="btnEevents"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Evenements">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🎉" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Ressources ─────────────────────────────────── -->
+                    <Button fx:id="btnGestionRessources" onAction="#handleCoursesSignales"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Ressources">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📖" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Gestion Méditation ─────────────────────────────────── -->
+                    <Button fx:id="btnGestionMeditation" onAction="#handleGestionMeditation"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Gestion Méditation">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="🧘" />
+                        </graphic>
+                    </Button>
+
+                    <!-- ── Journal Étudiants ──────────────────────────────────── -->
+                    <Button fx:id="btnJournalEtudiants" onAction="#handleJournalEtudiants"
+                            styleClass="sidebar-item"
+                            prefWidth="240" prefHeight="42"
+                            text="  Journal Étudiants">
+                        <graphic>
+                            <Label style="-fx-font-size: 18;" text="📔" />
+                        </graphic>
+                    </Button>
+
+                </VBox>
+            </ScrollPane>
+
+            <Separator opacity="0.2" />
+            <Region prefHeight="8" />
+
+            <!-- ── Déconnexion ───────────────────────────────────────── -->
+            <Button fx:id="btnLogout" onAction="#handleLogout"
+                    styleClass="sidebar-item, sidebar-item-danger"
+                    prefWidth="240" prefHeight="42"
+                    text="  Déconnexion">
+                <graphic>
+                    <Label style="-fx-font-size: 18;" text="🚪" />
+                </graphic>
+            </Button>
+
+            <Region prefHeight="8" />
+            <Separator opacity="0.2" />
+            <Region prefHeight="10" />
+
+            <!-- ── Profil Admin (en bas) ─────────────────────────────── -->
+            <StackPane fx:id="profileZone" alignment="CENTER"
+                       onMouseEntered="#handleProfileHover"
+                       onMouseExited="#handleProfileHoverEnd"
+                       onMouseClicked="#handleProfileClick">
+
+                <!-- Tooltip personnalisé (survol uniquement) -->
+                <VBox fx:id="profileTooltip"
+                      alignment="CENTER_LEFT" spacing="3"
+                      visible="false" managed="false"
+                      style="-fx-background-color: #374151;
+                             -fx-background-radius: 10;
+                             -fx-padding: 10 14;
+                             -fx-translate-y: -90;
+                             -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.35),12,0,0,4);">
+                    <Label fx:id="tooltipNom"
+                           style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: white;"
+                           text="Admin" />
+                    <Label fx:id="tooltipEmail"
+                           style="-fx-font-size: 11; -fx-text-fill: #9CA3AF;"
+                           text="admin@harmony.com" />
+                    <Label style="-fx-font-size: 10; -fx-text-fill: #6B7280; -fx-padding: 3 0 0 0;"
+                           text="Double-clic pour modifier" />
+                </VBox>
+
+                <!-- Ligne profil -->
+                <HBox fx:id="profileRow" styleClass="profile-row"
+                      alignment="CENTER_LEFT" spacing="10" prefWidth="240">
+
+                    <!-- Avatar circulaire -->
+                    <StackPane fx:id="avatarContainer"
+                               prefWidth="44" prefHeight="44"
+                               style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #A78BFA, #8B5CF6);
+                                      -fx-background-radius: 22;
+                                      -fx-effect: dropshadow(three-pass-box,rgba(139,92,246,0.45),8,0,0,3);">
+                        <Label fx:id="avatarInitial"
+                               style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"
+                               text="A" />
+                        <ImageView fx:id="avatarImage"
+                                   fitWidth="44" fitHeight="44"
+                                   preserveRatio="false" visible="false">
+                            <clip><Circle centerX="22" centerY="22" radius="22" /></clip>
+                        </ImageView>
+                    </StackPane>
+
+                    <!-- Texte (caché quand sidebar réduite) -->
+                    <VBox spacing="1">
+                        <Label fx:id="profileNameLabel"
+                               styleClass="profile-name-label"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #1F2937;"
+                               text="Mon Profil" />
+                        <Label styleClass="profile-hint-label"
+                               style="-fx-font-size: 10; -fx-text-fill: #9CA3AF;"
+                               text="Double-clic pour modifier" />
+                    </VBox>
+                </HBox>
+            </StackPane>
+
+        </VBox>
+    </left>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         CENTER — Content area
+         ══════════════════════════════════════════════════════════════════ -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="admin-content-area" />
+    </center>
+
+</BorderPane>

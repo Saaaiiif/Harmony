@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="controllers.RessourceControllers.TacheFormController"
+         hgap="16" vgap="16"
+         styleClass="event-form form-card modern-form"
+         prefWidth="480" prefHeight="380">
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="120" prefWidth="120" hgrow="NEVER"/>
+        <ColumnConstraints minWidth="280" prefWidth="280" hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <Label text="NOM *" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" styleClass="form-label"/>
+    <TextField fx:id="fieldNom" promptText="Nom de la tâche" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" styleClass="modern-input"/>
+
+    <Label text="DEADLINE" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" styleClass="form-label"/>
+    <DatePicker fx:id="fieldDeadline" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200" styleClass="modern-input form-field"/>
+
+    <Label text="NOTES" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="TOP" styleClass="form-label"/>
+    <TextArea fx:id="fieldNotes" promptText="Notes" wrapText="true" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" styleClass="modern-input"/>
+
+    <Label text="STATUT *" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="CENTER" styleClass="form-label"/>
+    <ComboBox fx:id="fieldStatut" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="modern-input form-combo"/>
+
+    <padding>
+        <Insets top="20" right="24" bottom="20" left="24"/>
+    </padding>
+</GridPane>
