@@ -1250,9 +1250,16 @@ public class CourseDetailsController implements ThemeAware {
                 protected Void call() throws Exception {
                     byte[] data = courseService.loadCourseFileBytes(currentFileId[0]);
                     String name = (currentOriginalName[0] == null ? "" : currentOriginalName[0]).toLowerCase();
+                    boolean tryRtfx = name.endsWith(".rtfx") && shouldDecodeRtfx(data);
                     Platform.runLater(() -> {
                         try {
-                            if (name.endsWith(".rtfx")) {
+                            if (looksLikeJsonNote(data)) {
+                                String text = new String(data, java.nio.charset.StandardCharsets.UTF_8);
+                                if (applyJsonNote(area, text, currentTextCss, currentParCss, fontBox, sizeSpinner)) {
+                                    return;
+                                }
+                            }
+                            if (tryRtfx) {
                                 org.fxmisc.richtext.model.Codec<StyledDocument<String, String, String>> codec =
                                         getDocCodec(area);
                                 try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(data))) {
@@ -1283,9 +1290,35 @@ public class CourseDetailsController implements ThemeAware {
                                     area.setParagraphStyle(p, currentParCss[0]);
                                 }
                             }
+                        } catch (OutOfMemoryError oom) {
+                            try {
+                                String text = new String(data, java.nio.charset.StandardCharsets.UTF_8);
+                                if (!looksLikeJsonNote(data) ||
+                                        !applyJsonNote(area, text, currentTextCss, currentParCss, fontBox, sizeSpinner)) {
+                                    area.replaceText(text);
+                                    area.setStyle(0, area.getLength(), currentTextCss[0]);
+                                    for (int p = 0; p < area.getParagraphs().size(); p++) {
+                                        area.setParagraphStyle(p, currentParCss[0]);
+                                    }
+                                }
+                            } catch (Exception inner) {
+                                area.replaceText("Failed to load note.");
+                            }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
-                            area.replaceText("Failed to load note.");
+                            try {
+                                String text = new String(data, java.nio.charset.StandardCharsets.UTF_8);
+                                if (!looksLikeJsonNote(data) ||
+                                        !applyJsonNote(area, text, currentTextCss, currentParCss, fontBox, sizeSpinner)) {
+                                    area.replaceText(text);
+                                    area.setStyle(0, area.getLength(), currentTextCss[0]);
+                                    for (int p = 0; p < area.getParagraphs().size(); p++) {
+                                        area.setParagraphStyle(p, currentParCss[0]);
+                                    }
+                                }
+                            } catch (Exception inner) {
+                                ex.printStackTrace();
+                                area.replaceText("Failed to load note.");
+                            }
                         } finally {
                             loading.set(false);
                         }
@@ -1584,6 +1617,96 @@ public class CourseDetailsController implements ThemeAware {
     private static String sanitizeCss(String css) {
         if (css == null) return "";
         return css.replace('\u0000', ' ').trim();
+    }
+
+    private static final int MAX_RTFX_BYTES = 2 * 1024 * 1024;
+
+    private static boolean looksLikePlainText(byte[] data) {
+        if (data == null || data.length == 0) return true;
+        int sample = Math.min(data.length, 512);
+        int printable = 0;
+        for (int i = 0; i < sample; i++) {
+            int b = data[i] & 0xFF;
+            if (b == 0) return false;
+            if (b == 9 || b == 10 || b == 13 || (b >= 32 && b <= 126)) {
+                printable++;
+            }
+        }
+        return printable >= (int) (sample * 0.85);
+    }
+
+    private static boolean looksLikeJsonNote(byte[] data) {
+        if (data == null || data.length == 0) return false;
+        int len = Math.min(data.length, 2048);
+        String head = new String(data, 0, len, java.nio.charset.StandardCharsets.UTF_8).trim();
+        return head.startsWith("{") && head.contains("\"paragraphs\"");
+    }
+
+    private static boolean applyJsonNote(
+            org.fxmisc.richtext.InlineCssTextArea area,
+            String json,
+            String[] currentTextCss,
+            String[] currentParCss,
+            javafx.scene.control.ComboBox<String> fontBox,
+            javafx.scene.control.Spinner<Integer> sizeSpinner
+    ) {
+        try {
+            org.json.JSONObject obj = new org.json.JSONObject(json);
+            org.json.JSONArray paragraphs = obj.optJSONArray("paragraphs");
+            if (paragraphs == null || paragraphs.isEmpty()) return false;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < paragraphs.length(); i++) {
+                org.json.JSONObject p = paragraphs.getJSONObject(i);
+                String text = p.optString("text", "");
+                sb.append(text == null ? "" : text);
+                if (i < paragraphs.length() - 1) sb.append('\n');
+            }
+
+            area.replaceText(sb.toString());
+
+            int offset = 0;
+            for (int i = 0; i < paragraphs.length(); i++) {
+                org.json.JSONObject p = paragraphs.getJSONObject(i);
+                String text = p.optString("text", "");
+                String align = p.optString("align", "left");
+                String font = p.optString("font", "");
+                int size = p.optInt("size", 14);
+
+                String textCss = sanitizeCss(buildTextCss(font, size));
+                String parCss = sanitizeCss(alignCss(align));
+
+                int len = text == null ? 0 : text.length();
+                if (len > 0) {
+                    area.setStyle(offset, offset + len, textCss);
+                }
+                if (i < area.getParagraphs().size()) {
+                    area.setParagraphStyle(i, parCss);
+                }
+
+                if (i == 0) {
+                    currentTextCss[0] = textCss;
+                    currentParCss[0] = parCss;
+                    if (font != null && !font.isBlank() && fontBox.getItems().contains(font)) {
+                        fontBox.setValue(font);
+                    }
+                    sizeSpinner.getValueFactory().setValue(size);
+                }
+
+                offset += len + 1;
+            }
+
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    private static boolean shouldDecodeRtfx(byte[] data) {
+        if (data == null || data.length == 0) return false;
+        if (data.length > MAX_RTFX_BYTES) return false;
+        if (looksLikeJsonNote(data)) return false;
+        return !looksLikePlainText(data);
     }
 
     private static String buildTextCss(String family, Integer size) {

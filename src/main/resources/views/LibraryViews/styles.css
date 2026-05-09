@@ -734,6 +734,10 @@
 
 
 .popup-root {
+    -note-bg: rgba(24, 24, 24, 0.96);
+    -note-fg: rgba(255, 255, 255, 0.92);
+    -note-selection: rgba(205, 157, 241, 0.38);
+
     -fx-background-color: rgba(30, 30, 30, 1.0);
     -fx-background-radius: 14px;
 
@@ -746,6 +750,10 @@
 }
 
 .popup-root.light-mode {
+    -note-bg: #f4f0fb;
+    -note-fg: rgba(30, 30, 30, 0.90);
+    -note-selection: rgba(122, 122, 122, 0.28);
+
     -fx-background-color: #dad0f0;
     -fx-background-radius: 14px;
 

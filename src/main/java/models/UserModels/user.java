@@ -23,6 +23,9 @@ public class user {
     // ✅ NOUVEAU : IMAGE DU VISAGE (reconnaissance faciale)
     private String face_image_path;
 
+    // ✅ NOUVEAU : activation de la biometrie faciale
+    private boolean face_id_enabled = true;
+
     // ARCHIVAGE : true = actif, false = archivé
     private boolean is_active = true;
 
@@ -109,6 +112,9 @@ public class user {
     // ✅ IMAGE DU VISAGE
     public String getFace_image_path() { return face_image_path; }
     public void setFace_image_path(String face_image_path) { this.face_image_path = face_image_path; }
+
+    public boolean isFace_id_enabled() { return face_id_enabled; }
+    public void setFace_id_enabled(boolean face_id_enabled) { this.face_id_enabled = face_id_enabled; }
 
     // ARCHIVAGE
     public boolean isIs_active() { return is_active; }

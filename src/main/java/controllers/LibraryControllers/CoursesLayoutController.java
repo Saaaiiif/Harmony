@@ -472,9 +472,12 @@ public class CoursesLayoutController{
                             java.nio.file.Path dest = coversDir.resolve(filename);
                             java.nio.file.Files.write(dest, imageBytes);
                             coverFile = dest.toFile();
+                        } else {
+                            Platform.runLater(() -> imageNameLabel.setText("Image generation timed out."));
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        Platform.runLater(() -> imageNameLabel.setText("Image generation failed."));
                     }
                 }
 

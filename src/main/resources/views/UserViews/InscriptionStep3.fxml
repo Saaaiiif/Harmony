@@ -96,6 +96,13 @@
                                    -fx-background-radius: 12; -fx-cursor: hand;
                                    -fx-effect: dropshadow(three-pass-box, rgba(139,92,246,0.4), 12, 0, 0, 4);"
                             text="📸  Capturer mon visage" disable="true" />
+                    <Button fx:id="btnSkipFace" onAction="#handleSkipFace"
+                            prefHeight="42" prefWidth="220"
+                            style="-fx-background-color: #FEF3C7; -fx-text-fill: #92400E;
+                                   -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 10;
+                                   -fx-cursor: hand; -fx-border-color: #FCD34D; -fx-border-width: 1.5;
+                                   -fx-border-radius: 10;"
+                            text="Passer sans biometrie" />
                     <Button onAction="#handleRetour"
                             prefHeight="42" prefWidth="200"
                             style="-fx-background-color: #F3F4F6; -fx-text-fill: #374151;

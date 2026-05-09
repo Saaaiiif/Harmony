@@ -100,7 +100,9 @@
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                     <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Sexe"/>
                     <ComboBox fx:id="fieldSexe" prefHeight="42" prefWidth="230"
-                              style="-fx-font-size: 13;"/>
+                                                   style="-fx-background-color: #F9FAFB; -fx-border-color: #E5E7EB;
+                                                                -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8;
+                                                                -fx-font-size: 13; -fx-padding: 6 10;"/>
                 </VBox>
             </HBox>
 
@@ -133,7 +135,9 @@
                 <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #374151;"
                        text="Niveau d'activité physique"/>
                 <ComboBox fx:id="fieldActivite" prefHeight="42" prefWidth="Infinity"
-                          style="-fx-font-size: 13;"/>
+                          style="-fx-background-color: #F9FAFB; -fx-border-color: #E5E7EB;
+                                 -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8;
+                                 -fx-font-size: 13; -fx-padding: 6 10;"/>
             </VBox>
 
             <!-- ── Séparateur Infos scolaires ── -->
@@ -148,7 +152,9 @@
                     <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #374151;"
                            text="Niveau scolaire"/>
                     <ComboBox fx:id="fieldNiveauScolaire" prefHeight="42" prefWidth="230"
-                              style="-fx-font-size: 13;"/>
+                              style="-fx-background-color: #F9FAFB; -fx-border-color: #E5E7EB;
+                                     -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8;
+                                     -fx-font-size: 13; -fx-padding: 6 10;"/>
                 </VBox>
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                     <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #374151;"

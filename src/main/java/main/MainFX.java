@@ -90,7 +90,7 @@ public class MainFX extends Application {
         Parent root = loader.load();
 
         // Créer la scène
-        Scene scene = new Scene(root, 1150, 730);
+        Scene scene = new Scene(root);
         scene.setFill(javafx.scene.paint.Color.WHITE);
 
         // Charger et appliquer le CSS (Login utilise le style admin)
@@ -107,22 +107,26 @@ public class MainFX extends Application {
         // Appliquer le mode clair par défaut
         root.getStyleClass().add("light-mode");
 
-        final double w = 1150;
-        final double h = 730;
-        primaryStage.setWidth(w);
-        primaryStage.setHeight(h);
-        primaryStage.setMinWidth(w);
-        primaryStage.setMinHeight(h);
         primaryStage.setScene(scene);
+        primaryStage.sizeToScene();
+        primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setMinHeight(primaryStage.getHeight());
 
         // Positionner au centre sans centerOnScreen() pour éviter le bug NSTrackingRectTag sur macOS (JavaFX 17)
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        double w = primaryStage.getWidth();
+        double h = primaryStage.getHeight();
         primaryStage.setX(Math.max(0, bounds.getMinX() + (bounds.getWidth() - w) / 2));
         primaryStage.setY(Math.max(0, bounds.getMinY() + (bounds.getHeight() - h) / 2));
 
         // Afficher en différé pour laisser le toolkit terminer le layout
         Platform.runLater(() -> {
             primaryStage.show();
+            Rectangle2D b = Screen.getPrimary().getVisualBounds();
+            double cw = primaryStage.getWidth();
+            double ch = primaryStage.getHeight();
+            primaryStage.setX(Math.max(0, b.getMinX() + (b.getWidth() - cw) / 2));
+            primaryStage.setY(Math.max(0, b.getMinY() + (b.getHeight() - ch) / 2));
             System.out.println("✓ Interface de connexion chargée et affichée");
         });
     }

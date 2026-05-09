@@ -43,6 +43,7 @@ public class InscriptionStep3Controller {
     @FXML private HBox       confirmButtons;
     @FXML private Button     btnCapturer;
     @FXML private Button     btnConfirmer;
+    @FXML private Button     btnSkipFace;
 
     // ── Services ─────────────────────────────────────────────────────────────
     private final FaceRecognitionService faceService = new FaceRecognitionService();
@@ -52,6 +53,7 @@ public class InscriptionStep3Controller {
     private UserRegistrationData userData;
     private Mat                  capturedFaceMat = null;  // visage capturé (Mat)
     private boolean              faceCurrentlyDetected = false;
+    private boolean              faceIdEnabled = true;
 
     // =========================================================================
     //  INITIALISATION
@@ -122,6 +124,7 @@ public class InscriptionStep3Controller {
      */
     @FXML
     void handleCapturer() {
+        faceIdEnabled = true;
         if (faceCurrentlyDetected) {
             capturedFaceMat = faceService.captureCurrentFace();
         }
@@ -137,6 +140,7 @@ public class InscriptionStep3Controller {
         } else {
             // Mode "passer sans capture" (pas de caméra disponible)
             capturedFaceMat = null;
+            faceIdEnabled = false;
             showConfirmationState();
             statusLabel.setText("⚠  Compte créé sans biométrie faciale.");
             statusLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #F97316;");
@@ -149,9 +153,19 @@ public class InscriptionStep3Controller {
     @FXML
     void handleReprendre() {
         capturedFaceMat = null;
+        faceIdEnabled = true;
         showCaptureState();
         statusLabel.setText("🔍  Positionnez-vous à nouveau face à la caméra...");
         statusLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8B5CF6;");
+    }
+
+    @FXML
+    void handleSkipFace() {
+        capturedFaceMat = null;
+        faceIdEnabled = false;
+        showConfirmationState();
+        statusLabel.setText("⚠  Vous avez ignoré la biométrie faciale.");
+        statusLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #F97316;");
     }
 
     /**
@@ -171,7 +185,7 @@ public class InscriptionStep3Controller {
 
         // Sauvegarder le visage si disponible
         String facePath = null;
-        if (capturedFaceMat != null && !capturedFaceMat.empty()) {
+        if (faceIdEnabled && capturedFaceMat != null && !capturedFaceMat.empty()) {
             facePath = faceService.saveFace(capturedFaceMat, userData.getEmail());
         }
 
@@ -191,15 +205,16 @@ public class InscriptionStep3Controller {
                 userData.getNiveauScolaire(),
                 userData.getEtablissement()
         );
+            newUser.setFace_id_enabled(faceIdEnabled);
 
         try {
             // ✅ Enregistrement avec photo de profil ET visage biométrique
-            userService.add(newUser, userData.getImagePath(), facePath);
+            userService.add(newUser, userData.getImagePath(), facePath, faceIdEnabled);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Compte créé !");
             alert.setHeaderText(null);
-            if (facePath != null) {
+            if (faceIdEnabled && facePath != null) {
                 alert.setContentText("✅ Votre compte a été créé avec succès et votre visage a été enregistré.\n" +
                         "Vous devrez scanner votre visage à chaque connexion.");
             } else {

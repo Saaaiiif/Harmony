@@ -217,6 +217,7 @@ public class InscriptionController {
             Stage stage = (Stage) nomInsc.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Harmony - Inscription (Étape 2/2)");
+            applyAuthStageSize(stage);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", 
@@ -234,9 +235,18 @@ public class InscriptionController {
             Stage stage = (Stage) linkToLogin.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Harmony - Connexion");
+            applyAuthStageSize(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void applyAuthStageSize(Stage stage) {
+        if (stage == null) return;
+        stage.sizeToScene();
+        stage.setMinWidth(stage.getWidth());
+        stage.setMinHeight(stage.getHeight());
+        stage.centerOnScreen();
     }
 
     private void showAlert(String title, String content, Alert.AlertType type) {

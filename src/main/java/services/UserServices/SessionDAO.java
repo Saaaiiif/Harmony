@@ -106,6 +106,12 @@ public class SessionDAO {
                 }
 
                 try {
+                    u.setFace_id_enabled(rs.getInt("face_id_enabled") == 1);
+                } catch (SQLException e) {
+                    u.setFace_id_enabled(u.getFace_image_path() != null && !u.getFace_image_path().isEmpty());
+                }
+
+                try {
                     u.setIs_active(rs.getInt("is_active") == 1);
                 } catch (SQLException e) {
                     u.setIs_active(true);

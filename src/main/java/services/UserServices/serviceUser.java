@@ -61,13 +61,17 @@ public class serviceUser implements UserServices<user> {
     public void add(user user) { add(user, null); }
 
     public void add(user user, String sourceImagePath) {
-        add(user, sourceImagePath, null);
+        add(user, sourceImagePath, null, user.isFace_id_enabled());
     }
 
     /**
      * ✅ NOUVEAU : Surcharge avec chemin du visage (face recognition).
      */
     public void add(user user, String sourceImagePath, String sourceFacePath) {
+        add(user, sourceImagePath, sourceFacePath, user.isFace_id_enabled());
+    }
+
+    public void add(user user, String sourceImagePath, String sourceFacePath, boolean faceIdEnabled) {
         String hashedPassword  = PasswordUtils.hashPassword(user.getUser_password());
         String savedImagePath  = saveUserImage(sourceImagePath);
         // Le visage est déjà sauvegardé dans face_data/ par FaceRecognitionService
@@ -79,8 +83,8 @@ public class serviceUser implements UserServices<user> {
                 "`user_date_de_naissance`, `date_inscription`, `type_utilisateur`, " +
                 "`user_sexe`, `user_poids`, `user_taille`, `user_niveau_activite_physique`, " +
                 "`user_niveau_scolaire`, `user_etablissement_scolaire`, `user_image_path`, " +
-                "`face_image_path`, `is_active`) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+                "`face_image_path`, `face_id_enabled`, `is_active`) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
 
         try (PreparedStatement pstm = cnx.prepareStatement(req)) {
             pstm.setString(1, user.getUser_nom());
@@ -100,6 +104,7 @@ public class serviceUser implements UserServices<user> {
             pstm.setString(13, user.getUser_etablissement_scolaire());
             pstm.setString(14, savedImagePath);
             pstm.setString(15, faceImagePath);     // ✅ NOUVEAU
+            pstm.setInt(16, faceIdEnabled ? 1 : 0);
 
             pstm.executeUpdate();
             System.out.println("Utilisateur ajouté avec succès !");
@@ -340,6 +345,12 @@ public class serviceUser implements UserServices<user> {
             u.setFace_image_path(rs.getString("face_image_path"));
         } catch (SQLException e) {
             u.setFace_image_path(null); // fallback si colonne absente (ancienne BDD)
+        }
+
+        try {
+            u.setFace_id_enabled(rs.getInt("face_id_enabled") == 1);
+        } catch (SQLException e) {
+            u.setFace_id_enabled(u.getFace_image_path() != null && !u.getFace_image_path().isEmpty());
         }
 
         try {

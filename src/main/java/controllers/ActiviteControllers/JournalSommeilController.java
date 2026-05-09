@@ -9,6 +9,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import models.ActiviteModels.Sommeil;
+import models.UserModels.Session;
 import services.ActiviteServices.ServiceSommeil;
 
 import java.sql.Timestamp;
@@ -139,6 +140,11 @@ public class JournalSommeilController {
         }
 
         Sommeil s = new Sommeil();
+        if (Session.getInstance() == null || Session.getInstance().getUser() == null) {
+            erreurLabel.setText("Erreur : utilisateur non connecté.");
+            return;
+        }
+        s.setUser_id(Session.getInstance().getUser().getUser_id());
         if (nuitEnCoursDeModification != null) {
             s.setId_sommeil(nuitEnCoursDeModification.getId_sommeil());
         }

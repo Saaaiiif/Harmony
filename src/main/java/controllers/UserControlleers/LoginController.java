@@ -126,7 +126,8 @@ public class LoginController {
             }
 
             // 4. Vérification biométrique
-            if (utilisateur.getFace_image_path() != null
+                if (utilisateur.isFace_id_enabled()
+                    && utilisateur.getFace_image_path() != null
                     && !utilisateur.getFace_image_path().isEmpty()) {
                 System.out.println(">>> Face verification required");
                 boolean faceOk = openFaceVerificationPopup(utilisateur.getFace_image_path());
@@ -227,6 +228,7 @@ public class LoginController {
             Stage stage = (Stage) linkForgotPassword.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Harmony - Mot de passe oublié");
+            applyAuthStageSize(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -239,9 +241,18 @@ public class LoginController {
             Stage stage = (Stage) linkToRegister.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Harmony - Inscription");
+            applyAuthStageSize(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void applyAuthStageSize(Stage stage) {
+        if (stage == null) return;
+        stage.sizeToScene();
+        stage.setMinWidth(stage.getWidth());
+        stage.setMinHeight(stage.getHeight());
+        stage.centerOnScreen();
     }
 
     private void redirectAccordingToRole(user user) {

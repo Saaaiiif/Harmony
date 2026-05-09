@@ -8,44 +8,56 @@ import java.nio.charset.StandardCharsets;
 
 public class ImageGenerationService {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell";
+    private static final int CONNECT_TIMEOUT_MS = 20000;
+    private static final int READ_TIMEOUT_MS = 90000;
+    private static final int MAX_RETRIES = 2;
 
 
     public byte[] generateImage(String prompt) {
-        try {
-            URL url = new URL(API_URL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Authorization", "Bearer " + API_KEY);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "image/png");
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(15000);
-            connection.setReadTimeout(60000);
+        for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                URL url = new URL(API_URL);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Authorization", "Bearer " + API_KEY);
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "image/png");
+                connection.setDoOutput(true);
+                connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+                connection.setReadTimeout(READ_TIMEOUT_MS);
 
-            String requestBody = String.format(
-                    "{\"inputs\":\"%s\"}",
-                    prompt.replace("\"", "\\\"")
-            );
+                String requestBody = String.format(
+                        "{\"inputs\":\"%s\"}",
+                        prompt.replace("\"", "\\\"")
+                );
 
-            try (OutputStream os = connection.getOutputStream()) {
-                os.write(requestBody.getBytes(StandardCharsets.UTF_8));
-            }
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (InputStream is = connection.getInputStream()) {
-                    return is.readAllBytes();
+                try (OutputStream os = connection.getOutputStream()) {
+                    os.write(requestBody.getBytes(StandardCharsets.UTF_8));
                 }
-            } else {
-                try (InputStream es = connection.getErrorStream()) {
-                    if (es != null) System.err.println("Error: " + new String(es.readAllBytes()));
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    try (InputStream is = connection.getInputStream()) {
+                        return is.readAllBytes();
+                    }
+                } else {
+                    try (InputStream es = connection.getErrorStream()) {
+                        if (es != null) System.err.println("Error: " + new String(es.readAllBytes()));
+                    }
+                    System.err.println("Error response code: " + responseCode);
+                    return null;
                 }
-                System.err.println("Error response code: " + responseCode);
+            } catch (java.net.SocketTimeoutException te) {
+                if (attempt >= MAX_RETRIES) {
+                    System.err.println("Image generation timed out after retries.");
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
