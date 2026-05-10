@@ -4,36 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="92e3f4ae-7c60-47a5-9241-4454aac13688" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/db-forest-config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face_data/omaroueslati067_gmail_com_face.png" beforeDir="false" afterPath="$PROJECT_DIR$/face_data/omaroueslati067_gmail_com_face.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remember.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ActiviteControllers/JournalSommeilController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ActiviteControllers/JournalSommeilController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CourseDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LibraryControllers/CoursesLayoutController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/InscriptionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/InscriptionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/InscriptionStep3Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/InscriptionStep3Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserControlleers/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main/MainFX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/MainFX.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/UserModels/user.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/UserModels/user.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/LibraryServices/ImageGenerationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/UserServices/SessionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserServices/SessionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/UserServices/serviceUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/MyDataBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/LibraryViews/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/AdminProfilePopup.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/AdminProfilePopup.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/EtudiantProfilePopup.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/EtudiantProfilePopup.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/Inscription.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/Inscription.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/InscriptionStep3.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/InscriptionStep3.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/views/UserViews/Login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/UserViews/Login.fxml" afterDir="false" />
-    </list>
+    <list default="true" id="92e3f4ae-7c60-47a5-9241-4454aac13688" name="Changes" comment="cross-platform compatible" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,12 +60,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778344311715</updated>
-      <workItem from="1778344312946" duration="8724000" />
+      <workItem from="1778344312946" duration="9052000" />
     </task>
+    <task id="LOCAL-00001" summary="cross-platform compatible">
+      <option name="closed" value="true" />
+      <created>1778353675824</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778353675825</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="cross-platform compatible" />
+    <option name="LAST_COMMIT_MESSAGE" value="cross-platform compatible" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
