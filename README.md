@@ -217,7 +217,52 @@ Visual avatar adapting to the student's detected emotional state:
 
 ### Module 5 — Training & Resources
 
-> _Full feature details coming soon._
+📚 Course Management
+
+Create courses with title, subject, and multi-file upload (PDF, Word, PPT, Excel, images, Markdown…)
+Rename title and change subject in real time
+Publish toggle: makes the course visible in the public library
+Admin lock: a course unpublished by an admin cannot be republished by the user
+Cascade deletion (course, files, saved copies)
+
+🖼️ Smart Course Cover
+
+Manual upload of a custom cover image
+AI-powered automatic generation from the course title and subject
+Cover can be updated at any time from the course page
+
+📁 File Management
+
+Supported formats: PDF, DOC/DOCX, PPT/PPTX, XLS/XLSX, TXT, MD, JSON, images
+Dual validation (extension + MIME type) with rejection of unsupported formats
+Inline preview: PDF fullscreen, Word rendered as HTML (LibreOffice / PhpWord), images and text
+Individual download or full course ZIP archive with progress bar
+Notes automatically converted to PDF inside the ZIP
+Individual file renaming and deletion
+
+📝 Built-in Note Editor
+
+Rich text editor in native .rtfx format with support for Word, TXT and Markdown files
+Toolbar: font, size, alignment, bold/italic/underline, undo/redo, find & replace
+Content saving and direct PDF export (wkhtmltopdf with Dompdf fallback)
+
+🏛️ Public Library
+
+Browse all published courses accessible to every user
+Save/unsave any course to your personal library with a real-time counter
+Course reporting with reason selection, optional details, and duplicate protection
+
+🤖 AI Features (Gemini)
+
+Automatic PDF summarization: text extraction and structured section-based summary generation
+Cheat sheet generation: AI classifier checks whether the document is educational before showing the button
+AI output can be copied, exported as PDF, or saved directly as a note inside the course
+
+🔍 External Resource Suggestions
+
+Automatic book recommendations related to the course subject
+Automatic YouTube video recommendations related to the course subject
+Async loading in a horizontal carousel, up to 10 suggestions per type
 
 Access to curated learning resources, tutorials, and academic support materials.
 
